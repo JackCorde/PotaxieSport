@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using PotaxieSport.Data;
 using PotaxieSport.Models;
 using System.Diagnostics;
-using TorneosDeportivos.Data.Servicios;
+using PotaxieSport.Data.Servicios;
 
 namespace PotaxieSport.Controllers
 {
@@ -23,7 +23,8 @@ namespace PotaxieSport.Controllers
 
         public IActionResult Index()
         {
-
+            var usuarios = _generalServicio.ObtenerUsuarios();
+            ViewBag.Usuarios = usuarios;
             return View();
         }
 

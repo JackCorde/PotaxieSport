@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using PotaxieSport.Data;
 using PotaxieSport.Models;
 using System.Diagnostics;
-using TorneosDeportivos.Data.Servicios;
+using PotaxieSport.Data.Servicios;
 
 namespace PotaxieSport.Controllers
 {
