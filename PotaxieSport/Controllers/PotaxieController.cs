@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using PotaxieSport.Data;
 using PotaxieSport.Data.Servicios;
 using PotaxieSport.Models;
+using PotaxieSport.Models.ViewModels;
 using System.Data;
 using System.Text.Json;
 
@@ -120,13 +122,11 @@ namespace PotaxieSport.Controllers
 
         [HttpPost]
         [Route("Jugadores")]
-        public IActionResult Jugadores([FromBody] JsonElement data)
+        public IActionResult Jugadores([FromBody] Request request)
         {
             List<Jugador> jugadores = new List<Jugador>();
             try
             {
-                int equipoId = data.GetProperty("equipo_id").GetInt32();
-
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
                 {
                     connection.Open();
@@ -134,7 +134,7 @@ namespace PotaxieSport.Controllers
                     using (var cmd = new NpgsqlCommand("SELECT * FROM ObtenerJugadoresPorEquipo(@equipo_id)", connection))
                     {
                         cmd.CommandType = CommandType.Text; // Cambiar a CommandType.Text
-                        cmd.Parameters.AddWithValue("equipo_id", equipoId);
+                        cmd.Parameters.AddWithValue("equipo_id", request.EquipoId);
 
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -167,6 +167,81 @@ namespace PotaxieSport.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = jugadores });
             }
         }
+
+
+        [HttpPost]
+        [Route("Salud")]
+        public IActionResult Salud([FromBody] Request request)
+        {
+            List<RegistroSalud> registrosSalud = new List<RegistroSalud>();
+
+            try
+            {
+                
+                using (var connection = new NpgsqlConnection(_contexto.Conexion))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand("Select * from ObtenerRegistrosSalud(@p_jugador_id)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("p_jugador_id", request.JugadorId);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var registro = new RegistroSalud
+                                {
+                                    RegistroSaludId = reader.GetInt32(reader.GetOrdinal("registro_salud_id")),
+                                    JugadorId = reader.GetInt32(reader.GetOrdinal("jugador_id")),
+                                    Jugador = reader.IsDBNull(reader.GetOrdinal("jugador")) ? null : reader.GetString(reader.GetOrdinal("jugador")),
+                                    FrecuenciaCardiaca = reader.GetInt32(reader.GetOrdinal("frecuencia_card")),
+                                    Estatus = reader.IsDBNull(reader.GetOrdinal("estatus")) ? null : reader.GetString(reader.GetOrdinal("estatus")),
+                                    Fecha = reader.GetDateTime(reader.GetOrdinal("fecha"))
+                                };
+
+                                registrosSalud.Add(registro);
+                            }
+                        }
+                    }
+                }
+
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = registrosSalud });
+            }
+            catch (Exception error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = registrosSalud });
+            }
+        }
+
+
+        [HttpPost]
+        [Route("CrearRegistroSalud")]
+        public IActionResult CrearRegistroSalud([FromBody] Request request)
+        {
+            try
+            {
+                using (var connection = new NpgsqlConnection(_contexto.Conexion))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM CrearRegistroSalud(@p_jugador_id, @p_frecuencia_card)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("p_jugador_id", request.JugadorId);
+                        cmd.Parameters.AddWithValue("p_frecuencia_card", request.FrecuenciaCard);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "Registro de salud creado exitosamente" });
+            }
+            catch (Exception error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message });
+            }
+        }
+
 
     }
 }

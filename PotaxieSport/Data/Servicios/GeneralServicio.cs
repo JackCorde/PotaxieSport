@@ -123,5 +123,51 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
+        internal Usuario ConseguirUsuario(string username)
+        {
+            Usuario usuario = null;
+            try
+            {
+                using (var connection = new NpgsqlConnection(_contexto.Conexion))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM ObtenerUsuarioPorUsername(@p_username)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("p_username", username);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                usuario = new Usuario
+                                {
+                                    UsuarioId = reader.GetInt32(reader.GetOrdinal("usuario_id")),
+                                    Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? null : reader.GetString(reader.GetOrdinal("nombre")),
+                                    ApPaterno = reader.IsDBNull(reader.GetOrdinal("ap_paterno")) ? null : reader.GetString(reader.GetOrdinal("ap_paterno")),
+                                    ApMaterno = reader.IsDBNull(reader.GetOrdinal("ap_materno")) ? null : reader.GetString(reader.GetOrdinal("ap_materno")),
+                                    Username = reader.IsDBNull(reader.GetOrdinal("username")) ? null : reader.GetString(reader.GetOrdinal("username")),
+                                    Email = reader.IsDBNull(reader.GetOrdinal("email")) ? null : reader.GetString(reader.GetOrdinal("email")),
+                                    Password = (byte[])reader["password"],
+                                    RolId = reader.GetInt32(reader.GetOrdinal("rol_id")),
+                                    Rol = reader.IsDBNull(reader.GetOrdinal("rol")) ? null : reader.GetString(reader.GetOrdinal("rol")),
+                                    ErrorAutentificacion = reader.GetInt32(reader.GetOrdinal("error_autentificacion"))
+                                };
+
+                                
+                            }
+                        }
+                    }
+                }
+
+                return usuario;
+
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                return null;
+            }
+        }
     }
 }
