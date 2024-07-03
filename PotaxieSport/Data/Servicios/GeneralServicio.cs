@@ -52,45 +52,55 @@ namespace PotaxieSport.Data.Servicios
 
         public List<Torneo> ObtenerTorneos()
         {
-            var torneos = new List<Torneo>();
-
-            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            List<Torneo> torneos = new List<Torneo>();
+            try
             {
-                connection.Open();
-                using (var cmd = new NpgsqlCommand("ObtenerTorneos", connection))
+                using (var connection = new NpgsqlConnection(_contexto.Conexion))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    using (var reader = cmd.ExecuteReader())
+                    connection.Open();
+                    // Cambia el comando para llamar a la función
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM ObtenerTorneos()", connection))
                     {
-                        while (reader.Read())
-                        {
-                            var torneo = new Torneo
-                            {
-                                TorneoId = reader.GetInt32(reader.GetOrdinal("torneo_id")),
-                                NombreTorneo = reader.IsDBNull(reader.GetOrdinal("nombre_torneo")) ? null : reader.GetString(reader.GetOrdinal("nombre_torneo")),
-                                CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
-                                Categoria = reader.IsDBNull(reader.GetOrdinal("categoria")) ? null : reader.GetString(reader.GetOrdinal("categoria")),
-                                Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
-                                Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
-                                AdministradorId = reader.GetInt32(reader.GetOrdinal("administrador_id")),
-                                Administrador = reader.IsDBNull(reader.GetOrdinal("administrador")) ? null : reader.GetString(reader.GetOrdinal("administrador")),
-                                ContadorId = reader.GetInt32(reader.GetOrdinal("contador_id")),
-                                Contador = reader.IsDBNull(reader.GetOrdinal("contador")) ? null : reader.GetString(reader.GetOrdinal("contador")),
-                                DoctorId = reader.GetInt32(reader.GetOrdinal("doctor_id")),
-                                Doctor = reader.IsDBNull(reader.GetOrdinal("doctor")) ? null : reader.GetString(reader.GetOrdinal("doctor")),
-                                FechaInicio = reader.GetDateTime(reader.GetOrdinal("fecha_inicio")),
-                                FechaFin = reader.GetDateTime(reader.GetOrdinal("fecha_fin"))
-                            };
+                        cmd.CommandType = CommandType.Text; // Cambiar a CommandType.Text
 
-                            torneos.Add(torneo);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var torneo = new Torneo
+                                {
+                                    TorneoId = reader.GetInt32(reader.GetOrdinal("torneo_id")),
+                                    NombreTorneo = reader.IsDBNull(reader.GetOrdinal("nombre_torneo")) ? null : reader.GetString(reader.GetOrdinal("nombre_torneo")),
+                                    CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
+                                    Categoria = reader.IsDBNull(reader.GetOrdinal("categoria")) ? null : reader.GetString(reader.GetOrdinal("categoria")),
+                                    Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
+                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
+                                    AdministradorId = reader.GetInt32(reader.GetOrdinal("usuario_admin")),
+                                    Administrador = reader.IsDBNull(reader.GetOrdinal("administrador")) ? null : reader.GetString(reader.GetOrdinal("administrador")),
+                                    ContadorId = reader.GetInt32(reader.GetOrdinal("usuario_contador")),
+                                    Contador = reader.IsDBNull(reader.GetOrdinal("contador")) ? null : reader.GetString(reader.GetOrdinal("contador")),
+                                    DoctorId = reader.GetInt32(reader.GetOrdinal("usuario_doctor")),
+                                    Doctor = reader.IsDBNull(reader.GetOrdinal("doctor")) ? null : reader.GetString(reader.GetOrdinal("doctor")),
+                                    FechaInicio = reader.GetDateTime(reader.GetOrdinal("fecha_inicio")),
+                                    FechaFin = reader.GetDateTime(reader.GetOrdinal("fecha_fin"))
+                                };
+
+                                torneos.Add(torneo);
+                            }
                         }
                     }
                 }
-            }
 
-            return torneos;
+                return torneos;
+            }
+            catch (Exception ex)
+            {
+                string mensaje = ex.Message;
+                return torneos;
+            }
         }
+
+
 
 
         public void NumeroIntento(int id)

@@ -23,8 +23,8 @@ namespace PotaxieSport.Controllers
 
         public IActionResult Index()
         {
-            var usuarios = _generalServicio.ObtenerUsuarios();
-            ViewBag.Usuarios = usuarios;
+            var torneos = _generalServicio.ObtenerTorneos();
+            ViewBag.Torneos = torneos;
             return View();
         }
 
