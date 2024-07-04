@@ -15,9 +15,9 @@
         public string? Arbitro { get; set; }
         public string? Cedula { get; set; }
         public DateTime Fecha { get; set; }
-        public int Hora { get; set; }
+        public TimeSpan Hora { get; set; }
         public string? Lugar { get; set; }
-        public double Costo { get; set; }
+        public decimal Costo { get; set; }
 
     }
 }

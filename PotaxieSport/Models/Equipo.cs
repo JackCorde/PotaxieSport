@@ -11,5 +11,8 @@
         public int UsuarioCoachId { get; set; }
         public string? Coach {  get; set; }
 
+        public int TorneoActualId { get; set; }
+        public string? TorneoActual { get; set; }
+
     }
 }
