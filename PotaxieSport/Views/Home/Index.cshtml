@@ -13,7 +13,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
+    <link rel="apple-touch-icon" href="~/img_plantilla/apple-icon.png">
     <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
 
     <link rel="stylesheet" href="~/css_plantilla/bootstrap.min.css">
@@ -43,16 +43,16 @@
                 <div class="flex-fill">
                     <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Inicio</a>
+                            <a class="nav-link" asp-action="Index" asp-controller="Home">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="about.html">Nosotros</a>
+                            <a class="nav-link" asp-action="Torneos" asp-controller="Home">Torneos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="shop.html">Torneos</a>
+                            <a class="nav-link" asp-action="Equipos" asp-controller="Home">Equipos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Contactanos</a>
+                            <a class="nav-link" asp-action="Partidos" asp-controller="Home">Partidos</a>
                         </li>
                     </ul>
                 </div>
@@ -191,19 +191,19 @@
         </div>
         <div class="row">
             <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="#"><img src="~/img_plantilla/category_img_01.jpg" class="rounded-circle img-fluid border"></a>
+                <a asp-action="Torneos" asp-controller="Home"><img src="~/img_plantilla/category_img_01.jpg" class="rounded-circle img-fluid border"></a>
                 <h5 class="text-center mt-3 mb-3">Torneos</h5>
-                <p class="text-center"><a class="btn btn-success">Ver más</a></p>
+                <p class="text-center"><a class="btn btn-success" asp-action="Torneos" asp-controller="Home">Ver más</a></p>
             </div>
             <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="#"><img src="~/img_plantilla/category_img_02.jpg" class="rounded-circle img-fluid border"></a>
+                <a asp-action="Equipos" asp-controller="Home"><img src="~/img_plantilla/category_img_02.jpg" class="rounded-circle img-fluid border"></a>
                 <h2 class="h5 text-center mt-3 mb-3">Equipos</h2>
-                <p class="text-center"><a class="btn btn-success">Ver más</a></p>
+                <p class="text-center"><a class="btn btn-success" asp-action="Equipos" asp-controller="Home">Ver más</a></p>
             </div>
             <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="#"><img src="~/img_plantilla/category_img_03.jpg" class="rounded-circle img-fluid border"></a>
+                <a asp-action="Partidos" asp-controller="Home"><img src="~/img_plantilla/category_img_03.jpg" class="rounded-circle img-fluid border"></a>
                 <h2 class="h5 text-center mt-3 mb-3">Partidos</h2>
-                <p class="text-center"><a class="btn btn-success">Ver más</a></p>
+                <p class="text-center"><a class="btn btn-success" asp-action="Partidos" asp-controller="Home">Ver más</a></p>
             </div>
         </div>
     </section>
@@ -299,19 +299,19 @@
                 <div class="col-md-4 pt-5">
                     <h2 class="h2 text-light border-bottom pb-3 border-light">Catalogos</h2>
                     <ul class="list-unstyled text-light footer-link-list">
-                        <li><a class="text-decoration-none" href="#">Torneos</a></li>
-                        <li><a class="text-decoration-none" href="#">Equipos</a></li>
-                        <li><a class="text-decoration-none" href="#">Partidos</a></li>
+                        <li><a class="text-decoration-none" asp-action="Torneos" asp-controller="Home">Torneos</a></li>
+                        <li><a class="text-decoration-none" asp-action="Equipos" asp-controller="Home">Equipos</a></li>
+                        <li><a class="text-decoration-none" asp-action="Partidos" asp-controller="Home">Partidos</a></li>
                     </ul>
                 </div>
 
                 <div class="col-md-4 pt-5">
-                    <h2 class="h2 text-light border-bottom pb-3 border-light">Further Info</h2>
+                    <h2 class="h2 text-light border-bottom pb-3 border-light">Nuestra Información</h2>
                     <ul class="list-unstyled text-light footer-link-list">
-                        <li><a class="text-decoration-none" href="#">Inicio</a></li>
-                        <li><a class="text-decoration-none" href="#">Nosotros</a></li>
-                        <li><a class="text-decoration-none" href="#">Torneos</a></li>
-                        <li><a class="text-decoration-none" href="#">Contactanos</a></li>
+                        <li><a class="text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a></li>
+                        <li><a class="text-decoration-none" asp-action="Torneos" asp-controller="Home">Torneos</a></li>
+                        <li><a class="text-decoration-none" asp-action="Equipos" asp-controller="Home">Equipos</a></li>
+                        <li><a class="text-decoration-none" asp-action="Partidos" asp-controller="Home">Partidos</a></li>
                     </ul>
                 </div>
 

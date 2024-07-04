@@ -28,6 +28,27 @@ namespace PotaxieSport.Controllers
             return View();
         }
 
+        public IActionResult Torneos()
+        {
+            var torneos = _generalServicio.ObtenerTorneos();
+            ViewBag.Torneos = torneos;
+            return View();
+        }
+
+        public IActionResult Equipos()
+        {
+            var equipos = _generalServicio.ObtenerEquipos();
+            ViewBag.Equipos = equipos;
+            return View();
+        }
+
+        public IActionResult Partidos()
+        {
+            var partidos = _generalServicio.ObtenerPartidos();
+            ViewBag.Partidos = partidos;
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
