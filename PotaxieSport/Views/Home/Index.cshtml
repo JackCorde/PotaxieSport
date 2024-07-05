@@ -76,6 +76,9 @@
                         <i class="fa fa-fw fa-user text-dark mr-3"></i>
                         <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">+99</span>
                     </a>
+                    <a class="nav-icon position-relative text-decoration-none" asp-action="Login" asp-controller="Home">
+                        <i class="fa fa-fw fa-login text-dark mr-3"></i>
+                    </a>
                 </div>
             </div>
 
@@ -338,11 +341,14 @@
                     </ul>
                 </div>
                 <div class="col-auto">
-                    <label class="sr-only" for="subscribeEmail">Email address</label>
-                    <div class="input-group mb-2">
-                        <input type="text" class="form-control bg-dark border-light" id="subscribeEmail" placeholder="Email address">
-                        <div class="input-group-text btn-success text-light">Subscribe</div>
-                    </div>
+                    <form asp-action="RegistrarAficionado" asp-controller="Home" method="post">
+                        <label class="sr-only" for="subscribeEmail">Email address</label>
+                        <div class="input-group mb-2">
+                            <input type="text" name="correo" class="form-control bg-dark border-light text-light" id="subscribeEmail" placeholder="Email address">
+                            <button type="submit" class="btn-success">Subscribe</button>
+                        </div>
+                    </form>
+                    
                 </div>
             </div>
         </div>
