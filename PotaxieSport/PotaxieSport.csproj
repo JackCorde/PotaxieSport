@@ -22,4 +22,11 @@
     <Folder Include="wwwroot\Formatos\Cedulas\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Home\Partidos.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
