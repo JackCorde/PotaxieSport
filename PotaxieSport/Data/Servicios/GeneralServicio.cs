@@ -208,10 +208,10 @@ namespace PotaxieSport.Data.Servicios
             using (var connection = new NpgsqlConnection(_contexto.Conexion))
             {
                 connection.Open();
-                using (var cmd = new NpgsqlCommand("AgregarIntentoFallido", connection))
+                using (var cmd = new NpgsqlCommand("SELECT * FROM AgregarIntentoFallido(@id)", connection))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("id", id);
                     cmd.ExecuteNonQuery(); // Ejecutar la consulta sin retorno de datos
                 }
                 connection.Close(); // Cerrar la conexión después de terminar
@@ -223,10 +223,10 @@ namespace PotaxieSport.Data.Servicios
             using (var connection = new NpgsqlConnection(_contexto.Conexion))
             {
                 connection.Open();
-                using (NpgsqlCommand cmd = new NpgsqlCommand("LimpiarIntentoFallido", connection))
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM LimpiarIntentoFallido(@id)", connection))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("id", id);
                     cmd.ExecuteNonQuery(); // Ejecutar la consulta sin retorno de datos
                 }
                 connection.Close(); // Cerrar la conexión después de terminar
@@ -258,7 +258,7 @@ namespace PotaxieSport.Data.Servicios
                                     ApMaterno = reader.IsDBNull(reader.GetOrdinal("ap_materno")) ? null : reader.GetString(reader.GetOrdinal("ap_materno")),
                                     Username = reader.IsDBNull(reader.GetOrdinal("username")) ? null : reader.GetString(reader.GetOrdinal("username")),
                                     Email = reader.IsDBNull(reader.GetOrdinal("email")) ? null : reader.GetString(reader.GetOrdinal("email")),
-                                    Password = (byte[])reader["password"],
+                                    Password = reader.IsDBNull(reader.GetOrdinal("password")) ? null : reader.GetString(reader.GetOrdinal("password")),
                                     RolId = reader.GetInt32(reader.GetOrdinal("rol_id")),
                                     Rol = reader.IsDBNull(reader.GetOrdinal("rol")) ? null : reader.GetString(reader.GetOrdinal("rol")),
                                     ErrorAutentificacion = reader.GetInt32(reader.GetOrdinal("error_autentificacion"))

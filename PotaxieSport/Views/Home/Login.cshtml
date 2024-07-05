@@ -1,4 +1,5 @@
-﻿@*
+﻿@model PotaxieSport.Models.ViewModels.UsuarioLogin;
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -123,17 +124,17 @@
             ">
           <div class="card-body p-5 shadow-5 text-center">
             <h2 class="fw-bold mb-5">Iniciar Sesión</h2>
-            <form>
+              <form asp-action="Login" asp-controller="Home" method="post">
               <!-- Email input -->
               <div data-mdb-input-init class="form-outline mb-4">
-                <input type="email" id="form3Example3" class="form-control" />
-                <label class="form-label" for="form3Example3">Correo Electrónico</label>
+              <input type="email" asp-for="Correo" id="Correo" class="form-control" />
+                <label class="form-label" for="Correo">Correo Electrónico</label>
               </div>
 
               <!-- Password input -->
               <div data-mdb-input-init class="form-outline mb-4">
-                <input type="password" id="form3Example4" class="form-control" />
-                <label class="form-label" for="form3Example4">Contraseña</label>
+                                    <input type="password" class="form-control" asp-for="LaPoderosa" id="LaPoderosa" placeholder="Password" minlength="5" maxlength="20" required />
+                                    <label class="form-label" for="LaPoderosa">Contraseña</label>
               </div>
 
               
