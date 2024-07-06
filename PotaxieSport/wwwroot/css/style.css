@@ -195,3 +195,16 @@ a.sidebar-link:hover {
 .green {
     color: green;
 }
+
+
+.fas.fa-heart:hover {
+    color: #f44336 !important;
+}
+
+.fas.fa-share-alt:hover {
+    color: #0d47a1 !important;
+}
+.card {
+    width: 23rem;
+    margin-right: 2rem; /* Optional: Margin between cards */
+}
