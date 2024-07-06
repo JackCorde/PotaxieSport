@@ -3,6 +3,7 @@ using PotaxieSport.Data;
 using PotaxieSport.Models;
 using System.Diagnostics;
 using PotaxieSport.Data.Servicios;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PotaxieSport.Controllers
 {
@@ -19,6 +20,7 @@ namespace PotaxieSport.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "doctor")]
         public IActionResult Index()
         {
             return View();
