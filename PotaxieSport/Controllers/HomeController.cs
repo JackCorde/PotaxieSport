@@ -234,6 +234,12 @@ namespace PotaxieSport.Controllers
             return RedirectToAction("Index","Home");
         }
 
+
+        public IActionResult Blog()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

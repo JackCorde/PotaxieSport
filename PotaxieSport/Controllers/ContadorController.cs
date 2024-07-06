@@ -3,6 +3,7 @@ using PotaxieSport.Data;
 using PotaxieSport.Models;
 using System.Diagnostics;
 using PotaxieSport.Data.Servicios;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PotaxieSport.Controllers
 {
@@ -18,7 +19,7 @@ namespace PotaxieSport.Controllers
             _generalServicio = new GeneralServicio(contexto);
             _logger = logger;
         }
-
+        [Authorize(Roles = "contador")]
         public IActionResult Index()
         {
             return View();
