@@ -1,8 +1,37 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Doctor";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Doctor</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Nombre de usuario</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>ver</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>id</td>
+                <td>Toño</td>
+                <td>Espindola</td>
+                <td>Aguirre</td>
+                <td>Toño</td>
+                <td>tono@hmail.com</td>
+                <td>Admin</td>
+                <td>ver</td>
+            </tr>
+
+        </tbody>
+    </table>
 </div>
