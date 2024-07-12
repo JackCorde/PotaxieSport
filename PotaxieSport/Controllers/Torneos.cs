@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PotaxieSport.Controllers
 {
     public class Torneos : Controller
     {
-        // GET: Torneos
+        [Authorize(Roles = "administrador")]
         public ActionResult Index()
         {
             return View();
