@@ -175,36 +175,3 @@ a.sidebar-link:hover {
 
 @media (min-width: 768px) {}
 
-
-
-.search {
-    top: 6px;
-    left: 10px;
-}
-
-.form-control {
-    border: none;
-    padding-left: 32px;
-}
-
-    .form-control:focus {
-        border: none;
-        box-shadow: none;
-    }
-
-.green {
-    color: green;
-}
-
-
-.fas.fa-heart:hover {
-    color: #f44336 !important;
-}
-
-.fas.fa-share-alt:hover {
-    color: #0d47a1 !important;
-}
-.card {
-    width: 23rem;
-    margin-right: 2rem; /* Optional: Margin between cards */
-}
