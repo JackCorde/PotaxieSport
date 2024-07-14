@@ -3,6 +3,7 @@ using PotaxieSport.Data;
 using PotaxieSport.Models;
 using System.Diagnostics;
 using PotaxieSport.Data.Servicios;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PotaxieSport.Controllers
 {
@@ -19,7 +20,7 @@ namespace PotaxieSport.Controllers
             _contexto = contexto;
             _generalServicio = new GeneralServicio(contexto);
         }
-
+        [Authorize(Roles = "administrador")]
         public IActionResult Index()
         {
             return View();
