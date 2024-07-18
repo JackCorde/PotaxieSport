@@ -277,7 +277,36 @@ namespace PotaxieSport.Data.Servicios
             {
                 string error = ex.Message;
                 return null;
+                
             }
         }
+
+        //Metodo Agregar Usuario
+        public void CrearUsuario(string nombre, string apPaterno, string apMaterno, string username, string email, int rolId, int errorAutentificacion, string password)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand("SELECT crearUsuario(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id, @p_error_autentificacion, @p_password)", connection))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    #pragma warning disable CS8604 // Posible argumento de referencia nulo
+                    cmd.Parameters.AddWithValue("p_nombre", nombre);
+                    cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
+                    cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
+                    cmd.Parameters.AddWithValue("p_username", username);
+                    cmd.Parameters.AddWithValue("p_email", email);
+                    cmd.Parameters.AddWithValue("p_rol_id", rolId);
+                    cmd.Parameters.AddWithValue("p_error_autentificacion", errorAutentificacion);
+                    cmd.Parameters.AddWithValue("p_password", password);
+
+                    cmd.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+
+
+
     }
 }
