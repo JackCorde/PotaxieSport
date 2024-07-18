@@ -1,0 +1,48 @@
+﻿@model List<PotaxieSport.Models.Usuario>
+
+@{
+    ViewData["Title"] = "coachs";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <div class="row mt-3">
+            <div class="col-lg-6">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre...">
+                <button id="searchButton" class="btn btn-primary">Buscar</button>
+            </div>
+            <div class="col-lg-6 text-lg-end mt-3 mt-lg-0">
+                <button id="addButton" class="btn btn-success">Agregar Usuario</button>
+            </div>
+        </div>
+
+        <table id="usuarios-table" class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                    <th>Nombre de Usuario</th>
+                    <th>Email</th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td>@usuario.Nombre</td>
+                        <td>@usuario.ApPaterno</td>
+                        <td>@usuario.ApMaterno</td>
+                        <td>@usuario.Username</td>
+                        <td>@usuario.Email</td>
+                        <td class="action-icons"><i class="fas fa-edit"></i></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

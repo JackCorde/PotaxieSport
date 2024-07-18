@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
 
-
 ::after,
 ::before {
     box-sizing: border-box;
@@ -41,15 +40,15 @@ body {
     min-width: 70px;
     z-index: 1000;
     transition: all .25s ease-in-out;
-    background-color: #697279; /* Cambio de color a #212832 */
+    background-color: #697279;
     display: flex;
     flex-direction: column;
 }
 
-#sidebar.expand {
-    width: 260px;
-    min-width: 260px;
-}
+    #sidebar.expand {
+        width: 260px;
+        min-width: 260px;
+    }
 
 .toggle-btn {
     background-color: transparent;
@@ -58,20 +57,20 @@ body {
     padding: 1rem 1.5rem;
 }
 
-.toggle-btn i {
-    font-size: 1.5rem;
-    color: #FFF;
-}
+    .toggle-btn i {
+        font-size: 1.5rem;
+        color: #FFF;
+    }
 
 .sidebar-logo {
     margin: auto 0;
 }
 
-.sidebar-logo a {
-    color: #FFF;
-    font-size: 1.15rem;
-    font-weight: 600;
-}
+    .sidebar-logo a {
+        color: #FFF;
+        font-size: 1.15rem;
+        font-weight: 600;
+    }
 
 #sidebar:not(.expand) .sidebar-logo,
 #sidebar:not(.expand) a.sidebar-link span {
@@ -132,7 +131,7 @@ a.sidebar-link:hover {
     display: none;
 }
 
-#sidebar:not(.expand) .sidebar-item:hover .has-dropdown+.sidebar-dropdown {
+#sidebar:not(.expand) .sidebar-item:hover .has-dropdown + .sidebar-dropdown {
     display: block;
     max-height: 15em;
     width: 100%;
@@ -158,7 +157,7 @@ a.sidebar-link:hover {
 }
 
 .navbar {
-    background-color: #212832; /* Cambio de color a #212832 */
+    background-color: #212832 ;
     box-shadow: 0 0 2rem 0 rgba(33, 37, 41, .1);
 }
 
@@ -171,40 +170,51 @@ a.sidebar-link:hover {
     width: 40px;
 }
 
-
-
-@media (min-width: 768px) {}
-
-
-
-.search {
-    top: 6px;
-    left: 10px;
+@media (min-width: 768px) {
 }
 
-.form-control {
-    border: none;
-    padding-left: 32px;
+.table-container {
+    margin: 50px 20px 0 20px; /* 50px top, 20px right, 0 bottom, 20px left */
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
 }
 
-    .form-control:focus {
-        border: none;
-        box-shadow: none;
+
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 80px); /* Ajusta esto según la altura de tu navbar */
+    padding: 20px;
+    background-color: #f8f9fa; /* Fondo del main */
+}
+
+/* Estilos para la tabla específica */
+#usuarios-table thead {
+    background-color: #10292C;
+    color: #ffffff;
+}
+
+#usuarios-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#usuarios-table tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Estilos para los íconos de acción específicos */
+#usuarios-table .action-icons i {
+    cursor: pointer;
+    margin-right: 10px;
+    color: #10292C;
+}
+
+    #usuarios-table .action-icons i:hover {
+        color: #10292C;
     }
 
-.green {
-    color: green;
-}
 
-
-.fas.fa-heart:hover {
-    color: #f44336 !important;
-}
-
-.fas.fa-share-alt:hover {
-    color: #0d47a1 !important;
-}
-.card {
-    width: 23rem;
-    margin-right: 2rem; /* Optional: Margin between cards */
-}
