@@ -5,6 +5,7 @@ using System.Diagnostics;
 using PotaxieSport.Data.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using System.Numerics;
+using System;
 
 namespace PotaxieSport.Controllers
 {
@@ -71,6 +72,32 @@ namespace PotaxieSport.Controllers
         {
             var equipos = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Juveniles").ToList();
             return View(equipos);
+        }
+
+    [HttpGet]
+    public IActionResult AgregarUsuario(int idRo, string Roll, string url)
+    {
+        ViewBag.IdRo = idRo;
+        ViewBag.Roll = Roll;
+        ViewBag.url = url;
+        return View();
+    }
+      
+      [HttpPost]
+        public IActionResult CrearUsuario(Usuario model, string url) 
+        {
+            ViewBag.url = url;
+
+            if (ModelState.IsValid)
+            {
+                // Asumimos que error_autentificacion inicia en 0
+                model.ErrorAutentificacion = 0;
+
+                _generalServicio.CrearUsuario(model.Nombre, model.ApPaterno, model.ApMaterno, model.Username, model.Email, model.RolId, model.ErrorAutentificacion, model.Password);
+                return RedirectToAction(url); // Cambia "Index" por la acción a la que deseas redirigir después de crear el usuario.
+            }
+
+            return View("AgregarUsuario", model);
         }
 
     }

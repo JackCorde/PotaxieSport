@@ -287,24 +287,35 @@ namespace PotaxieSport.Data.Servicios
             using (var connection = new NpgsqlConnection(_contexto.Conexion))
             {
                 connection.Open();
-                using (var cmd = new NpgsqlCommand("SELECT crearUsuario(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id, @p_error_autentificacion, @p_password)", connection))
+                try
                 {
-                    cmd.CommandType = CommandType.Text;
-                    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-                    cmd.Parameters.AddWithValue("p_nombre", nombre);
-                    cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
-                    cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
-                    cmd.Parameters.AddWithValue("p_username", username);
-                    cmd.Parameters.AddWithValue("p_email", email);
-                    cmd.Parameters.AddWithValue("p_rol_id", rolId);
-                    cmd.Parameters.AddWithValue("p_error_autentificacion", errorAutentificacion);
-                    cmd.Parameters.AddWithValue("p_password", password);
+                    using (var cmd = new NpgsqlCommand("SELECT crearUsuario(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id, @p_error_autentificacion, @p_password)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        #pragma warning disable CS8604 // Posible argumento de referencia nulo
+                        cmd.Parameters.AddWithValue("p_nombre", nombre);
+                        cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
+                        cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
+                        cmd.Parameters.AddWithValue("p_username", username);
+                        cmd.Parameters.AddWithValue("p_email", email);
+                        cmd.Parameters.AddWithValue("p_rol_id", rolId);
+                        cmd.Parameters.AddWithValue("p_error_autentificacion", errorAutentificacion);
+                        cmd.Parameters.AddWithValue("p_password", password);
 
-                    cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
+                    }
                 }
-                connection.Close();
+                catch (PostgresException ex) when (ex.SqlState == "23505")
+                {
+                    throw new Exception("Correo ya existe.");
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
         }
+
 
 
 
