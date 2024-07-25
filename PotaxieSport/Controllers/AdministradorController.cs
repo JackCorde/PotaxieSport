@@ -6,6 +6,8 @@ using PotaxieSport.Data.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using System.Numerics;
 using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Data;
 
 namespace PotaxieSport.Controllers
 {
@@ -30,29 +32,34 @@ namespace PotaxieSport.Controllers
 
         public IActionResult Administradores()
         {
-            var administradores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 2).ToList(); 
+            var administradores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 2)
+            .OrderByDescending(u => u.UsuarioId) 
+            .ToList();
+
             return View(administradores);
         }
         public IActionResult Coachs()
         {
-            var coachs = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 5).ToList();
+            var coachs = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 5)
+            .OrderByDescending(u => u.UsuarioId)
+            .ToList();
             return View(coachs);
         }
         public IActionResult Doctores()
         {
-            var doctores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 1).ToList();
+            var doctores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 1).OrderByDescending(u => u.UsuarioId).ToList();
             return View(doctores);
         }
 
         public IActionResult Contadores()
         {
-            var contadores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 3).ToList();
+            var contadores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 3).OrderByDescending(u => u.UsuarioId).ToList();
             return View(contadores);
         }
 
         public IActionResult Arbitros()
         {
-            var arbitros = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 4).ToList();
+            var arbitros = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 4).OrderByDescending(u => u.UsuarioId).ToList();
             return View(arbitros);
         }
 
@@ -74,30 +81,56 @@ namespace PotaxieSport.Controllers
             return View(equipos);
         }
 
-    [HttpGet]
-    public IActionResult AgregarUsuario(int idRo, string Roll, string url)
-    {
-        ViewBag.IdRo = idRo;
-        ViewBag.Roll = Roll;
-        ViewBag.url = url;
-        return View();
-    }
-      
-      [HttpPost]
-        public IActionResult CrearUsuario(Usuario model, string url) 
+        [HttpGet]
+        public IActionResult AgregarUsuario(string url)
         {
+            // Asignar el parámetro url a ViewBag
             ViewBag.url = url;
+
+            var roles = _generalServicio.ObtenerRoles();
+            ViewBag.Rol = new SelectList(roles, "RolId", "RolNombre");
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CrearUsuario(Usuario model, string url)
+        {
+            var roles = _generalServicio.ObtenerRoles();
+            ViewBag.Rol = new SelectList(roles, "RolId", "RolNombre");
+            ViewBag.Url = url;
 
             if (ModelState.IsValid)
             {
-                // Asumimos que error_autentificacion inicia en 0
-                model.ErrorAutentificacion = 0;
-
-                _generalServicio.CrearUsuario(model.Nombre, model.ApPaterno, model.ApMaterno, model.Username, model.Email, model.RolId, model.ErrorAutentificacion, model.Password);
-                return RedirectToAction(url); // Cambia "Index" por la acción a la que deseas redirigir después de crear el usuario.
+                try
+                {
+                    // Verificar si el correo ya existe
+                    if (_generalServicio.EmailExists(model.Email))
+                    {
+                        ModelState.AddModelError("Email", "El correo electrónico ya existe.");
+                        return View("AgregarUsuario", model); // Retorna la vista con el mensaje de error
+                    }
+                    model.ErrorAutentificacion = 0;
+                    _generalServicio.CrearUsuario(model.Nombre, model.ApPaterno, model.ApMaterno, model.Username, model.Email, model.RolId, model.ErrorAutentificacion, model.Password);
+                    TempData["SuccessMessage"] = "Usuario registrado exitosamente.";
+                    if (string.IsNullOrEmpty(url))
+                    {
+                        url = "Index";
+                    }
+                    return RedirectToAction(url); // Redirige a la acción especificada
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Ocurrió un error al crear el usuario: " + ex.Message);
+                    return View("AgregarUsuario", model); // Retorna la vista con el mensaje de error
+                }
             }
-
             return View("AgregarUsuario", model);
+        }
+
+        public IActionResult ActualizarUsuario() {
+
+            return View();
         }
 
     }

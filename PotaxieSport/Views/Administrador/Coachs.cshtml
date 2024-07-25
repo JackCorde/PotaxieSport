@@ -1,25 +1,25 @@
 ﻿@model List<PotaxieSport.Models.Usuario>
 
 @{
-    ViewData["Title"] = "Administradores";
+    ViewData["Title"] = "Coachs";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
 }
 
 <div class="row">
     <div class="col-lg-12">
         <div class="row mt-3">
             <div class="col-lg-6">
-                <input type="text" id="searchInput" placeholder="Buscar por nombre...">
-                <button id="searchButton" class="btn btn-primary">Buscar</button>
+                <input type="text" id="searchInput" placeholder="Buscar por nombre..." class="form-control">
             </div>
             <div class="col-lg-6 text-lg-end mt-3 mt-lg-0">
-                <button onclick="location.href='@Url.Action("AgregarUsuario", "Administrador", new { idRo = 2, Roll = "Administrador", url = "Administradores" })'" type="button" class="btn btn-primary ms-3">
+                <button onclick="location.href='@Url.Action("AgregarUsuario", "Administrador", new { url = "Coachs" })'" type="button" class="btn btn-primary ms-3">
                     Agregar Usuario
                 </button>
             </div>
         </div>
 
-        <table id="usuarios-table" class="table table-hover">
+        <table id="usuarios-table" class="table table-hover mt-3">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -40,75 +40,13 @@
         </div>
     </div>
 </div>
+
+
+
+
 @section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const usuarios = @Html.Raw(Json.Serialize(Model)); // Asegúrate de que Model esté disponible para JavaScript
-            const rowsPerPage = 10;
-            const tableBody = document.getElementById("usuarios-tbody");
-            const pagination = document.getElementById("pagination");
-            let currentPage = 1;
-
-            function renderTable(page) {
-                tableBody.innerHTML = "";
-                const start = (page - 1) * rowsPerPage;
-                const end = start + rowsPerPage;
-                const paginatedUsers = usuarios.slice(start, end);
-
-                paginatedUsers.forEach(usuario => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                                        <td>${usuario.nombre}</td>
-                                        <td>${usuario.apPaterno}</td>
-                                        <td>${usuario.apMaterno}</td>
-                                        <td>${usuario.username}</td>
-                                        <td>${usuario.email}</td>
-                                        <td class="action-icons"><i class="fas fa-edit"></i></td>
-                                    `;
-                    tableBody.appendChild(row);
-                });
-            }
-
-            function renderPagination() {
-                pagination.innerHTML = "";
-                const totalPages = Math.ceil(usuarios.length / rowsPerPage);
-
-                for (let i = 1; i <= totalPages; i++) {
-                    const button = document.createElement("button");
-                    button.innerText = i;
-                    button.className = "btn btn-secondary me-2";
-                    button.addEventListener("click", () => {
-                        currentPage = i;
-                        renderTable(currentPage);
-                        updatePagination();
-                    });
-                    pagination.appendChild(button);
-                }
-            }
-
-            function updatePagination() {
-                Array.from(pagination.children).forEach((button, index) => {
-                    button.classList.toggle("btn-primary", index + 1 === currentPage);
-                });
-            }
-
-            // Event listener for search button
-            document.getElementById("searchButton").addEventListener("click", function () {
-                const searchTerm = document.getElementById("searchInput").value.toLowerCase();
-                const filteredUsers = usuarios.filter(usuario =>
-                    usuario.nombre.toLowerCase().includes(searchTerm) ||
-                    usuario.apPaterno.toLowerCase().includes(searchTerm) ||
-                    usuario.apMaterno.toLowerCase().includes(searchTerm) ||
-                    usuario.username.toLowerCase().includes(searchTerm) ||
-                    usuario.email.toLowerCase().includes(searchTerm)
-                );
-                renderTable(currentPage, filteredUsers);
-                renderPagination(filteredUsers);
-            });
-
-            renderTable(currentPage);
-            renderPagination();
-        });
+    <script id="usuarios-data" type="application/json">
+        @Html.Raw(Json.Serialize(Model))
     </script>
 }
 

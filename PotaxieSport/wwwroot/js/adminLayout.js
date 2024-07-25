@@ -85,9 +85,3 @@ document.addEventListener("DOMContentLoaded", function () {
     renderTable(currentPage, filteredUsuarios);
     renderPagination(filteredUsuarios);
 });
-
-
-
-
-
-

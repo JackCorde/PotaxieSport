@@ -282,8 +282,59 @@ namespace PotaxieSport.Data.Servicios
         }
 
         //Metodo Agregar Usuario
+        //obtener roles
+        public List<Rol> ObtenerRoles()
+        {
+            var roles = new List<Rol>();
+
+            // Abre la conexión a la base de datos
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+
+                // Crea el comando SQL para llamar a la función que obtiene roles
+                using (var cmd = new NpgsqlCommand("SELECT * FROM obtener_roles()", connection))
+                {
+                    // Ejecuta el comando y lee los resultados
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        // Recorre los resultados
+                        while (reader.Read())
+                        {
+                            roles.Add(new Rol
+                            {
+                                RolId = reader.GetInt32(reader.GetOrdinal("rol_id")), // Asegúrate de que el nombre de la columna sea correcto
+                                RolNombre = reader.GetString(reader.GetOrdinal("rol_nombre")) // Asegúrate de que el nombre de la columna sea correcto
+                            });
+                        }
+                    }
+                }
+            }
+
+            return roles;
+        }
+
+
+        //verifucar email
+        public bool EmailExists(string email)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand("SELECT COUNT(1) FROM usuario WHERE email = @p_email", connection))
+                {
+                    cmd.Parameters.AddWithValue("p_email", email);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    return count > 0;
+                }
+            }
+        }
+
         public void CrearUsuario(string nombre, string apPaterno, string apMaterno, string username, string email, int rolId, int errorAutentificacion, string password)
         {
+            // Hashear la contraseña
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
             using (var connection = new NpgsqlConnection(_contexto.Conexion))
             {
                 connection.Open();
@@ -300,7 +351,7 @@ namespace PotaxieSport.Data.Servicios
                         cmd.Parameters.AddWithValue("p_email", email);
                         cmd.Parameters.AddWithValue("p_rol_id", rolId);
                         cmd.Parameters.AddWithValue("p_error_autentificacion", errorAutentificacion);
-                        cmd.Parameters.AddWithValue("p_password", password);
+                        cmd.Parameters.AddWithValue("p_password", hashedPassword);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -315,7 +366,6 @@ namespace PotaxieSport.Data.Servicios
                 }
             }
         }
-
 
 
 
