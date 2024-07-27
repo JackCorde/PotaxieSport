@@ -33,6 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${usuario.email}</td>
                 <td class="action-icons">
                 <a href="/Administrador/ActualizarUsuario/${usuario.usuarioId}">
+
+                
                     <i class="fas fa-edit"></i>
                 </a>
             </td>            `;

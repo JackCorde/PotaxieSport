@@ -128,10 +128,58 @@ namespace PotaxieSport.Controllers
             return View("AgregarUsuario", model);
         }
 
-        public IActionResult ActualizarUsuario() {
+        // Acción para mostrar el formulario de actualización
+        [HttpGet]
+        public IActionResult ActualizarUsuario(int id)
+        {
+            // Obtener el usuario por ID
+            var usuario = _generalServicio.ObtenerUsuarioPorId(id);
 
-            return View();
+            if (usuario == null)
+            {
+                return NotFound(); // O redirigir a una página de error
+            }
+
+            // Cargar roles para el dropdown
+            var roles = _generalServicio.ObtenerRoles();
+            ViewBag.Rol = new SelectList(roles, "RolId", "RolNombre");
+
+            // Pasar el usuario a la vista
+            return View(usuario);
         }
+
+
+        [HttpPost]
+        [HttpPost]
+        public IActionResult ActualizarUsuario(Usuario model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _generalServicio.ActualizarUsuario(
+                        model.UsuarioId,
+                        model.Nombre,
+                        model.ApPaterno,
+                        model.ApMaterno,
+                        model.Username,
+                        model.Email,
+                        model.RolId
+                    );
+
+                    TempData["SuccessMessage"] = "Usuario actualizado exitosamente.";
+                    return RedirectToAction("Index"); // Redirige a la lista de administradores o donde sea necesario
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Ocurrió un error al actualizar el usuario: " + ex.Message);
+                }
+            }
+
+            // Si el modelo no es válido o hubo un error, regresa a la vista con el modelo
+            return View(model);
+        }
+
 
     }
 }
