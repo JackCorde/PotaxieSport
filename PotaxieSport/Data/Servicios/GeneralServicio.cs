@@ -367,6 +367,72 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
+        //ActualizarUsuarios
+        public Usuario ObtenerUsuarioPorId(int id)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                try
+                {
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM obtenerUsuarioPorId(@p_id)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("p_id", id);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new Usuario
+                                {
+                                    UsuarioId = reader.GetInt32(reader.GetOrdinal("usuario_id")),
+                                    Nombre = reader.GetString(reader.GetOrdinal("nombre")),
+                                    ApPaterno = reader.GetString(reader.GetOrdinal("ap_paterno")),
+                                    ApMaterno = reader.GetString(reader.GetOrdinal("ap_materno")),
+                                    Username = reader.GetString(reader.GetOrdinal("username")),
+                                    Email = reader.GetString(reader.GetOrdinal("email")),
+                                    RolId = reader.GetInt32(reader.GetOrdinal("rol_id"))
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el usuario: " + ex.Message);
+                }
+                return null;
+            }
+        }
+
+        public void ActualizarUsuario(int usuarioId, string nombre, string apPaterno, string apMaterno, string username, string email, int rolId)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                try
+                {
+                    using (var cmd = new NpgsqlCommand("SELECT actualizar_usuario(@p_usuario_id, @p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("p_usuario_id", usuarioId);
+                        cmd.Parameters.AddWithValue("p_nombre", nombre);
+                        cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
+                        cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
+                        cmd.Parameters.AddWithValue("p_username", username);
+                        cmd.Parameters.AddWithValue("p_email", email);
+                        cmd.Parameters.AddWithValue("p_rol_id", rolId);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al actualizar el usuario: " + ex.Message);
+                }
+            }
+        }
 
 
     }
