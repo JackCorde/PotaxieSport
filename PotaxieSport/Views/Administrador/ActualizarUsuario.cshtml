@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Actualizar Usuario";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+
+@model PotaxieSport.Models.Usuario
+
+<div class="page-container">
+    <div class="form-container col-md-6 col-lg-4">
+        <h2>Actualizar Usuario</h2>
+        <form asp-action="ActualizarUsuario" method="post">
+            <!-- Campo oculto para el ID del usuario -->
+            <input type="hidden" asp-for="UsuarioId" />
+
+            <div class="form-group">
+                <label asp-for="Nombre"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApPaterno"></label>
+                <input asp-for="ApPaterno" class="form-control" />
+                <span asp-validation-for="ApPaterno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApMaterno"></label>
+                <input asp-for="ApMaterno" class="form-control" />
+                <span asp-validation-for="ApMaterno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RolId"></label>
+                <select asp-for="RolId" class="form-control" asp-items="ViewBag.Rol">
+                    <option value="">Seleccione un rol</option>
+                </select>
+                <span asp-validation-for="RolId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-custom">Actualizar Usuario</button>
+                <a href="@Url.Action("Administradores", "Administrador")" class="btn btn-custom">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
