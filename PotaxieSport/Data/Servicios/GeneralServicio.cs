@@ -1,12 +1,6 @@
 ﻿using System.Data;
-using System.Reflection.PortableExecutable;
-using Microsoft.AspNetCore.Mvc;
 using Npgsql;
-using Npgsql.Internal;
-using PotaxieSport.Data;
 using PotaxieSport.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PotaxieSport.Data.Servicios
 {
