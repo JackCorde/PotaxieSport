@@ -5,6 +5,7 @@ using PotaxieSport.Data.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
+using System.Xml.Linq;
 
 
 namespace PotaxieSport.Controllers
@@ -180,13 +181,39 @@ namespace PotaxieSport.Controllers
             return View(model);
         }
 
-        public IActionResult SubirImagenes(string? archivoError, int? id)
+        public IActionResult SubirImagenes(string? archivoError)
         {
             if (archivoError != null)
             {
                 ViewBag.Error=archivoError;
             }
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult SubirImagenes(string? archivoError, int id, IFormFile file, string tipo)
+        {
+            if (file != null && file.Length > 0)
+            {
+                if (tipo != null)
+                {
+                    string nombre = tipo + "_"+id+"_" + file.FileName.Replace(" ", ""); ;
+                    string respuesta = _archivosServicio.SubirArchivo(file, nombre, tipo);
+                    _archivosServicio.GuardarArchivoFotoEnBD(nombre, id, tipo);
+                    return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = respuesta }); //{ archivoError = "Archivo subido con éxito" });
+                }
+                else
+                {
+                    return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un tipo de archivo válido." });
+                }
+                
+                
+            }
+            else
+            {
+                return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un archivo válido." });
+            }
+
         }
 
 

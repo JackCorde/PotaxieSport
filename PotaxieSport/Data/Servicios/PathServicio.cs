@@ -47,5 +47,12 @@ namespace PotaxieSport.Data.Servicios
             return PathFinal;
 
         }
+
+        public string PathEquipoImagen()
+        {
+            var PathFinal = Path.Combine(_hostingEnvironment.WebRootPath, "Formatos", "Imagenes", "Equipo");
+            return PathFinal;
+
+        }
     }
 }

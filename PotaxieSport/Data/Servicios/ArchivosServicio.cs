@@ -78,6 +78,42 @@ namespace PotaxieSport.Data.Servicios
                             return $"Ocurrió un error al subir el archivo: {ex.Message}";
                         }
 
+                    //Para Fotografías del Equipo
+                    case "Equipo":
+                        try
+                        {
+                            
+                            var uploadsFolder = _PathServicio.PathEquipoImagen();
+
+                            
+                            var filePath = Path.Combine(uploadsFolder, nombreArchivo);
+
+                            
+                            if (!Directory.Exists(uploadsFolder))
+                            {
+                                Directory.CreateDirectory(uploadsFolder);
+                            }
+
+                            
+                            if (System.IO.File.Exists(filePath))
+                            {
+                                return "Ya existe un archivo con este nombre.";
+                            }
+
+                            
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                file.CopyTo(stream);
+                            }
+
+                            return "Archivo subido con éxito.";
+                        }
+                        catch (Exception ex)
+                        {
+                            
+                            return $"Ocurrió un error al subir el archivo: {ex.Message}";
+                        }
+
                     //Para Fotografías del Jugador
                     case "Jugador":
                         try
@@ -111,6 +147,7 @@ namespace PotaxieSport.Data.Servicios
                     case "Comprobante":
                         try
                         {
+
                             var uploadsFolder = _PathServicio.PathContaduriaComprobantes();
 
                             var filePath = Path.Combine(uploadsFolder, nombreArchivo);
@@ -210,7 +247,7 @@ namespace PotaxieSport.Data.Servicios
         // ... Actualizar el nombre del Archivo para la BD en Postgres ...
 
         [Authorize]
-        private void GuardarArchivoFotoEnBD(string nombreArchivo, int elementoId, string elemento)
+        public void GuardarArchivoFotoEnBD(string nombreArchivo, int elementoId, string elemento)
         {
             switch (elemento)
             {
@@ -222,6 +259,22 @@ namespace PotaxieSport.Data.Servicios
                         {
                             cmd.CommandType = CommandType.Text;
                             cmd.Parameters.AddWithValue("@torneoId", elementoId);
+                            cmd.Parameters.AddWithValue("@nombre", nombreArchivo);
+
+                            con.Open();
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    break;
+
+                //Para Fotografías de Equipos
+                case "Equipo":
+                    using (NpgsqlConnection con = new NpgsqlConnection(_contexto.Conexion))
+                    {
+                        using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM cargarImagenEquipo(@equipoId, @nombre)", con))
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.AddWithValue("@equipoId", elementoId);
                             cmd.Parameters.AddWithValue("@nombre", nombreArchivo);
 
                             con.Open();
@@ -249,11 +302,11 @@ namespace PotaxieSport.Data.Servicios
                 case "Comprobante":
                     using (NpgsqlConnection con = new NpgsqlConnection(_contexto.Conexion))
                     {
-                        using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM cargarComprobante(@transaccionId, @comprobante)", con))
+                        using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM cargarComprobante(@transaccionId, @archivoComprobante)", con))
                         {
                             cmd.CommandType = CommandType.Text;
                             cmd.Parameters.AddWithValue("@transaccionId", elementoId);
-                            cmd.Parameters.AddWithValue("@comprobante", nombreArchivo);
+                            cmd.Parameters.AddWithValue("@archivoComprobante", nombreArchivo);
                             con.Open();
                             cmd.ExecuteNonQuery();
                         }
@@ -264,11 +317,11 @@ namespace PotaxieSport.Data.Servicios
                 case "Pago":
                     using (NpgsqlConnection con = new NpgsqlConnection(_contexto.Conexion))
                     {
-                        using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM cargarPagoPartido(@pagoId, @comprobante)", con))
+                        using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM cargarPagoPartido(@pagoId, @archivoComprobante)", con))
                         {
                             cmd.CommandType = CommandType.Text;
                             cmd.Parameters.AddWithValue("@pagoId", elementoId);
-                            cmd.Parameters.AddWithValue("@comprobante", nombreArchivo);
+                            cmd.Parameters.AddWithValue("@archivoComprobante", nombreArchivo);
                             con.Open();
                             cmd.ExecuteNonQuery();
                         }
@@ -279,11 +332,11 @@ namespace PotaxieSport.Data.Servicios
                 case "Cedula":
                     using (NpgsqlConnection con = new NpgsqlConnection(_contexto.Conexion))
                     {
-                        using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM cargarCedula(@partidoId, @cedula)", con))
+                        using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM cargarCedula(@partidoId, @archivoCedula)", con))
                         {
                             cmd.CommandType = CommandType.Text;
                             cmd.Parameters.AddWithValue("@partidoId", elementoId);
-                            cmd.Parameters.AddWithValue("@cedula", nombreArchivo);
+                            cmd.Parameters.AddWithValue("@archivoCedula", nombreArchivo);
                             con.Open();
                             cmd.ExecuteNonQuery();
                         }

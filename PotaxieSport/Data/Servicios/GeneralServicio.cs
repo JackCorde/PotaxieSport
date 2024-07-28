@@ -120,7 +120,7 @@ namespace PotaxieSport.Data.Servicios
                                     EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
                                     EquipoNombre = reader.IsDBNull(reader.GetOrdinal("nombre_equipo")) ? null : reader.GetString(reader.GetOrdinal("nombre_equipo")),
                                     Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
-                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
+                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : "/Formatos/Imagenes/Equipo/" + reader.GetString(reader.GetOrdinal("logo")),
                                     CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
                                     Categoria = reader.IsDBNull(reader.GetOrdinal("categoria_nombre")) ? null : reader.GetString(reader.GetOrdinal("categoria_nombre")),
                                     UsuarioCoachId = reader.GetInt32(reader.GetOrdinal("usuario_coach")),
