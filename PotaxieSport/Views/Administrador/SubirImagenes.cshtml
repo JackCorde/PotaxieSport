@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Administrador";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+
+<div class="container">
+    <form asp-action="SubirImagenTorneo" asp-controller="Administrador" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="hidden" name="TorneoId" value="1" />
+        <input type="submit" value="Subir Imagen" />
+    </form>
+    <br>
+    <br>
+    <br>
+    @if (ViewBag.Error != null)
+    {
+        <div class="text-danger text-center">@ViewBag.Error</div>
+    }
+</div>
