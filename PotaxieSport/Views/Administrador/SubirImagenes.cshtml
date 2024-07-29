@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Administrador";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+
+<div class="container">
+    <form asp-action="SubirImagenes" asp-controller="Administrador" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="number" name="id" />
+        <select name="tipo">
+            <option value="Torneo">Torneo</option>
+            <option value="Equipo">Equipos</option>
+            <option value="Jugador">Jugador</option>
+            <option value="Comprobante">Comprobante</option>
+            <option value="Pago">Pago</option>
+            <option value="Cedula">Cédula</option>
+        </select>
+        <input type="submit" value="Subir Imagen" />
+    </form>
+    <br>
+    <br>
+    <br>
+    @if (ViewBag.Error != null)
+    {
+        <div class="text-danger text-center">@ViewBag.Error</div>
+    }
+</div>

@@ -1,12 +1,6 @@
 ﻿using System.Data;
-using System.Reflection.PortableExecutable;
-using Microsoft.AspNetCore.Mvc;
 using Npgsql;
-using Npgsql.Internal;
-using PotaxieSport.Data;
 using PotaxieSport.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PotaxieSport.Data.Servicios
 {
@@ -77,7 +71,7 @@ namespace PotaxieSport.Data.Servicios
                                     CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
                                     Categoria = reader.IsDBNull(reader.GetOrdinal("categoria")) ? null : reader.GetString(reader.GetOrdinal("categoria")),
                                     Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
-                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
+                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : "~/Formatos/Imagenes/Torneo/" + reader.GetString(reader.GetOrdinal("logo")),
                                     AdministradorId = reader.GetInt32(reader.GetOrdinal("usuario_admin")),
                                     Administrador = reader.IsDBNull(reader.GetOrdinal("administrador")) ? null : reader.GetString(reader.GetOrdinal("administrador")),
                                     ContadorId = reader.GetInt32(reader.GetOrdinal("usuario_contador")),
@@ -126,7 +120,7 @@ namespace PotaxieSport.Data.Servicios
                                     EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
                                     EquipoNombre = reader.IsDBNull(reader.GetOrdinal("nombre_equipo")) ? null : reader.GetString(reader.GetOrdinal("nombre_equipo")),
                                     Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
-                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
+                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : "/Formatos/Imagenes/Equipo/" + reader.GetString(reader.GetOrdinal("logo")),
                                     CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
                                     Categoria = reader.IsDBNull(reader.GetOrdinal("categoria_nombre")) ? null : reader.GetString(reader.GetOrdinal("categoria_nombre")),
                                     UsuarioCoachId = reader.GetInt32(reader.GetOrdinal("usuario_coach")),
@@ -282,30 +276,157 @@ namespace PotaxieSport.Data.Servicios
         }
 
         //Metodo Agregar Usuario
-        public void CrearUsuario(string nombre, string apPaterno, string apMaterno, string username, string email, int rolId, int errorAutentificacion, string password)
+        //obtener roles
+        public List<Rol> ObtenerRoles()
+        {
+            var roles = new List<Rol>();
+
+            // Abre la conexión a la base de datos
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+
+                // Crea el comando SQL para llamar a la función que obtiene roles
+                using (var cmd = new NpgsqlCommand("SELECT * FROM obtener_roles()", connection))
+                {
+                    // Ejecuta el comando y lee los resultados
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        // Recorre los resultados
+                        while (reader.Read())
+                        {
+                            roles.Add(new Rol
+                            {
+                                RolId = reader.GetInt32(reader.GetOrdinal("rol_id")), // Asegúrate de que el nombre de la columna sea correcto
+                                RolNombre = reader.GetString(reader.GetOrdinal("rol_nombre")) // Asegúrate de que el nombre de la columna sea correcto
+                            });
+                        }
+                    }
+                }
+            }
+
+            return roles;
+        }
+
+
+        //verifucar email
+        public bool EmailExists(string email)
         {
             using (var connection = new NpgsqlConnection(_contexto.Conexion))
             {
                 connection.Open();
-                using (var cmd = new NpgsqlCommand("SELECT crearUsuario(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id, @p_error_autentificacion, @p_password)", connection))
+                using (var cmd = new NpgsqlCommand("SELECT COUNT(1) FROM usuario WHERE email = @p_email", connection))
                 {
-                    cmd.CommandType = CommandType.Text;
-                    #pragma warning disable CS8604 // Posible argumento de referencia nulo
-                    cmd.Parameters.AddWithValue("p_nombre", nombre);
-                    cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
-                    cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
-                    cmd.Parameters.AddWithValue("p_username", username);
                     cmd.Parameters.AddWithValue("p_email", email);
-                    cmd.Parameters.AddWithValue("p_rol_id", rolId);
-                    cmd.Parameters.AddWithValue("p_error_autentificacion", errorAutentificacion);
-                    cmd.Parameters.AddWithValue("p_password", password);
-
-                    cmd.ExecuteNonQuery();
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    return count > 0;
                 }
-                connection.Close();
             }
         }
 
+        public void CrearUsuario(string nombre, string apPaterno, string apMaterno, string username, string email, int rolId, int errorAutentificacion, string password)
+        {
+            // Hashear la contraseña
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                try
+                {
+                    using (var cmd = new NpgsqlCommand("SELECT crearUsuario(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id, @p_error_autentificacion, @p_password)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        #pragma warning disable CS8604 // Posible argumento de referencia nulo
+                        cmd.Parameters.AddWithValue("p_nombre", nombre);
+                        cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
+                        cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
+                        cmd.Parameters.AddWithValue("p_username", username);
+                        cmd.Parameters.AddWithValue("p_email", email);
+                        cmd.Parameters.AddWithValue("p_rol_id", rolId);
+                        cmd.Parameters.AddWithValue("p_error_autentificacion", errorAutentificacion);
+                        cmd.Parameters.AddWithValue("p_password", hashedPassword);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (PostgresException ex) when (ex.SqlState == "23505")
+                {
+                    throw new Exception("Correo ya existe.");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        //ActualizarUsuarios
+        public Usuario ObtenerUsuarioPorId(int id)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                try
+                {
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM obtenerUsuarioPorId(@p_id)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("p_id", id);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new Usuario
+                                {
+                                    UsuarioId = reader.GetInt32(reader.GetOrdinal("usuario_id")),
+                                    Nombre = reader.GetString(reader.GetOrdinal("nombre")),
+                                    ApPaterno = reader.GetString(reader.GetOrdinal("ap_paterno")),
+                                    ApMaterno = reader.GetString(reader.GetOrdinal("ap_materno")),
+                                    Username = reader.GetString(reader.GetOrdinal("username")),
+                                    Email = reader.GetString(reader.GetOrdinal("email")),
+                                    RolId = reader.GetInt32(reader.GetOrdinal("rol_id"))
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el usuario: " + ex.Message);
+                }
+                return null;
+            }
+        }
+
+        public void ActualizarUsuario(int usuarioId, string nombre, string apPaterno, string apMaterno, string username, string email, int rolId)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                try
+                {
+                    using (var cmd = new NpgsqlCommand("SELECT actualizar_usuario(@p_usuario_id, @p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("p_usuario_id", usuarioId);
+                        cmd.Parameters.AddWithValue("p_nombre", nombre);
+                        cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
+                        cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
+                        cmd.Parameters.AddWithValue("p_username", username);
+                        cmd.Parameters.AddWithValue("p_email", email);
+                        cmd.Parameters.AddWithValue("p_rol_id", rolId);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al actualizar el usuario: " + ex.Message);
+                }
+            }
+        }
 
 
     }
