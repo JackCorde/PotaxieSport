@@ -1,0 +1,83 @@
+﻿<aside id="sidebar">
+    <div class="d-flex">
+        <button class="toggle-btn" type="button">
+            <i class="lni lni-grid-alt"></i>
+        </button>
+        <div class="sidebar-logo">
+            <a href="#">Potaxie</a>
+        </div>
+    </div>
+
+
+    <ul class="sidebar-nav">
+        
+   
+        <li class="sidebar-item">
+            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+               data-bs-target="#usuarios" aria-expanded="false" aria-controls="usuarios">
+                <i class="lni lni-user"></i>
+                <span>Usuarios</span>
+            </a>
+            <ul id="usuarios" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="@Url.Action("Administradores","Administrador")" class="sidebar-link">Administrador</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="@Url.Action("Arbitros","Administrador")" class="sidebar-link">Arbitro</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="@Url.Action("Coachs","Administrador")" class="sidebar-link">Coach</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="@Url.Action("Contadores","Administrador")" class="sidebar-link">Contador</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="@Url.Action("Doctores", "Administrador")" class="sidebar-link">Doctor</a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="sidebar-item">
+            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+               data-bs-target="#equipos" aria-expanded="false" aria-controls="equipos">
+                <i class="fa-solid fa-people-group"></i>
+                <span>Equipos</span>
+            </a>
+            <ul id="equipos" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="@Url.Action("EquiposBenjamines","Administrador")" class="sidebar-link">Benjamines</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="@Url.Action("EquiposInfantiles","Administrador")" class="sidebar-link">Infantiles</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="@Url.Action("EquiposJuveniles","Administrador")" class="sidebar-link">Juveniles</a>
+                </li>
+            </ul>
+        </li>
+
+       
+
+        <li class="sidebar-item">
+            <a href="#" class="sidebar-link">
+                <i class="fa-solid fa-person-running"></i>        
+                <span>Jugadores</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="#" class="sidebar-link">
+                <i class="lni lni-cog"></i>
+                <span>Jugadores</span>
+            </a>
+        </li>
+    </ul>
+
+
+    <div class="sidebar-footer">
+        <a href="#" class="sidebar-link">
+            <i class="lni lni-exit"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+</aside>

@@ -46,7 +46,7 @@ namespace PotaxieSport.Controllers
 
         private Usuario Authenticate(UsuarioLogin userLogin)
         {
-
+            #pragma warning disable CS8604 // Posible argumento de referencia nulo
             Usuario currentUser = _generalServicio.ConseguirUsuario(userLogin.Username);
 
             if (currentUser != null)
