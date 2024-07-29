@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Shared\_MessageModal.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
@@ -16,10 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Formatos\Comprobantes\PagoPartido\" />
     <Folder Include="wwwroot\Formatos\Imagenes\Jugadores\" />
-    <Folder Include="wwwroot\Formatos\Imagenes\Torneo\" />
-    <Folder Include="wwwroot\Formatos\Comprobantes\" />
     <Folder Include="wwwroot\Formatos\Cedulas\" />
+    <Folder Include="wwwroot\Formatos\Imagenes\Equipo\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +31,18 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\_MessageModal.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Shared\_MessageModal.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Shared\_MessageModal.cshtml" />
   </ItemGroup>
 
 </Project>
