@@ -1,25 +1,15 @@
 ﻿@model List<PotaxieSport.Models.Usuario>
 
 @{
-    ViewData["Title"] = "Arbitros";
+    ViewData["Title"] = "Árbitros";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
 }
-<div class="container">
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success" role="alert">
-            @TempData["SuccessMessage"]
-        </div>
-    }
-
- 
 
 <div class="row">
     <div class="col-lg-12">
         <div class="row mt-3">
             <div class="col-lg-6">
-                <input type="text" id="searchInput" placeholder="Buscar por nombre..." class="form-control">
+                <input type="text" id="searchInputArbitros" placeholder="Buscar por nombre..." class="form-control">
             </div>
             <div class="col-lg-6 text-lg-end mt-3 mt-lg-0">
                 <button onclick="location.href='@Url.Action("AgregarUsuario", "Administrador", new { url = "Arbitros" })'" type="button" class="btn btn-primary ms-3">
@@ -28,7 +18,7 @@
             </div>
         </div>
 
-        <table id="usuarios-table" class="table table-hover mt-3">
+        <table id="arbitros-table" class="table table-hover mt-3">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -36,38 +26,44 @@
                     <th>Apellido Materno</th>
                     <th>Nombre de Usuario</th>
                     <th>Email</th>
+                    <th>Disponibilidad</th>
                     <th>Editar</th>
                 </tr>
             </thead>
-            <tbody id="usuarios-tbody">
+            <tbody id="arbitros-tbody">
                 @* Los datos se cargarán aquí mediante JavaScript *@
             </tbody>
         </table>
 
-        <div id="pagination" class="mt-3">
+        <div id="paginationArbitros" class="mt-3">
             @* Los controles de paginación se generarán aquí *@
         </div>
     </div>
 </div>
 
-    <!-- Aquí va el resto del contenido de tu vista -->
-</div>
-
-
 @section Scripts {
-    <script id="usuarios-data" type="application/json">
+    <script id="arbitros-data" type="application/json">
         @Html.Raw(Json.Serialize(Model))
     </script>
+    <script src="~/js/arbitros.js"></script>
 }
 
 <style>
-    #pagination button {
+    #paginationArbitros button {
         margin: 0 5px;
     }
 
-        #pagination button.btn-primary {
+        #paginationArbitros button.btn-primary {
             background-color: #007bff;
             color: #fff;
             border: none;
         }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.2rem;
+    }
+
 </style>

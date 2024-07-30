@@ -1,0 +1,38 @@
+﻿@model List<PotaxieSport.Models.DisponibilidadArbitro>
+
+@{
+    ViewData["Title"] = "Disponibilidad de Árbitros";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container mt-3">
+    <h2>Disponibilidad del Árbitro: @ViewBag.UsuarioNombre</h2>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Dia</th>
+                <th>Hora Inicio</th>
+                <th>Hora Final</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (var disponibilidad in Model)
+                {
+                    <tr>
+                        <td>@disponibilidad.Dia</td>
+                        <td>@disponibilidad.HoraInicio.ToString(@"hh\:mm")</td>
+                        <td>@disponibilidad.HoraFinal.ToString(@"hh\:mm")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">No hay disponibilidad disponible.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
