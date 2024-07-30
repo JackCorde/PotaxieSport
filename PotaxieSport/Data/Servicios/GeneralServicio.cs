@@ -428,6 +428,40 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
+        // Disponibilidad De Arbitro
+        public List<DisponibilidadArbitro> ObtenerDisponibilidadArbitro(int usuarioId)
+        {
+            var disponibilidades = new List<DisponibilidadArbitro>();
+
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+
+                using (var command = new NpgsqlCommand("SELECT * FROM obtener_disponibilidad_arbitro(@usuarioId)", connection))
+                {
+                    command.Parameters.AddWithValue("usuarioId", usuarioId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var disponibilidad = new DisponibilidadArbitro
+                            {
+                                DispArbId = reader.GetInt32(reader.GetOrdinal("disp_arb_id")),
+                                UsuarioId = reader.GetInt32(reader.GetOrdinal("usuario_id")),
+                                Dia = reader.GetString(reader.GetOrdinal("dia")),
+                                HoraInicio = reader.GetTimeSpan(reader.GetOrdinal("hora_inicio")),
+                                HoraFinal = reader.GetTimeSpan(reader.GetOrdinal("hora_final"))
+                            };
+
+                            disponibilidades.Add(disponibilidad);
+                        }
+                    }
+                }
+            }
+
+            return disponibilidades;
+        }
 
     }
 }

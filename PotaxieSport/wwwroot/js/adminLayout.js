@@ -177,3 +177,87 @@ document.addEventListener("DOMContentLoaded", function () {
     renderTable(currentPage, filteredEquipos);
     renderPagination(filteredEquipos);
 });
+
+
+//Arbitros
+document.addEventListener("DOMContentLoaded", function () {
+    const arbitros = JSON.parse(document.getElementById('arbitros-data').textContent); // Obtener los datos del elemento script
+    const rowsPerPage = 10;
+    const tableBody = document.getElementById("arbitros-tbody");
+    const pagination = document.getElementById("paginationArbitros");
+    let currentPage = 1;
+    let filteredArbitros = arbitros;
+
+    function renderTable(page, data) {
+        tableBody.innerHTML = "";
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const paginatedUsers = data.slice(start, end);
+
+        paginatedUsers.forEach(arbitro => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${arbitro.nombre}</td>
+                <td>${arbitro.apPaterno}</td>
+                <td>${arbitro.apMaterno}</td>
+                <td>${arbitro.username}</td>
+                <td>${arbitro.email}</td>
+                <td class="availability-icon text-center">
+                    <a href="/Administrador/Disponibilidad/${arbitro.usuarioId}" >
+                        <i class="fas fa-calendar-alt"></i>
+                    </a>
+                </td>
+                <td class="action-icons text-center">
+                    <a href="/Administrador/ActualizarUsuario/${arbitro.usuarioId}" >
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>`;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function renderPagination(data) {
+        pagination.innerHTML = "";
+        const totalPages = Math.ceil(data.length / rowsPerPage);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement("button");
+            button.innerText = i;
+            button.className = "btn btn-secondary me-2";
+            button.addEventListener("click", () => {
+                currentPage = i;
+                renderTable(currentPage, data);
+                updatePagination();
+            });
+            pagination.appendChild(button);
+        }
+    }
+
+    function updatePagination() {
+        Array.from(pagination.children).forEach((button, index) => {
+            button.classList.toggle("btn-primary", index + 1 === currentPage);
+        });
+    }
+
+    function filterArbitros(searchTerm) {
+        return arbitros.filter(arbitro =>
+            arbitro.nombre.toLowerCase().includes(searchTerm) ||
+            arbitro.apPaterno.toLowerCase().includes(searchTerm) ||
+            arbitro.apMaterno.toLowerCase().includes(searchTerm) ||
+            arbitro.username.toLowerCase().includes(searchTerm) ||
+            arbitro.email.toLowerCase().includes(searchTerm)
+        );
+    }
+
+    // Event listener for search input (dynamic search)
+    document.getElementById("searchInputArbitros").addEventListener("input", function () {
+        const searchTerm = this.value.toLowerCase();
+        filteredArbitros = filterArbitros(searchTerm);
+        currentPage = 1;
+        renderTable(currentPage, filteredArbitros);
+        renderPagination(filteredArbitros);
+    });
+
+    renderTable(currentPage, filteredArbitros);
+    renderPagination(filteredArbitros);
+});

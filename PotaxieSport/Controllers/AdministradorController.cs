@@ -147,10 +147,7 @@ namespace PotaxieSport.Controllers
 
             // Pasar el usuario a la vista
             return View(usuario);
-        }
-
-
-        [HttpPost]
+        }  
         [HttpPost]
         public IActionResult ActualizarUsuario(Usuario model)
         {
@@ -216,6 +213,21 @@ namespace PotaxieSport.Controllers
 
         }
 
+
+
+
+        // Acción para mostrar la disponibilidad del árbitro
+        public IActionResult Disponibilidad(int Id)
+        {
+            ViewBag.Id = Id;
+            // Obtener la disponibilidad del árbitro
+            List<DisponibilidadArbitro> disponibilidad = _generalServicio.ObtenerDisponibilidadArbitro(Id);
+            Usuario usuario = _generalServicio.ObtenerUsuarioPorId(Id);
+            ViewBag.UsuarioNombre = $"{usuario.Nombre}";
+
+            // Pasar la disponibilidad a la vista
+            return View(disponibilidad);
+        }
 
     }
 }
