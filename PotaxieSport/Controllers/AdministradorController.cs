@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using PotaxieSport.Data;
 using PotaxieSport.Models;
-using System.Diagnostics;
 using PotaxieSport.Data.Servicios;
 using Microsoft.AspNetCore.Authorization;
-using System.Numerics;
-using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
+using System.Xml.Linq;
+
 
 namespace PotaxieSport.Controllers
 {
@@ -15,13 +14,15 @@ namespace PotaxieSport.Controllers
     {
         private readonly Contexto _contexto;
         private readonly GeneralServicio _generalServicio;
+        private readonly ArchivosServicio _archivosServicio;
         private readonly ILogger<HomeController> _logger;
 
-        public AdministradorController(ILogger<HomeController> logger, Contexto contexto)
+        public AdministradorController(ILogger<HomeController> logger, Contexto contexto, IWebHostEnvironment hostingEnvironment)
         {
             _logger = logger;
             _contexto = contexto;
             _generalServicio = new GeneralServicio(contexto);
+            _archivosServicio = new ArchivosServicio(contexto, hostingEnvironment);
         }
 
         [Authorize(Roles = "administrador")]
@@ -175,6 +176,41 @@ namespace PotaxieSport.Controllers
 
             // Si el modelo no es válido o hubo un error, regresa a la vista con el modelo
             return View(model);
+        }
+
+        public IActionResult SubirImagenes(string? archivoError)
+        {
+            if (archivoError != null)
+            {
+                ViewBag.Error=archivoError;
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult SubirImagenes(string? archivoError, int id, IFormFile file, string tipo)
+        {
+            if (file != null && file.Length > 0)
+            {
+                if (tipo != null)
+                {
+                    string nombre = tipo + "_"+id+"_" + file.FileName.Replace(" ", ""); ;
+                    string respuesta = _archivosServicio.SubirArchivo(file, nombre, tipo);
+                    _archivosServicio.GuardarArchivoFotoEnBD(nombre, id, tipo);
+                    return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = respuesta }); //{ archivoError = "Archivo subido con éxito" });
+                }
+                else
+                {
+                    return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un tipo de archivo válido." });
+                }
+                
+                
+            }
+            else
+            {
+                return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un archivo válido." });
+            }
+
         }
 
 

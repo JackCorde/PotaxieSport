@@ -1,12 +1,6 @@
 ﻿using System.Data;
-using System.Reflection.PortableExecutable;
-using Microsoft.AspNetCore.Mvc;
 using Npgsql;
-using Npgsql.Internal;
-using PotaxieSport.Data;
 using PotaxieSport.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PotaxieSport.Data.Servicios
 {
@@ -77,7 +71,7 @@ namespace PotaxieSport.Data.Servicios
                                     CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
                                     Categoria = reader.IsDBNull(reader.GetOrdinal("categoria")) ? null : reader.GetString(reader.GetOrdinal("categoria")),
                                     Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
-                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
+                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : "~/Formatos/Imagenes/Torneo/" + reader.GetString(reader.GetOrdinal("logo")),
                                     AdministradorId = reader.GetInt32(reader.GetOrdinal("usuario_admin")),
                                     Administrador = reader.IsDBNull(reader.GetOrdinal("administrador")) ? null : reader.GetString(reader.GetOrdinal("administrador")),
                                     ContadorId = reader.GetInt32(reader.GetOrdinal("usuario_contador")),
@@ -126,7 +120,7 @@ namespace PotaxieSport.Data.Servicios
                                     EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
                                     EquipoNombre = reader.IsDBNull(reader.GetOrdinal("nombre_equipo")) ? null : reader.GetString(reader.GetOrdinal("nombre_equipo")),
                                     Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
-                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
+                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : "/Formatos/Imagenes/Equipo/" + reader.GetString(reader.GetOrdinal("logo")),
                                     CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
                                     Categoria = reader.IsDBNull(reader.GetOrdinal("categoria_nombre")) ? null : reader.GetString(reader.GetOrdinal("categoria_nombre")),
                                     UsuarioCoachId = reader.GetInt32(reader.GetOrdinal("usuario_coach")),
