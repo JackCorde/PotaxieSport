@@ -1,14 +1,7 @@
-﻿using System.Data;
-using System.Reflection.PortableExecutable;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
-using Npgsql.Internal;
-using PotaxieSport.Data;
-using PotaxieSport.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Microsoft.Extensions.Hosting.Internal;
-using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace PotaxieSport.Data.Servicios
 {
@@ -24,8 +17,8 @@ namespace PotaxieSport.Data.Servicios
         }
 
         // ... Código para subir Imagenes y Archivos ...
-        
-        
+
+
         [Authorize]
         [RequestSizeLimit(200 * 1024 * 1024)]
         //Ingresa el archivo y el ID del torneo.
@@ -82,25 +75,25 @@ namespace PotaxieSport.Data.Servicios
                     case "Equipo":
                         try
                         {
-                            
+
                             var uploadsFolder = _PathServicio.PathEquipoImagen();
 
-                            
+
                             var filePath = Path.Combine(uploadsFolder, nombreArchivo);
 
-                            
+
                             if (!Directory.Exists(uploadsFolder))
                             {
                                 Directory.CreateDirectory(uploadsFolder);
                             }
 
-                            
+
                             if (System.IO.File.Exists(filePath))
                             {
                                 return "Ya existe un archivo con este nombre.";
                             }
 
-                            
+
                             using (var stream = new FileStream(filePath, FileMode.Create))
                             {
                                 file.CopyTo(stream);
@@ -110,7 +103,7 @@ namespace PotaxieSport.Data.Servicios
                         }
                         catch (Exception ex)
                         {
-                            
+
                             return $"Ocurrió un error al subir el archivo: {ex.Message}";
                         }
 
@@ -345,7 +338,7 @@ namespace PotaxieSport.Data.Servicios
 
             }
 
-            
+
 
         }
 

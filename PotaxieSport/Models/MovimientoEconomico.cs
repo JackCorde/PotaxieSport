@@ -1,6 +1,4 @@
-﻿using System.Data.SqlTypes;
-
-namespace PotaxieSport.Models
+﻿namespace PotaxieSport.Models
 {
     public class MovimientoEconomico
     {

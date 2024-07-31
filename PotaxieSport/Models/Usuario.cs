@@ -10,7 +10,10 @@
         public string? Email { get; set; }
         public string? Password { get; set; }
         public int RolId { get; set; }
-        public string? Rol {  get; set; }
+        public string? Rol { get; set; }
         public int ErrorAutentificacion { get; set; }
+
+        public string NombreCompleto => $"{Nombre} {ApPaterno} {ApMaterno}";
+
     }
 }

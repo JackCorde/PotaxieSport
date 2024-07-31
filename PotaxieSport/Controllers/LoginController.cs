@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using PotaxieSport.Models.ViewModels;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using PotaxieSport.Data.Servicios;
 using PotaxieSport.Data;
+using PotaxieSport.Data.Servicios;
 using PotaxieSport.Models;
+using PotaxieSport.Models.ViewModels;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace PotaxieSport.Controllers
 {
@@ -46,7 +45,7 @@ namespace PotaxieSport.Controllers
 
         private Usuario Authenticate(UsuarioLogin userLogin)
         {
-            #pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
             Usuario currentUser = _generalServicio.ConseguirUsuario(userLogin.Username);
 
             if (currentUser != null)
@@ -58,7 +57,7 @@ namespace PotaxieSport.Controllers
 
         private string Generate(Usuario user)
         {
-            #pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 

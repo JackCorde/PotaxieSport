@@ -10,7 +10,7 @@
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
-                <th>Dia</th>
+                <th>Día</th>
                 <th>Hora Inicio</th>
                 <th>Hora Final</th>
             </tr>
@@ -35,4 +35,51 @@
             }
         </tbody>
     </table>
+
+    <!-- Botón para abrir la ventana modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarDisponibilidadModal">
+        Agregar Disponibilidad
+    </button>
+
+    <!-- Ventana modal -->
+    <div class="modal fade" id="agregarDisponibilidadModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar Disponibilidad</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="@Url.Action("AgregarDisponibilidad", "Administrador")">
+                    <div class="modal-body">
+                        <input type="hidden" name="UsuarioId" value="@ViewBag.Usuario" />
+
+                        <div class="mb-3">
+                            <label for="dia" class="form-label">Día</label>
+                            <select class="form-select" id="dia" name="Dia" required>
+                                <option value="Lunes">Lunes</option>
+                                <option value="Martes">Martes</option>
+                                <option value="Miércoles">Miércoles</option>
+                                <option value="Jueves">Jueves</option>
+                                <option value="Viernes">Viernes</option>
+                                <option value="Sábado">Sábado</option>
+                                <option value="Domingo">Domingo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="horaInicio" class="form-label">Hora Inicio</label>
+                            <input type="time" class="form-control" id="horaInicio" name="HoraInicio" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="horaFinal" class="form-label">Hora Final</label>
+                            <input type="time" class="form-control" id="horaFinal" name="HoraFinal" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,15 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
-using PotaxieSport.Data;
-using PotaxieSport.Models;
-using System.Diagnostics;
-using PotaxieSport.Data.Servicios;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using System.Data;
-using System.Security.Claims;
-using PotaxieSport.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using Npgsql;
-using System.Numerics;
+using PotaxieSport.Data;
+using PotaxieSport.Data.Servicios;
+using PotaxieSport.Models;
+using PotaxieSport.Models.ViewModels;
+using System.Data;
+using System.Diagnostics;
+using System.Security.Claims;
 
 namespace PotaxieSport.Controllers
 {
@@ -101,7 +100,7 @@ namespace PotaxieSport.Controllers
                     using (NpgsqlCommand cmd = new("SELECT * FROM ValidarUsuario(@p_correo)", con))
                     {
                         cmd.CommandType = CommandType.Text;
-                        #pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
                         cmd.Parameters.AddWithValue("p_correo", model.Correo);
                         con.Open();
                         try
@@ -217,7 +216,7 @@ namespace PotaxieSport.Controllers
                     cmd.ExecuteNonQuery();
                 }
             }
-            return RedirectToAction("Index", "Home"); 
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -228,10 +227,11 @@ namespace PotaxieSport.Controllers
         }
 
 
-        public ActionResult RegistrarAficionado(string correo) {
+        public ActionResult RegistrarAficionado(string correo)
+        {
             Email email = new();
             email.RegistroAficionado(correo);
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
 

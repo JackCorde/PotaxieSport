@@ -23,7 +23,7 @@
     public class DatosJugador
     {
         public Jugador jugador { get; set; }
-        public List<RegistroSalud> registros {get; set;}
+        public List<RegistroSalud> registros { get; set; }
         public Torneo? torneo { get; set; }
     }
 
@@ -38,7 +38,7 @@
     public class Torneos
     {
         public Torneo torneo { get; set; }
-        public List<Equipos> equipos { get; set;}
+        public List<Equipos> equipos { get; set; }
     }
 
     public class Equipos

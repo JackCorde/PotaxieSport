@@ -26,7 +26,7 @@
                     </select>
                 </div>
                 <div class="col-lg-5 text-lg-end mt-3 mt-lg-0">
-                    <button id="addButton" class="btn btn-success">Agregar Equipo</button>
+                    <button id="addButton"  onclick="location.href='@Url.Action("AgregarEquipo", "Administrador")'" class="btn btn-success">Agregar Equipo</button>
                 </div>
             </div>
 
@@ -34,14 +34,13 @@
                 <table id="equipos-table" class="table table-hover">
                     <thead>
                         <tr>
-
+                            
                             <th>Nombre del Equipo</th>
                             <th>Género</th>
                             <th>Logo</th>
                             <th>Coach</th>
                             <th>Torneo Actual</th>
                             <th>Ver</th>
-                            <th>Editar</th>
                         </tr>
                     </thead>
                     <tbody id="equipos-tbody">

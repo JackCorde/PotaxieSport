@@ -1,6 +1,6 @@
-﻿using System.Data;
-using Npgsql;
+﻿using Npgsql;
 using PotaxieSport.Models;
+using System.Data;
 
 namespace PotaxieSport.Data.Servicios
 {
@@ -229,7 +229,8 @@ namespace PotaxieSport.Data.Servicios
 
         internal Usuario ConseguirUsuario(string correo)
         {
-            Usuario usuario = null;
+            Usuario usuario =
+                null;
             try
             {
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
@@ -258,7 +259,7 @@ namespace PotaxieSport.Data.Servicios
                                     ErrorAutentificacion = reader.GetInt32(reader.GetOrdinal("error_autentificacion"))
                                 };
 
-                                
+
                             }
                         }
                     }
@@ -271,7 +272,7 @@ namespace PotaxieSport.Data.Servicios
             {
                 string error = ex.Message;
                 return null;
-                
+
             }
         }
 
@@ -337,7 +338,7 @@ namespace PotaxieSport.Data.Servicios
                     using (var cmd = new NpgsqlCommand("SELECT crearUsuario(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id, @p_error_autentificacion, @p_password)", connection))
                     {
                         cmd.CommandType = CommandType.Text;
-                        #pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
                         cmd.Parameters.AddWithValue("p_nombre", nombre);
                         cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
                         cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
@@ -462,6 +463,45 @@ namespace PotaxieSport.Data.Servicios
 
             return disponibilidades;
         }
+        //Agregar Disponibilidad
+        public void AgregarDisponibilidadArbitro(DisponibilidadArbitro disponibilidad)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+
+                using (var command = new NpgsqlCommand("SELECT agregar_disponibilidad_arbitro(@usuarioId, @dia, @horaInicio, @horaFinal)", connection))
+                {
+                    command.Parameters.AddWithValue("usuarioId", disponibilidad.UsuarioId);
+                    command.Parameters.AddWithValue("dia", disponibilidad.Dia);
+                    command.Parameters.AddWithValue("horaInicio", NpgsqlTypes.NpgsqlDbType.Time, disponibilidad.HoraInicio);
+                    command.Parameters.AddWithValue("horaFinal", NpgsqlTypes.NpgsqlDbType.Time, disponibilidad.HoraFinal);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        //Equipos
+        public void AgregarEquipo(Equipo equipo)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                using (var command = new NpgsqlCommand("agregar_equipo", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("p_nombre_equipo", equipo.EquipoNombre);
+                    command.Parameters.AddWithValue("p_genero", equipo.Genero);
+                    command.Parameters.AddWithValue("p_logo", equipo.Logo);
+                    command.Parameters.AddWithValue("p_categoria_id", equipo.CategoriaId);
+                    command.Parameters.AddWithValue("p_usuario_coach", equipo.UsuarioCoachId);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
 
     }
 }

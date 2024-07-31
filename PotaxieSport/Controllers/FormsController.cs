@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PotaxieSport.Models;
 
 namespace PotaxieSport.Controllers
 {
