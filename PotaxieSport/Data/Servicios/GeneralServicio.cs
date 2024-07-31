@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using AspNetCore;
 using Npgsql;
 using PotaxieSport.Models;
 
@@ -229,7 +230,8 @@ namespace PotaxieSport.Data.Servicios
 
         internal Usuario ConseguirUsuario(string username)
         {
-            Usuario usuario = null;
+            Usuario usuario = 
+                null;
             try
             {
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
@@ -461,6 +463,24 @@ namespace PotaxieSport.Data.Servicios
             }
 
             return disponibilidades;
+        }
+        //Agregar Disponibilidad
+        public void AgregarDisponibilidadArbitro(DisponibilidadArbitro disponibilidad)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+
+                using (var command = new NpgsqlCommand("SELECT agregar_disponibilidad_arbitro(@usuarioId, @dia, @horaInicio, @horaFinal)", connection))
+                {
+                    command.Parameters.AddWithValue("usuarioId", disponibilidad.UsuarioId);
+                    command.Parameters.AddWithValue("dia", disponibilidad.Dia);
+                    command.Parameters.AddWithValue("horaInicio", disponibilidad.HoraInicio);
+                    command.Parameters.AddWithValue("horaFinal", disponibilidad.HoraFinal);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
     }

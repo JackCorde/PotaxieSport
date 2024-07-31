@@ -229,5 +229,21 @@ namespace PotaxieSport.Controllers
             return View(disponibilidad);
         }
 
+        //AgregarDispnibilidad
+        [HttpPost]
+        public IActionResult AgregarDisponibilidad(DisponibilidadArbitro disponibilidad)
+        {
+            if (ModelState.IsValid)
+            {
+                _generalServicio.AgregarDisponibilidadArbitro(disponibilidad);
+                return RedirectToAction("Disponibilidad", new { Id = disponibilidad.UsuarioId });
+            }
+
+            // Si el modelo no es válido, muestra el formulario de nuevo con errores
+            return View(disponibilidad);
+        }
+
+
+
     }
 }
