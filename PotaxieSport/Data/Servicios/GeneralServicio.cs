@@ -482,5 +482,26 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
+        //Equipos
+        public void AgregarEquipo(Equipo equipo)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                using (var command = new NpgsqlCommand("agregar_equipo", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("p_nombre_equipo", equipo.EquipoNombre);
+                    command.Parameters.AddWithValue("p_genero", equipo.Genero);
+                    command.Parameters.AddWithValue("p_logo", equipo.Logo);
+                    command.Parameters.AddWithValue("p_categoria_id", equipo.CategoriaId);
+                    command.Parameters.AddWithValue("p_usuario_coach", equipo.UsuarioCoachId);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+
     }
 }

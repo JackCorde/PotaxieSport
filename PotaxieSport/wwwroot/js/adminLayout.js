@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
 //equipos
 document.addEventListener("DOMContentLoaded", function () {
     const equipos = JSON.parse(document.getElementById('equipos-data').textContent); // Obtener los datos del elemento script
-    const rowsPerPage = 10;
+    const rowsPerPage = 5;
     const tableBody = document.getElementById("equipos-tbody");
     const pagination = document.getElementById("pagination");
     const searchInput = document.getElementById("searchInput");
@@ -115,11 +115,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${equipo.coach}</td>
                 <td>${equipo.torneoActual}</td>
                 <td class="action-icons">
-                    <a href="/Equipo/Detalles/${equipo.equipoId}" class="btn btn-info">Ver</a>
+                    <a href="/Equipo/Detalles/${equipo.equipoId}"><i class="fa-regular fa-eye"></i></a>
                 </td>
-                <td class="action-icons">
-                    <i class="fas fa-edit"></i>
-                </td>
+                
             `;
             tableBody.appendChild(row);
         });

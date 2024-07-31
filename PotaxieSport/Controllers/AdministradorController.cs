@@ -63,24 +63,7 @@ namespace PotaxieSport.Controllers
             return View(arbitros);
         }
 
-        public IActionResult EquiposBenjamines()
-        {
-            var EquiposBenjamines = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Benjamines").ToList();
-            return View(EquiposBenjamines);
-        }
-
-        public IActionResult EquiposInfantiles()
-        {
-            var equipos = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Infantiles").ToList();
-            return View(equipos);
-        }
-
-        public IActionResult EquiposJuveniles()
-        {
-            var equipos = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Juveniles").ToList();
-            return View(equipos);
-        }
-
+       
         [HttpGet]
         public IActionResult AgregarUsuario(string url)
         {
@@ -257,6 +240,68 @@ namespace PotaxieSport.Controllers
                 ViewBag.Usuario = disponibilidad.UsuarioId;
                 return View("Disponibilidad", disponibilidades);
             }
+        }
+
+
+        //Equipos
+        public IActionResult Benjamines()
+        {
+            var EquiposBenjamines = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Benjamines").ToList();
+            return View(EquiposBenjamines);
+        }
+
+        public IActionResult Infantiles()
+        {
+            var equipos = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Infantiles").ToList();
+            return View(equipos);
+        }
+
+        public IActionResult Juveniles()
+        {
+            var equipos = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Juveniles").ToList();
+            return View(equipos);
+        }
+
+        //AgregarEquipo
+        public IActionResult AgregarEquipo()
+        {
+            var coachs = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 5)
+               .OrderByDescending(u => u.UsuarioId)
+               .ToList();
+            ViewBag.Coaches = new SelectList(coachs, "UsuarioId", "NombreCompleto");
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult AgregarEquipo(Equipo equipo)
+        {
+            if (ModelState.IsValid)
+            {
+                _generalServicio.AgregarEquipo(equipo);
+                TempData["SuccessMessage"] = "Equipo agregado correctamente";
+
+                // Redirige a la vista correspondiente según la categoría
+                if (equipo.CategoriaId == 1) // ID de categoría de Benjamines
+                {
+                    return RedirectToAction("Benjamines");
+                }
+                else if (equipo.CategoriaId == 2) // ID de categoría de Infantiles
+                {
+                    return RedirectToAction("Infantiles");
+                }
+                else if (equipo.CategoriaId == 3) // ID de categoría de Juveniles
+                {
+                    return RedirectToAction("Juveniles");
+                }
+            }
+
+            // Si el modelo no es válido, recarga la lista de entrenadores para mostrarla nuevamente en la vista
+            var coachs = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 5)
+                .OrderByDescending(u => u.UsuarioId)
+                .ToList();
+            ViewBag.Coaches = new SelectList(coachs, "UsuarioId", "NombreCompleto");
+            return View(equipo);
         }
 
     }
