@@ -11,7 +11,7 @@
         public string? EquipoDefensor { get; set; }
         public int EquipoGanadorId { get; set; }
         public string? EquipoGanador { get; set; }
-        public int UsuarioArbitro {  get; set; }
+        public int UsuarioArbitro { get; set; }
         public string? Arbitro { get; set; }
         public string? Cedula { get; set; }
         public DateTime Fecha { get; set; }

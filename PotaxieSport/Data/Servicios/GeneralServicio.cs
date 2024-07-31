@@ -1,7 +1,6 @@
-﻿using System.Data;
-using AspNetCore;
-using Npgsql;
+﻿using Npgsql;
 using PotaxieSport.Models;
+using System.Data;
 
 namespace PotaxieSport.Data.Servicios
 {
@@ -230,7 +229,7 @@ namespace PotaxieSport.Data.Servicios
 
         internal Usuario ConseguirUsuario(string correo)
         {
-            Usuario usuario = 
+            Usuario usuario =
                 null;
             try
             {
@@ -260,7 +259,7 @@ namespace PotaxieSport.Data.Servicios
                                     ErrorAutentificacion = reader.GetInt32(reader.GetOrdinal("error_autentificacion"))
                                 };
 
-                                
+
                             }
                         }
                     }
@@ -273,7 +272,7 @@ namespace PotaxieSport.Data.Servicios
             {
                 string error = ex.Message;
                 return null;
-                
+
             }
         }
 
@@ -339,7 +338,7 @@ namespace PotaxieSport.Data.Servicios
                     using (var cmd = new NpgsqlCommand("SELECT crearUsuario(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id, @p_error_autentificacion, @p_password)", connection))
                     {
                         cmd.CommandType = CommandType.Text;
-                        #pragma warning disable CS8604 // Posible argumento de referencia nulo
+#pragma warning disable CS8604 // Posible argumento de referencia nulo
                         cmd.Parameters.AddWithValue("p_nombre", nombre);
                         cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
                         cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
@@ -475,8 +474,8 @@ namespace PotaxieSport.Data.Servicios
                 {
                     command.Parameters.AddWithValue("usuarioId", disponibilidad.UsuarioId);
                     command.Parameters.AddWithValue("dia", disponibilidad.Dia);
-                    command.Parameters.AddWithValue("horaInicio", disponibilidad.HoraInicio);
-                    command.Parameters.AddWithValue("horaFinal", disponibilidad.HoraFinal);
+                    command.Parameters.AddWithValue("horaInicio", NpgsqlTypes.NpgsqlDbType.Time, disponibilidad.HoraInicio);
+                    command.Parameters.AddWithValue("horaFinal", NpgsqlTypes.NpgsqlDbType.Time, disponibilidad.HoraFinal);
 
                     command.ExecuteNonQuery();
                 }

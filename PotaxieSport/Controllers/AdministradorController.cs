@@ -1,11 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using PotaxieSport.Data;
-using PotaxieSport.Models;
-using PotaxieSport.Data.Servicios;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PotaxieSport.Data;
+using PotaxieSport.Data.Servicios;
+using PotaxieSport.Models;
 using System.Data;
-using System.Xml.Linq;
 
 
 namespace PotaxieSport.Controllers
@@ -34,7 +33,7 @@ namespace PotaxieSport.Controllers
         public IActionResult Administradores()
         {
             var administradores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 2)
-            .OrderByDescending(u => u.UsuarioId) 
+            .OrderByDescending(u => u.UsuarioId)
             .ToList();
 
             return View(administradores);
@@ -147,7 +146,7 @@ namespace PotaxieSport.Controllers
 
             // Pasar el usuario a la vista
             return View(usuario);
-        }  
+        }
         [HttpPost]
         public IActionResult ActualizarUsuario(Usuario model)
         {
@@ -182,7 +181,7 @@ namespace PotaxieSport.Controllers
         {
             if (archivoError != null)
             {
-                ViewBag.Error=archivoError;
+                ViewBag.Error = archivoError;
             }
             return View();
         }
@@ -194,7 +193,7 @@ namespace PotaxieSport.Controllers
             {
                 if (tipo != null)
                 {
-                    string nombre = tipo + "_"+id+"_" + file.FileName.Replace(" ", ""); ;
+                    string nombre = tipo + "_" + id + "_" + file.FileName.Replace(" ", ""); ;
                     string respuesta = _archivosServicio.SubirArchivo(file, nombre, tipo);
                     _archivosServicio.GuardarArchivoFotoEnBD(nombre, id, tipo);
                     return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = respuesta }); //{ archivoError = "Archivo subido con éxito" });
@@ -203,8 +202,8 @@ namespace PotaxieSport.Controllers
                 {
                     return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un tipo de archivo válido." });
                 }
-                
-                
+
+
             }
             else
             {
@@ -219,15 +218,20 @@ namespace PotaxieSport.Controllers
         // Acción para mostrar la disponibilidad del árbitro
         public IActionResult Disponibilidad(int Id)
         {
-            ViewBag.Id = Id;
             // Obtener la disponibilidad del árbitro
             List<DisponibilidadArbitro> disponibilidad = _generalServicio.ObtenerDisponibilidadArbitro(Id);
             Usuario usuario = _generalServicio.ObtenerUsuarioPorId(Id);
             ViewBag.UsuarioNombre = $"{usuario.Nombre}";
-
+            if (usuario == null)
+            {
+                return NotFound("Usuario no encontrado");
+            }
             // Pasar la disponibilidad a la vista
+            ViewBag.UsuarioNombre = $"{usuario.Nombre} {usuario.ApPaterno} {usuario.ApMaterno}";
+            ViewBag.Usuario = usuario.UsuarioId;
             return View(disponibilidad);
         }
+
 
         //AgregarDispnibilidad
         [HttpPost]
@@ -236,14 +240,24 @@ namespace PotaxieSport.Controllers
             if (ModelState.IsValid)
             {
                 _generalServicio.AgregarDisponibilidadArbitro(disponibilidad);
-                return RedirectToAction("Disponibilidad", new { Id = disponibilidad.UsuarioId });
+                return RedirectToAction("Disponibilidad", new { id = disponibilidad.UsuarioId });
             }
+            else
+            {
+                // Re-obtener la lista de disponibilidades para el usuario actual
+                var disponibilidades = _generalServicio.ObtenerDisponibilidadArbitro(disponibilidad.UsuarioId);
+                var usuario = _generalServicio.ObtenerUsuarioPorId(disponibilidad.UsuarioId);
 
-            // Si el modelo no es válido, muestra el formulario de nuevo con errores
-            return View(disponibilidad);
+                if (usuario == null)
+                {
+                    return NotFound("Usuario no encontrado");
+                }
+
+                ViewBag.UsuarioNombre = $"{usuario.Nombre} {usuario.ApPaterno} {usuario.ApMaterno}";
+                ViewBag.Usuario = disponibilidad.UsuarioId;
+                return View("Disponibilidad", disponibilidades);
+            }
         }
-
-
 
     }
 }

@@ -63,9 +63,9 @@ namespace PotaxieSport.Controllers
                     }
                 }
 
-                return StatusCode(StatusCodes.Status200OK, new {mensaje="ok", response = torneos});
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = torneos });
             }
-            catch(Exception error)
+            catch (Exception error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = torneos });
             }
@@ -204,10 +204,10 @@ namespace PotaxieSport.Controllers
                 if (currentUser != null)
                 {
                     bool matchPassword = BCrypt.Net.BCrypt.Verify(data.password, currentUser.Password);
-                    
+
                     if (matchPassword)
                     {
-                        if(currentUser.RolId != 1)
+                        if (currentUser.RolId != 1)
                         {
                             return StatusCode(StatusCodes.Status200OK, new { mensaje = "No eres un usuario de tipo 'Doctor'" });
                         }
@@ -221,13 +221,13 @@ namespace PotaxieSport.Controllers
                             };
                             return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = datosDoctor });
                         }
-                        return StatusCode(StatusCodes.Status200OK, new { mensaje = "El doctor no tiene torneos asignados"});
+                        return StatusCode(StatusCodes.Status200OK, new { mensaje = "El doctor no tiene torneos asignados" });
                     }
                     return StatusCode(StatusCodes.Status200OK, new { mensaje = "Contraseña Incorrecta" });
-                    
+
                 }
                 return StatusCode(StatusCodes.Status200OK, new { mensaje = "Usuario no encontrado" });
-               
+
             }
             catch (Exception error)
             {
@@ -238,7 +238,8 @@ namespace PotaxieSport.Controllers
 
         private List<Torneos> ObtenerTorneosDoctor(int doctorId)
         {
-            try {
+            try
+            {
                 List<Torneos> listaTorneos = new();
 
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
@@ -277,7 +278,7 @@ namespace PotaxieSport.Controllers
                                     torneo = torneo,
                                     equipos = equiposParticipantes
                                 };
-                                
+
                                 listaTorneos.Add(elemento);
                             }
                         }
@@ -285,7 +286,7 @@ namespace PotaxieSport.Controllers
                 }
                 return listaTorneos;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 string mensaje = ex.Message;
                 return null;
@@ -336,17 +337,19 @@ namespace PotaxieSport.Controllers
 
                 return listaEquipos;
 
-            } 
-            catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 string mensaje = ex.Message;
                 return null;
             }
         }
 
 
-        private List<Jugadores> JugadoresPorEquipo(int equipoId) 
+        private List<Jugadores> JugadoresPorEquipo(int equipoId)
         {
-            try { 
+            try
+            {
                 List<Jugadores> listaJugadores = new();
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
                 {
@@ -378,7 +381,7 @@ namespace PotaxieSport.Controllers
 
                                 Jugadores elemento = new Jugadores()
                                 {
-                                    jugador=jugador,
+                                    jugador = jugador,
                                     registros = listaRegistroSalud
                                 };
 
@@ -390,7 +393,8 @@ namespace PotaxieSport.Controllers
 
                 return listaJugadores;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 string mensaje = ex.Message;
                 return null;
             }
@@ -408,9 +412,9 @@ namespace PotaxieSport.Controllers
             try
             {
                 var infoJugador = ObtenerJugadorDatos(data.username);
-                if(infoJugador != null)
+                if (infoJugador != null)
                 {
-                    if(infoJugador.Clave == data.password)
+                    if (infoJugador.Clave == data.password)
                     {
                         var registrosSalud = ObtenerDatosSalud(infoJugador.JugadorId);
                         var torneoActual = ObtenerTorneo(infoJugador.EquipoId);
@@ -427,7 +431,7 @@ namespace PotaxieSport.Controllers
                     {
                         return StatusCode(StatusCodes.Status200OK, new { mensaje = "Contraseña Incorrecta" });
                     }
-                    
+
                 }
                 return StatusCode(StatusCodes.Status200OK, new { mensaje = "Usuario no encontrado" });
             }
@@ -437,7 +441,7 @@ namespace PotaxieSport.Controllers
             }
         }
 
-        
+
 
         private Jugador ObtenerJugadorDatos(string username)
         {
@@ -469,7 +473,7 @@ namespace PotaxieSport.Controllers
                                 Equipo = reader.IsDBNull(reader.GetOrdinal("equipo")) ? null : reader.GetString(reader.GetOrdinal("equipo")),
                                 Posicion = reader.IsDBNull(reader.GetOrdinal("posicion")) ? null : reader.GetString(reader.GetOrdinal("posicion")),
                                 NumJugador = reader.GetInt32(reader.GetOrdinal("num_jugador")),
-                                Clave = reader.IsDBNull(reader.GetOrdinal("contrasena"))? null : reader.GetString(reader.GetOrdinal("contrasena")),
+                                Clave = reader.IsDBNull(reader.GetOrdinal("contrasena")) ? null : reader.GetString(reader.GetOrdinal("contrasena")),
                                 FrecuenciaMaxima = resultados.FCM,
                                 FrecuenciaMinima = resultados.FCMin
                             };
@@ -482,7 +486,7 @@ namespace PotaxieSport.Controllers
             }
         }
 
-        
+
 
         public Torneo ObtenerTorneo(int equipoId)
         {
@@ -529,7 +533,7 @@ namespace PotaxieSport.Controllers
                 }
                 return torneo;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 string mensaje = ex.Message;
                 return torneo;

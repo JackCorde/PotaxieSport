@@ -1,9 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PotaxieSport.Data;
+using PotaxieSport.Data.Servicios;
 using PotaxieSport.Models;
 using System.Diagnostics;
-using PotaxieSport.Data.Servicios;
-using Microsoft.AspNetCore.Authorization;
 
 namespace PotaxieSport.Controllers
 {

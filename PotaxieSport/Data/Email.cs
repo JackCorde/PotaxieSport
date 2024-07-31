@@ -3,7 +3,8 @@ using System.Net.Mail;
 
 namespace PotaxieSport.Data
 {
-    public class Email{
+    public class Email
+    {
 
         public void RegistroAficionado(string correo)
         {
@@ -59,7 +60,8 @@ namespace PotaxieSport.Data
             Correo(correo, newPass);
         }
 
-        void Correo (string correo_receptor, string pass){
+        void Correo(string correo_receptor, string pass)
+        {
             string correo_emisor = "JackCorderod@outlook.com";
             string clave_emisor = "Bas2do.Guitar";
 
@@ -76,7 +78,7 @@ namespace PotaxieSport.Data
                                 <body>
                                     <h2>Recuperación de Contraseña de Usuario</h2>
                                     <br>
-                                    <p>Su clave de confirmación es: "+pass+@"</p><br>
+                                    <p>Su clave de confirmación es: " + pass + @"</p><br>
                                     <p>Por favor no la comparta con nadie</p>
                                 </body>
                             </html>";

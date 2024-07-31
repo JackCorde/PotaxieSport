@@ -1,7 +1,3 @@
-using System.Data;
-using System.Data.SqlClient;
-using PotaxieSport.Models;
-
 namespace PotaxieSport.Data.Servicios
 {
     public class PathServicio
@@ -9,10 +5,10 @@ namespace PotaxieSport.Data.Servicios
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly Contexto _contexto;
 
-        public PathServicio(IWebHostEnvironment hostingEnvironment,Contexto contexto)
+        public PathServicio(IWebHostEnvironment hostingEnvironment, Contexto contexto)
         {
             _hostingEnvironment = hostingEnvironment;
-             _contexto = contexto;
+            _contexto = contexto;
         }
 
         /*Archivos*/
