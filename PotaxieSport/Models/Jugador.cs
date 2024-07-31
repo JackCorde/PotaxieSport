@@ -12,5 +12,10 @@
         public string? Equipo { get; set; }
         public string? Posicion { get; set; }
         public int NumJugador { get; set; }
+        public string? Username { get; set; }
+        public string? Clave { get; set; }
+        public int FrecuenciaMaxima { get; set; }
+        public int FrecuenciaMinima { get; set; }
+
     }
 }

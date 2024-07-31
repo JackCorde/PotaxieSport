@@ -16,5 +16,6 @@
         public string? Doctor { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin {  get; set; }
+        public bool EnPartido { get; set; }
     }
 }

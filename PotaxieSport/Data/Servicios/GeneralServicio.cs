@@ -228,7 +228,7 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
-        internal Usuario ConseguirUsuario(string username)
+        internal Usuario ConseguirUsuario(string correo)
         {
             Usuario usuario = 
                 null;
@@ -237,10 +237,10 @@ namespace PotaxieSport.Data.Servicios
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
                 {
                     connection.Open();
-                    using (var cmd = new NpgsqlCommand("SELECT * FROM ObtenerUsuarioPorUsername(@p_username)", connection))
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM ValidarUsuario(@p_correo)", connection))
                     {
                         cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("p_username", username);
+                        cmd.Parameters.AddWithValue("p_correo", correo);
 
                         using (var reader = cmd.ExecuteReader())
                         {
