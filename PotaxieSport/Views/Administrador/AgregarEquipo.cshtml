@@ -1,10 +1,13 @@
 ﻿@model PotaxieSport.Models.Equipo
 
 @{
-    ViewData["Title"] = "Agregar Equipo";
+    ViewBag.Title = "Agregar Equipo";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h2>Agregar Equipo</h2>
+
+
 
 <form asp-action="AgregarEquipo" method="post">
     <div class="form-group">
@@ -12,39 +15,44 @@
         <input asp-for="EquipoNombre" class="form-control" />
         <span asp-validation-for="EquipoNombre" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="Genero" class="control-label"></label>
         <select asp-for="Genero" class="form-control">
-            <option value="">Seleccione un género</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Femenino">Femenino</option>
+            <option value="Varonil">Varonil</option>
+            <option value="Femenil">Femenil</option>
         </select>
         <span asp-validation-for="Genero" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="Logo" class="control-label">Logo</label>
-        <input type="file" asp-for="Logo" class="form-control" />
-        <span asp-validation-for="Logo" class="text-danger"></span>
-    </div>
+
     <div class="form-group">
         <label asp-for="CategoriaId" class="control-label"></label>
-        <input asp-for="CategoriaId" class="form-control" />
+        <select asp-for="CategoriaId" class="form-control" asp-items="ViewBag.Categorias"></select>
         <span asp-validation-for="CategoriaId" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label asp-for="UsuarioCoachId" class="control-label"></label>
-        <select asp-for="UsuarioCoachId" class="form-control" asp-items="ViewBag.Coaches">
-            <option value="">Seleccione un coach</option>
+        <label asp-for="UsuarioCoachId">Entrenador</label>
+        <select asp-for="UsuarioCoachId" asp-items="@(ViewBag.Coaches as SelectList)" id="coach-select" class="form-control">
+            <option value="">Seleccione un entrenador</option>
         </select>
         <span asp-validation-for="UsuarioCoachId" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <input type="submit" value="Agregar" class="btn btn-primary" />
     </div>
 </form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#coach-select').select2({
+                placeholder: "Seleccione un entrenador",
+                allowClear: true
+            });
+        });
+    </script>
 }

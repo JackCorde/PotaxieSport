@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "AgregarLogo";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.Error
+    </div>
+
+}
+<p>ID del Equipo: @ViewBag.EquipoId</p>
+<p>ID de la Categoría: @ViewBag.categorias</p>
+
+
+<div class="container">
+    <form asp-action="SubirImagenes" asp-controller="Administrador" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="file">Selecciona un archivo</label>
+            <input type="file" name="file" class="form-control"/>
+        </div>
+        <input type="hidden" name="id" value="@ViewBag.EquipoId" />
+        <input type="hidden" name="tipo" value="Equipo" />
+        
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Subir Imagen" />
+
+        </div>
+    </form>
+    <br>
+    <br>
+    <br>
+    @if (ViewBag.Error != null)
+    {
+        <div class="text-danger text-center">@ViewBag.Error</div>
+    }
+</div>
+
+
+@if (ViewBag.Error != null)
+{
+    <div class="text-danger text-center">@ViewBag.Error</div>
+}

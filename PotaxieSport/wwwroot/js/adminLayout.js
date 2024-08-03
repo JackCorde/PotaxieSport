@@ -11,7 +11,7 @@ navToggleBtn.addEventListener("click", toggleSidebar);
 
 document.addEventListener("DOMContentLoaded", function () {
     const usuarios = JSON.parse(document.getElementById('usuarios-data').textContent); // Obtener los datos del elemento script
-    const rowsPerPage = 10;
+    const rowsPerPage = 8;
     const tableBody = document.getElementById("usuarios-tbody");
     const pagination = document.getElementById("pagination");
     let currentPage = 1;
@@ -259,3 +259,6 @@ document.addEventListener("DOMContentLoaded", function () {
     renderTable(currentPage, filteredArbitros);
     renderPagination(filteredArbitros);
 });
+
+
+

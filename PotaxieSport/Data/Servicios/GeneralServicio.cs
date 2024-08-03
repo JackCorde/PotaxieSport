@@ -13,6 +13,36 @@ namespace PotaxieSport.Data.Servicios
             _contexto = contexto;
         }
 
+        //Categorias 
+        public List<Categoria> ObtenerCategorias()
+        {
+            var categorias = new List<Categoria>();
+
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand("SELECT * FROM obtener_categorias()", connection))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var categoria = new Categoria
+                            {
+                                CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
+                                CategoriaNombre = reader.GetString(reader.GetOrdinal("categoria_nombre")),
+                                Rango = reader.GetString(reader.GetOrdinal("rango"))
+                            };
+
+                            categorias.Add(categoria);
+                        }
+                    }
+                }
+            }
+
+            return categorias;
+        }
+
         public List<Usuario> ObtenerUsuarios()
         {
             var usuarios = new List<Usuario>();
@@ -282,24 +312,20 @@ namespace PotaxieSport.Data.Servicios
         {
             var roles = new List<Rol>();
 
-            // Abre la conexión a la base de datos
             using (var connection = new NpgsqlConnection(_contexto.Conexion))
             {
                 connection.Open();
 
-                // Crea el comando SQL para llamar a la función que obtiene roles
                 using (var cmd = new NpgsqlCommand("SELECT * FROM obtener_roles()", connection))
                 {
-                    // Ejecuta el comando y lee los resultados
                     using (var reader = cmd.ExecuteReader())
                     {
-                        // Recorre los resultados
                         while (reader.Read())
                         {
                             roles.Add(new Rol
                             {
-                                RolId = reader.GetInt32(reader.GetOrdinal("rol_id")), // Asegúrate de que el nombre de la columna sea correcto
-                                RolNombre = reader.GetString(reader.GetOrdinal("rol_nombre")) // Asegúrate de que el nombre de la columna sea correcto
+                                RolId = reader.GetInt32(reader.GetOrdinal("rol_id")), 
+                                RolNombre = reader.GetString(reader.GetOrdinal("rol_nombre")) 
                             });
                         }
                     }
@@ -483,25 +509,23 @@ namespace PotaxieSport.Data.Servicios
         }
 
         //Equipos
-        public void AgregarEquipo(Equipo equipo)
+        public int AgregarEquipo(string nombreEquipo, string genero, int categoriaId, int usuarioCoach)
         {
             using (var connection = new NpgsqlConnection(_contexto.Conexion))
             {
                 connection.Open();
-                using (var command = new NpgsqlCommand("agregar_equipo", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("p_nombre_equipo", equipo.EquipoNombre);
-                    command.Parameters.AddWithValue("p_genero", equipo.Genero);
-                    command.Parameters.AddWithValue("p_logo", equipo.Logo);
-                    command.Parameters.AddWithValue("p_categoria_id", equipo.CategoriaId);
-                    command.Parameters.AddWithValue("p_usuario_coach", equipo.UsuarioCoachId);
 
-                    command.ExecuteNonQuery();
+                using (var command = new NpgsqlCommand("SELECT public.agregar_equipo(@nombreEquipo, @genero, @categoriaId, @usuarioCoach)", connection))
+                {
+                    command.Parameters.AddWithValue("@nombreEquipo", nombreEquipo);
+                    command.Parameters.AddWithValue("@genero", genero);
+                    command.Parameters.AddWithValue("@categoriaId", categoriaId);
+                    command.Parameters.AddWithValue("@usuarioCoach", usuarioCoach);
+
+                    var equipoId = (int)command.ExecuteScalar();
+                    return equipoId;
                 }
             }
         }
-
-
     }
 }
