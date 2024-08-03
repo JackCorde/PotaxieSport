@@ -1,5 +1,9 @@
 ﻿@model PotaxieSport.Models.Usuario
 
+<head runat="server">
+    <link rel="stylesheet" href="~/css/AgregarUsuario.css" />
+</head>
+
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Agregar Usuario";
@@ -9,19 +13,13 @@
     
 }
 
-
-
-<p>IdRo: @ViewBag.IdRo</p>
-<p>Roll: @ViewBag.Roll</p>
-<p>URL: @ViewBag.Url</p>
-
 <div class="page-container">
-    <div class="form-container col-md-6 col-lg-4">
+    <div class="form-container">
         <h2>Crear Usuario</h2>
         <form asp-action="CrearUsuario" method="post" id="createUserForm">
             <input type="hidden" name="Url" value="@ViewBag.Url" />
             <div class="form-group">
-                <label asp-for="Nombre"></label>
+                <label asp-for="Nombre">Nombre</label>
                 <input asp-for="Nombre" class="form-control" required />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
@@ -41,7 +39,7 @@
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Email"></label>
+                <label asp-for="Email">Correo Electronico</label>
                 <input asp-for="Email" class="form-control" type="email" required />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
@@ -53,11 +51,11 @@
                 <span asp-validation-for="RolId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password"></label>
+                <label asp-for="Password">Password</label>
                 <input asp-for="Password" type="password" class="form-control" required />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group buttons">
                 <button type="submit" class="btn btn-custom">Crear Usuario</button>
                 <a href="@Url.Action(ViewBag.Url as string, "Administrador")" class="btn btn-custom">Cancelar</a>
             </div>
