@@ -10,8 +10,7 @@
     padding: 5px;
 }
 
-
-.btn-primary {
+.btn-success {
     background-color: #212832;
     border: none;
     border-radius: 5px;
@@ -20,7 +19,7 @@
     transition: background-color 0.3s ease;
 }
 
-    .btn-primary:hover {
+    .btn-success:hover {
         background-color: #3b4758;
     }
 
@@ -33,7 +32,6 @@
     overflow: hidden;
 }
 
-
     .table thead th {
         background-color: #212832;
         color: white;
@@ -41,13 +39,11 @@
         text-align: left;
     }
 
-
     .table tbody td {
         background-color: #f0f0f0;
         padding: 10px;
         border-bottom: 1px solid #dfdbdb;
     }
-
 
     .table tbody tr:hover td {
         background-color: #d7d6f6;
@@ -55,16 +51,16 @@
 
 #pagination button {
     margin: 0 5px;
-    background-color: #212832; 
-    color: #fff; 
-    border: none; 
+    background-color: #212832;
+    color: #fff;
+    border: none;
     border-radius: 5px;
-    padding: 10px 20px; 
-    transition: background-color 0.3s ease; 
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
 }
 
     #pagination button:hover {
-        background-color: #3b4758; 
+        background-color: #3b4758;
     }
 
 .table-responsive {
@@ -104,9 +100,4 @@
         .table tbody td:last-child {
             border-bottom: none;
         }
-}
-
-.fa, .fas {
-    font-weight: 900;
-    color: #212832;
 }
