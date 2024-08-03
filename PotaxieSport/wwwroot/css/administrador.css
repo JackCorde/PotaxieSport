@@ -1,0 +1,74 @@
+﻿@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+@import url('https://code.jquery.com/jquery-3.5.1.slim.min.js');
+@import url('https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js');
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js');
+
+.card-custom {
+    transition: all 0.3s ease;
+}
+
+    .card-custom img {
+        max-height: 150px;
+        object-fit: cover;
+    }
+
+.table-responsive {
+    background-color: #dcedc8;
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    .table thead th {
+        background-color: #212832;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .table tbody td {
+        background-color: #f1f8e9;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .table tbody tr:nth-child(even) td {
+        background-color: #d7d6f6;
+    }
+
+.action-icons i {
+    color: #212832;
+    cursor: pointer;
+    padding: 8px;
+    font-size: 18px;
+}
+
+    .action-icons i:hover {
+        color: #212832af;
+    }
+
+@media (max-width: 600px) {
+    .table-responsive {
+        font-size: 14px;
+    }
+
+    .table thead th, .table tbody td {
+        padding: 10px;
+    }
+
+    .action-icons i {
+        font-size: 16px;
+        padding: 6px;
+    }
+}
+

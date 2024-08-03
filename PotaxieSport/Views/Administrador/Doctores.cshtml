@@ -1,5 +1,9 @@
 ﻿@model List<PotaxieSport.Models.Usuario>
 
+<head runat="server">
+    <link rel="stylesheet" href="~/css/tablas.css" />
+</head>
+
 @{
     ViewData["Title"] = "Doctores";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -42,22 +46,9 @@
 </div>
 
 
-
-
 @section Scripts {
     <script id="usuarios-data" type="application/json">
         @Html.Raw(Json.Serialize(Model))
     </script>
 }
 
-<style>
-    #pagination button {
-        margin: 0 5px;
-    }
-
-        #pagination button.btn-primary {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-        }
-</style>

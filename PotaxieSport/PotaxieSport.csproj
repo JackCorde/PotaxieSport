@@ -39,6 +39,9 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Shared\_MessageModal.cshtml" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\AgregarUsuario.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\equipos.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\tablas.css" />
   </ItemGroup>
 
   <ItemGroup>

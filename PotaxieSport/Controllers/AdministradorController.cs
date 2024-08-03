@@ -170,9 +170,16 @@ namespace PotaxieSport.Controllers
             {
                 if (tipo != null)
                 {
-                    string nombre = tipo + "_" + id + "_" + file.FileName.Replace(" ", ""); ;
+                    //Asigna nombre al archivo con la estructura tipo_id_nombre.dominio  (El remplace quita los espacios)
+                    string nombre = tipo + "_" + id + "_" + file.FileName.Replace(" ", "");
+
+                    //Llamar a la función que sube el archivo a las carpetas de ASP.NET
                     string respuesta = _archivosServicio.SubirArchivo(file, nombre, tipo);
+                    
+                    //Subir el archivo a la base de datos.
                     _archivosServicio.GuardarArchivoFotoEnBD(nombre, id, tipo);
+
+                    
                     return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = respuesta }); //{ archivoError = "Archivo subido con éxito" });
                 }
                 else
