@@ -5,6 +5,9 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
 }
+<head runat="server">
+    <link rel="stylesheet" href="~/css/AgregarUsuario.css" />
+</head>
 
 
 <div class="page-container">
@@ -15,32 +18,32 @@
             <input type="hidden" asp-for="UsuarioId" />
 
             <div class="form-group">
-                <label asp-for="Nombre"></label>
+                <label asp-for="Nombre">Nombre</label>
                 <input asp-for="Nombre" class="form-control" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ApPaterno"></label>
+                <label asp-for="ApPaterno">Apellido Paterno</label>
                 <input asp-for="ApPaterno" class="form-control" />
                 <span asp-validation-for="ApPaterno" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ApMaterno"></label>
+                <label asp-for="ApMaterno">Apellido Materno</label>
                 <input asp-for="ApMaterno" class="form-control" />
                 <span asp-validation-for="ApMaterno" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Username"></label>
+                <label asp-for="Username">Nombre de Usuario</label>
                 <input asp-for="Username" class="form-control" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Email"></label>
+                <label asp-for="Email">Correo Electronico</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RolId"></label>
+                <label asp-for="RolId">Rol</label>
                 <select asp-for="RolId" class="form-control" asp-items="ViewBag.Rol">
                     <option value="">Seleccione un rol</option>
                 </select>
