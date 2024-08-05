@@ -111,11 +111,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 <td>${equipo.equipoNombre}</td>
                 <td>${equipo.genero}</td>
-                <td><img src="${equipo.logo}" alt="Logo" style="height:50px;"></td>
+                <td><img src="${equipo.logo}" alt="Logo" style="height:50px;"></td>    
                 <td>${equipo.coach}</td>
                 <td>${equipo.torneoActual}</td>
                 <td class="action-icons">
-                    <a href="/Equipo/Detalles/${equipo.equipoId}"><i class="fa-regular fa-eye"></i></a>
+                    <a href="/Administrador/DetallesEquipo/${equipo.equipoId}"><i class="fa-regular fa-eye"></i></a>
                 </td>
                 
             `;
@@ -259,6 +259,61 @@ document.addEventListener("DOMContentLoaded", function () {
     renderTable(currentPage, filteredArbitros);
     renderPagination(filteredArbitros);
 });
+//Jugadores
+document.addEventListener("DOMContentLoaded", function () {
+    const jugadores = JSON.parse(document.getElementById('jugadores-data').textContent); // Obtener los datos del elemento script
+    const rowsPerPage = 6;
+    const tableBody = document.getElementById("jugadores-tbody");
+    const pagination = document.getElementById("pagination");
+    let currentPage = 1;
+    let totalPages;
 
+    function renderTable(page, data) {
+        tableBody.innerHTML = "";
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const paginatedJugadores = data.slice(start, end);
 
+        paginatedJugadores.forEach(jugador => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${jugador.jugadorNombre}</td>
+                <td>${jugador.apPaterno}</td>
+                <td>${jugador.apMaterno}</td>
+                <td>${jugador.edad}</td>
+                <td><img src="${jugador.fotografia}" width="50" /></td>
+                <td>${jugador.posicion}</td>
+                <td>${jugador.numJugador}</td>
+                <td>${jugador.username}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
 
+    function renderPagination() {
+        pagination.innerHTML = "";
+        totalPages = Math.ceil(jugadores.length / rowsPerPage);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement("button");
+            button.innerText = i;
+            button.className = "btn btn-secondary me-2";
+            button.addEventListener("click", () => {
+                currentPage = i;
+                renderTable(currentPage, jugadores);
+                updatePagination();
+            });
+            pagination.appendChild(button);
+        }
+    }
+
+    function updatePagination() {
+        Array.from(pagination.children).forEach((button, index) => {
+            button.classList.toggle("btn-primary", index + 1 === currentPage);
+        });
+    }
+
+    // Inicializar la tabla y la paginación
+    renderTable(currentPage, jugadores);
+    renderPagination();
+});
