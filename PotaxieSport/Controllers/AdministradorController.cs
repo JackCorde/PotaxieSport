@@ -245,19 +245,27 @@ namespace PotaxieSport.Controllers
 
 
         //Equipos
-        public IActionResult Benjamines()
+        public IActionResult Benjamines(string? archivoError)
         {
+            if (archivoError != null)
+            {
+                ViewBag.Error = archivoError;
+            }
             var EquiposBenjamines = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Benjamines").OrderByDescending(e => e.EquipoId).ToList();
             return View(EquiposBenjamines);
         }
 
-        public IActionResult Infantiles()
+        public IActionResult Infantiles(string? archivoError)
         {
+            if (archivoError != null)
+            {
+                ViewBag.Error = archivoError;
+            }
             var equipos = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Infantiles").OrderByDescending(e => e.EquipoId).ToList();
             return View(equipos);
         }
 
-        public IActionResult Juveniles()
+        public IActionResult Juveniles(string? archivoError)
         {
             var equipos = _generalServicio.ObtenerEquipos().Where(e => e.Categoria == "Juveniles").ToList();
             return View(equipos);
@@ -293,9 +301,51 @@ namespace PotaxieSport.Controllers
 
             return View(equipo);
         }
+        [HttpPost]
+        public IActionResult SubirLogo(string? archivoError, int id, IFormFile file, string tipo, int equipoId, int CategoriaId)
+        {
+            if (file != null && file.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(tipo))
+                {
+                    string nombre = tipo + "_" + id + "_" + file.FileName.Replace(" ", "");
+                    string respuesta = _archivosServicio.SubirArchivo(file, nombre, tipo);
+
+                    if (respuesta == "Archivo subido con éxito.")
+                    {
+                        _archivosServicio.GuardarArchivoFotoEnBD(nombre, id, tipo);
+
+                        switch (CategoriaId)
+                        {
+                            case 1:
+                                return RedirectToAction("Benjamines", "Administrador", new { archivoError = respuesta });
+                            case 2:
+                                return RedirectToAction("Infantiles", "Administrador", new { archivoError = respuesta });
+                            case 3:
+                                return RedirectToAction("Juveniles", "Administrador", new { archivoError = respuesta });
+                            default:
+                                return RedirectToAction("SubirLogo", "Administrador", new { archivoError = "Categoría no válida.", equipoId, CategoriaId });
+                        }
+                    }
+                    else
+                    {
+                        return RedirectToAction("SubirLogo", "Administrador", new { archivoError = respuesta, equipoId, CategoriaId });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("SubirLogo", "Administrador", new { archivoError = "Por favor, selecciona un tipo de archivo válido.", equipoId, CategoriaId });
+                }
+            }
+            else
+            {
+                return RedirectToAction("SubirLogo", "Administrador", new { archivoError = "Por favor, selecciona un archivo válido.", equipoId, CategoriaId });
+            }
+        }
+
+
         [HttpGet]
         public IActionResult SubirLogo(string? archivoError, int equipoId, int CategoriaId)
-
         {
             if (archivoError != null)
             {
@@ -305,33 +355,30 @@ namespace PotaxieSport.Controllers
             ViewBag.categorias = CategoriaId;
             return View();
         }
-        [HttpPost]
-        [HttpPost]
-        public IActionResult SubirLogo(string? archivoError, int id, IFormFile file, string tipo)
+
+
+        [HttpGet]
+        public IActionResult DetallesEquipo(int id)
         {
-            if (file != null && file.Length > 0)
+            if (id <= 0)
             {
-                if (tipo != null)
-                {
-                    string nombre = tipo + "_" + id + "_" + file.FileName.Replace(" ", ""); ;
-                    string respuesta = _archivosServicio.SubirArchivo(file, nombre, tipo);
-                    _archivosServicio.GuardarArchivoFotoEnBD(nombre, id, tipo);
-                    return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = respuesta }); //{ archivoError = "Archivo subido con éxito" });
-                }
-                else
-                {
-                    return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un tipo de archivo válido." });
-                }
-
-
+                return BadRequest("ID de equipo inválido.");
             }
-            else
+            var equipo = _generalServicio.ObtenerEquipoPorId(id);
+            var jugadores = _generalServicio.ObtenerJugadoresPorEquipoId(id);
+            var categoria = _generalServicio.ObtenerCategoriaPorId(equipo.CategoriaId);
+            var coach = _generalServicio.ObtenerUsuarioPorId(equipo.UsuarioCoachId);
+
+            var viewModel = new DetallesEquipoViewModel
             {
-                return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un archivo válido." });
-            }
+                Equipo = equipo,
+                Jugadores = jugadores,
+                Categoria = categoria,
+                Coach = coach
+            };
 
+
+            return View(viewModel);
         }
-
-
     }
-    }
+}

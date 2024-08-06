@@ -1,0 +1,58 @@
+﻿@model PotaxieSport.Models.DetallesEquipoViewModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Detalles del Equipo";
+}
+
+<h1>Detalles del Equipo</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>@Model.Equipo.EquipoNombre</h3>
+            <p><strong>Género:</strong> @Model.Equipo.Genero</p>
+            <p><strong>Categoría:</strong> @Model.Categoria.CategoriaNombre</p>
+            <p><strong>Coach:</strong> @Model.Coach.NombreCompleto</p>
+            <p><strong>Torneo Actual:</strong> @Model.Equipo.TorneoActualId</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Logo:</strong></p>
+            <p><img class="img-fluid rounded" src="@Url.Content(Model.Equipo.Logo)" alt="Logo del Equipo"></p>
+        </div>
+    </div>
+
+    <h2 class="mt-4">Jugadores del Equipo</h2>
+    <!-- Botón para abrir el modal de agregar jugador -->
+    <div class="mb-3">
+        <a href="#addPlayerModal" data-bs-toggle="modal" class="btn btn-primary">Agregar Jugador</a>
+    </div>
+    <!-- Tabla para mostrar los jugadores -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Edad</th>
+                <th>Fotografía</th>
+                <th>Posición</th>
+                <th>Número de Jugador</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody id="jugadores-tbody">
+            <!-- Las filas se llenarán dinámicamente con JavaScript -->
+        </tbody>
+    </table>
+
+    <!-- Contenedor para los botones de paginación -->
+    <div id="pagination" class="mt-3">
+        <!-- Los botones de paginación se llenarán dinámicamente con JavaScript -->
+    </div>
+
+    <!-- Script para pasar los datos al JavaScript -->
+    <script id="jugadores-data" type="application/json">
+        @Html.Raw(Json.Serialize(Model.Jugadores))
+    </script>
+</div>
