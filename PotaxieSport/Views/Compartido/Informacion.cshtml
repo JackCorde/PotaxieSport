@@ -1,0 +1,585 @@
+﻿@model PotaxieSport.Models.ViewModels.DetallesTorneo
+
+@{
+    Layout = null;
+}
+
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc;
+@using System.Data;
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>PotaxieSport - Torneos</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="~/img_plantilla/apple-icon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="~/img_plantilla/favicon.ico">
+
+    <link rel="stylesheet" href="~/css_plantilla/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css_plantilla/templatemo.css">
+    <link rel="stylesheet" href="~/css_plantilla/custom.css">
+
+    <!-- Load fonts style after rendering the layout styles -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
+    <link rel="stylesheet" href="~/css_plantilla/fontawesome.min.css">
+    
+</head>
+
+
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+
+            <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
+                Potaxie
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between" id="templatemo_main_nav">
+                <div class="flex-fill">
+                    <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Torneos" asp-controller="Compartido">Torneos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Index" asp-controller="Administrador">Recursos</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="navbar align-self-center d-flex">
+                    <a class="nav-icon position-relative text-decoration-none" asp-action="CerrarSesion" asp-controller="Home">
+                        <i class="fa fa-fw fa-sign-out-alt text-dark mr-3"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+
+    <!-- Start Content -->
+    <div class="container py-5">
+        <div class="row">
+
+
+
+
+
+            <!-- Titulos -->
+            <div class="text-center">
+                <h2 class="fw-light  titulos">Detalles Torneo</h2>
+                <p class="lead"> Toda la información relevante de tu torneo.</p><br />
+
+            </div>
+
+            <br>
+
+            <div class="container w-auto mb-3">
+                <div class="row">
+                    <div class="col">
+
+                        <!-- Menu de pestañas -->
+                        <ul class="nav nav-tabs flex-column flex-sm-row justify-content-center" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link col @(ViewBag.NumeroPestana == 1 ? "active" : "")" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Información</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link col @(ViewBag.NumeroPestana == 2 ? "active" : "")" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Equipos</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link col @(ViewBag.NumeroPestana == 3 ? "active" : "")" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Partidos</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link col @(ViewBag.NumeroPestana == 4 ? "active" : "")" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false">Resultados</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link col @(ViewBag.NumeroPestana == 5 ? "active" : "")" id="departamentos-tab" data-bs-toggle="tab" data-bs-target="#departamentos-tab-pane" type="button" role="tab" aria-controls="departamentos-tab-pane" aria-selected="false">Contaduria</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link col @(ViewBag.NumeroPestana == 6 ? "active" : "")" id="departamentos-tab" data-bs-toggle="tab" data-bs-target="#salud-tab-pane" type="button" role="tab" aria-controls="salud-tab-pane" aria-selected="false">Salud</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="myTabContent">
+
+                            <!-- Informacion -->
+                            <div class="tab-pane fade @(ViewBag.NumeroPestana == 1 ? "show active" : "")" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+
+
+
+                                <br>
+                                <div class="container mw-100 mb-3">
+                                    <div class="row">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-10 fondoGeneric p-4 rounded-4 shadow-sm col-sm-12">
+
+                                            <h3 class="p-1 titulos mb-4"><i class="fa-solid fa-file-lines"></i> Información de Torneo</h3>
+
+                                            <div class="row g-2">
+
+                                                <div class="col-md-4">
+                                                    <label for="partner" class="form-label fw-bold titulosAsign lead">Nombre de Torneo</label>
+                                                    <p class="lead">@Model.torneo.NombreTorneo</p>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label for="partner" class="form-label fw-bold titulosAsign lead">Categoria</label>
+                                                    <p class="lead">@Model.torneo.Categoria</p>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label for="partner" class="form-label fw-bold titulosAsign lead">Género</label>
+                                                    <p class="lead">@Model.torneo.Genero</p>
+                                                </div>
+
+                                                <hr>
+
+                                                <div class="col-md-4">
+                                                    <label for="Nombre" class="form-label fw-bold titulosAsign lead">Usuario Administrador</label>
+                                                    <p class="lead">@Model.torneo.Administrador</p>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label for="Tipo" class="form-label fw-bold titulosAsign lead">Usuario Contador</label>
+                                                    <p class="lead">@Model.torneo.Contador</p>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label for="Prioridad" class="form-label fw-bold titulosAsign lead">Usuario Doctor</label>
+                                                    <p class="lead">@Model.torneo.Doctor</p>
+                                                </div>
+
+                                                <hr>
+
+                                                <div class="col-md-5">
+                                                    <label for="levantamiento" class="form-label fw-bold titulosAsign lead">Fecha Inicio</label>
+                                                    <p class="lead">@Model.torneo.FechaInicio</p>
+
+                                                    <label for="solicito" class="form-label fw-bold titulosAsign lead">Fecha Fin</label>
+                                                    <p class="lead">@Model.torneo.FechaFin</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                            </div>
+
+                            <!--Final de Informacion -->
+
+                            <!-- Equipos Participantes -->
+                            <div class="tab-pane fade @(ViewBag.NumeroPestana == 2 ? "show active" : "")" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                                <br>
+                                <div class="container w-auto mb-3">
+                                    <div class="row ">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-10 fondoGeneric p-4 rounded-4 shadow-sm col-sm-12">
+                                            <h3 class="p-1 titulos mb-4">Equipos Participantes</h3>
+                                            <div class="row g-2">
+
+                                                @*Crear nuevo cliente*@
+                                                <form asp-action="ClientesCreate" asp-controller="Catalogos" class="needs-validation" id="formCliente">
+                                                    <div class="row g-3 mt-2  mb-2">
+                                                        
+                                                        <p class="fw-bold m-0 ms-1">Agregar equipo:</p>
+
+                                                        <div class="col-md-4 text-center">
+                                                            <label for="partner" class="form-label fw-bold visually-hidden">Selecciona Equipo</label>
+                                                            <select class="form-select" id="partner" name="partner" asp-items="@ViewBag.Partners" required></select>
+                                                            <div class="invalid-feedback"></div>
+                                                        </div>
+
+                                                        
+                                                        <div class="col-md-2 text-center">
+                                                            <button id="addCliente" type="submit" class="btnGeneric btnConexiones mb-3">Agregar</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-striped text-center align-middle table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">EquipoId</th>
+                                                            <th scope="col">Equipo</th>
+                                                            <th scope="col">Género</th>
+                                                            <th scope="col">Logo</th>
+                                                            <th scope="col">Categoria</th>
+                                                            <th scope="col">Coache</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @if (Model.equipos != null && Model.equipos.Count > 0)
+                                                        {
+                                                            foreach (var equipo in Model.equipos)
+                                                            {
+                                                                <tr>
+                                                                    <td>@equipo.equipo.EquipoId</td>
+                                                                    <td>@equipo.equipo.EquipoNombre</td>
+                                                                    <td>@equipo.equipo.Genero</td>
+                                                                    <td><img src="~/Formatos/Imagenes/Equipo/@equipo.equipo.Logo" style="width:30px;" /></td>
+                                                                    <td>@equipo.equipo.Categoria</td>
+                                                                    <td>@equipo.equipo.Coach</td>
+                                                                   
+                                                                    <td>
+                                                                        <button data-id="@equipo.equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                            Eliminar
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td colspan="7">No hay equipos agregados</td>
+                                                            </tr>
+                                                        }
+
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+                                            <div class="d-flex justify-content-end mt-1">
+                                                <ul class="pagination pagination-sm">
+                                                    
+                                                </ul>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <!--Final Equipos Participantes-->
+
+                            <!-- Partidos -->
+                            <div class="tab-pane fade @(ViewBag.NumeroPestana == 3 ? "show active" : "")" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+                                <br>
+                                <div class="container w-auto mb-3">
+                                    <div class="row ">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-10 fondoGeneric p-4 rounded-4 shadow-sm">
+                                            <h3 class="p-1 titulos mb-4"><i class="fa-solid fa-people-group"></i>Partidos</h3>
+                                            <div class="row g-2">
+
+                                                <div class="col-md-12 text-start">
+                                                    <button type="button" class="btnGeneric btnConexiones" data-bs-toggle="modal" data-bs-target="#agregarUsuario">
+                                                        Nuevo Partido
+                                                    </button>
+                                                </div>
+
+                                                <div class="col-md-4"></div>
+
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped text-center align-middle table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Equipo Retador</th>
+                                                                <th scope="col">Equipo Defensor</th>
+                                                                <th scope="col">Arbitro</th>
+                                                                <th scope="col">Fecha</th>
+                                                                <th scope="col">Hora</th>
+                                                                <th scope="col">Lugar</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                            @if (Model.partidos != null && Model.partidos.Count > 0)
+                                                            {
+                                                                foreach (var partido in Model.partidos)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@partido.EquipoRetador</td>
+                                                                        <td>@partido.EquipoDefensor</td>
+                                                                        <td>@partido.Arbitro</td>
+                                                                        <td>@partido.Fecha</td>
+                                                                        <td>@partido.Hora</td>
+                                                                        <td>@partido.Lugar</td>
+
+                                                                        @if(partido.Fecha > DateTime.Today)
+                                                                        {
+                                                                            <td>
+                                                                                <button data-id="@partido.PartidoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                                    Eliminar
+                                                                                </button>
+                                                                            </td>
+                                                                        }else{
+                                                                            <td>No se puede eliminar</td>
+                                                                        }
+                                                                        
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <tr>
+                                                                    <td colspan="7">No hay partidos creados</td>
+                                                                </tr>
+                                                            }
+
+                                                        </tbody>
+                                                    </table>
+                                                    
+                                                    <div class="text-danger text-center"><p></p></div>
+                                                </div>
+
+                                                <div class="d-flex justify-content-end mt-1">
+                                                    <ul class="pagination pagination-sm titulos">
+                                                       
+                                                    </ul>
+                                                </div>
+
+                                                <br>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Final Partidos-->
+                            <!-- Arbitraje -->
+                            <div class="tab-pane fade @(ViewBag.NumeroPestana == 4 ? "show active" : "")" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
+                                <br>
+                                <div class="container w-auto mb-3">
+                                    <div class="row ">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-10 fondoGeneric p-4 rounded-4 shadow-sm">
+                                            <h3 class="p-1 titulos mb-4"><i class="fa-solid fa-clipboard-list"></i>Resultados Partidos</h3>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-striped text-center align-middle table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Equipo Retador</th>
+                                                            <th scope="col">Equipo Defensor</th>
+                                                            <th scope="col">Arbitro</th>
+                                                            <th scope="col">Fecha</th>
+                                                            <th scope="col">Hora</th>
+                                                            <th scope="col">Lugar</th>
+                                                            <th scope="col">Cédula</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @if (Model.partidos != null && Model.partidos.Count > 0)
+                                                        {
+                                                            foreach (var partido in Model.partidos)
+                                                            {
+                                                                <tr>
+                                                                    <td>@partido.EquipoRetador</td>
+                                                                    <td>@partido.EquipoDefensor</td>
+                                                                    <td>@partido.Arbitro</td>
+                                                                    <td>@partido.Fecha</td>
+                                                                    <td>@partido.Hora</td>
+                                                                    <td>@partido.Lugar</td>
+
+                                                                    @if (partido.Cedula != null)
+                                                                    {
+                                                                        <td>
+                                                                            <button data-id="@partido.PartidoId" style="border:none; background-color:transparent;" class="btn" data-url="@Url.Action("Agregar Cedula", "Árbitros")">
+                                                                                Agregar Cédula
+                                                                            </button>
+                                                                        </td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>@partido.Cedula</td>
+                                                                    }
+
+                                                                </tr>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td colspan="7">No hay partidos creados</td>
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Final Arbitraje-->
+
+                            <!--Contaduria -->
+                            <div class="tab-pane fade @(ViewBag.NumeroPestana == 5 ? "show active" : "")" id="departamentos-tab-pane" role="tabpanel" aria-labelledby="departamentos-tab" tabindex="0">
+                                <br>
+                                <div class="container w-auto mb-3">
+                                    <div class="row ">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-10 fondoGeneric p-4 rounded-4 shadow-sm">
+                                            <h3 class="p-1 titulos mb-3"><i class="fa-solid fa-sitemap"></i>Información Contable</h3>
+                                            <div class="row g-2">
+
+                                                <form asp-action="DepartamentosCreate" asp-controller="Catalogos" class="needs-validation" id="formDepartamentos">
+                                                    <div class="row g-3 mt-2  mb-2">
+
+                                                        <p class="fw-bold m-0 ms-1">Agregar Nueva Transacción</p>
+
+                                                        <div class="col-md-6 text-center">
+                                                            <label  class="visually-hidden">Nombre</label>
+                                                            <input type="text" class="form-control" id="nombreDep" name="nombreDep" placeholder="Nombre" required maxlength="40">
+                                                            <div class="invalid-feedback">Por favor, escribe un nombre</div>
+                                                        </div>
+                                                        <div class="col-md-3 text-start">
+                                                            <button id="addDepartamento" type="submit" class="btnGeneric btnConexiones mb-3">Agregar</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-striped text-center align-middle table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Num.</th>
+                                                            <th scope="col">Nombre</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Final Información Contable-->
+
+
+
+                            <!-- Salud -->
+                            <div class="tab-pane fade @(ViewBag.NumeroPestana == 6 ? "show active" : "")" id="salud-tab-pane" role="tabpanel" aria-labelledby="salud-tab" tabindex="0">
+
+                                <br>
+                                <div class="container w-auto mb-3">
+                                    <div class="row ">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-10 fondoGeneric p-4 rounded-4 shadow-sm col-sm-12">
+                                            <h3 class="p-1 titulos mb-4"><i class="fa-solid fa-handshake"></i> Información de Salud</h3>
+                                            
+
+                                            <div class="table-responsive">
+                                                <table class="table table-striped text-center align-middle table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">EquipoId</th>
+                                                            <th scope="col">Equipo</th>
+                                                            <th scope="col">Género</th>
+                                                            <th scope="col">Logo</th>
+                                                            <th scope="col">Categoria</th>
+                                                            <th scope="col">Coache</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @if (Model.equipos != null && Model.equipos.Count > 0)
+                                                        {
+                                                            foreach (var equipo in Model.equipos)
+                                                            {
+                                                                <tr>
+                                                                    <td>@equipo.equipo.EquipoId</td>
+                                                                    <td>@equipo.equipo.EquipoNombre</td>
+                                                                    <td>@equipo.equipo.Genero</td>
+                                                                    <td><img src="~/Formatos/Imagenes/Equipo/@equipo.equipo.Logo" style="width:30px;" /></td>
+                                                                    <td>@equipo.equipo.Categoria</td>
+                                                                    <td>@equipo.equipo.Coach</td>
+
+                                                                    <td>
+                                                                        <button data-id="@equipo.equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                            Ver Jugadores
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td colspan="7">No hay equipos agregados</td>
+                                                            </tr>
+                                                        }
+
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+                                            <div class="d-flex justify-content-end mt-1">
+                                                <ul class="pagination pagination-sm">
+                                                </ul>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Final de Salud -->
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+
+    <!-- End Footer -->
+    <!-- Start Script -->
+    <script src="~/js_plantilla/jquery-1.11.0.min.js"></script>
+    <script src="~/js_plantilla/jquery-migrate-1.2.1.min.js"></script>
+    <script src="~/js_plantilla/bootstrap.bundle.min.js"></script>
+    <script src="~/js_plantilla/templatemo.js"></script>
+    <script src="~/js_plantilla/custom.js"></script>
+    <!-- End Script -->
+</body>
+
+</html>
+

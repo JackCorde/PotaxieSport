@@ -342,7 +342,7 @@ namespace PotaxieSport.Controllers
 
 
 
-        public Torneo ObtenerTorneo(int equipoId)
+        private Torneo ObtenerTorneo(int equipoId)
         {
             Torneo torneo = null;
             try

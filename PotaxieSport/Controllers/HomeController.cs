@@ -100,7 +100,8 @@ namespace PotaxieSport.Controllers
                     using (NpgsqlCommand cmd = new("SELECT * FROM ValidarUsuario(@p_correo)", con))
                     {
                         cmd.CommandType = CommandType.Text;
-#pragma warning disable CS8604 // Posible argumento de referencia nulo
+
+                        #pragma warning disable CS8604 // Posible argumento de referencia nulo
                         cmd.Parameters.AddWithValue("p_correo", model.Correo);
                         con.Open();
                         try
@@ -148,11 +149,11 @@ namespace PotaxieSport.Controllers
                                                 switch (perfilId)
                                                 {
                                                     case 1:
-                                                        return RedirectToAction("Index", "Doctor");
+                                                        return RedirectToAction("Torneos", "Compartido");
                                                     case 2:
-                                                        return RedirectToAction("Index", "Administrador");
+                                                        return RedirectToAction("Torneos", "Compartido");
                                                     case 3:
-                                                        return RedirectToAction("Index", "Contador");
+                                                        return RedirectToAction("Torneos", "Compartido");
                                                     case 4:
                                                         return RedirectToAction("Index", "Arbitro");
                                                     case 5:
