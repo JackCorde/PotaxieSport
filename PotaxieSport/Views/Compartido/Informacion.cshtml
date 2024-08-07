@@ -229,15 +229,15 @@
                                                             foreach (var equipo in Model.equipos)
                                                             {
                                                                 <tr>
-                                                                    <td>@equipo.equipo.EquipoId</td>
-                                                                    <td>@equipo.equipo.EquipoNombre</td>
-                                                                    <td>@equipo.equipo.Genero</td>
-                                                                    <td><img src="~/Formatos/Imagenes/Equipo/@equipo.equipo.Logo" style="width:30px;" /></td>
-                                                                    <td>@equipo.equipo.Categoria</td>
-                                                                    <td>@equipo.equipo.Coach</td>
+                                                                    <td>@equipo.EquipoId</td>
+                                                                    <td>@equipo.EquipoNombre</td>
+                                                                    <td>@equipo.Genero</td>
+                                                                    <td><img src="~/Formatos/Imagenes/Equipo/@equipo.Logo" style="width:30px;" /></td>
+                                                                    <td>@equipo.Categoria</td>
+                                                                    <td>@equipo.Coach</td>
                                                                    
                                                                     <td>
-                                                                        <button data-id="@equipo.equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                        <button data-id="@equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
                                                                             Eliminar
                                                                         </button>
                                                                     </td>
@@ -510,15 +510,15 @@
                                                             foreach (var equipo in Model.equipos)
                                                             {
                                                                 <tr>
-                                                                    <td>@equipo.equipo.EquipoId</td>
-                                                                    <td>@equipo.equipo.EquipoNombre</td>
-                                                                    <td>@equipo.equipo.Genero</td>
-                                                                    <td><img src="~/Formatos/Imagenes/Equipo/@equipo.equipo.Logo" style="width:30px;" /></td>
-                                                                    <td>@equipo.equipo.Categoria</td>
-                                                                    <td>@equipo.equipo.Coach</td>
+                                                                    <td>@equipo.EquipoId</td>
+                                                                    <td>@equipo.EquipoNombre</td>
+                                                                    <td>@equipo.Genero</td>
+                                                                    <td><img src="~/Formatos/Imagenes/Equipo/@equipo.Logo" style="width:30px;" /></td>
+                                                                    <td>@equipo.Categoria</td>
+                                                                    <td>@equipo.Coach</td>
 
                                                                     <td>
-                                                                        <button data-id="@equipo.equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                        <button data-id="@equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
                                                                             Ver Jugadores
                                                                         </button>
                                                                     </td>

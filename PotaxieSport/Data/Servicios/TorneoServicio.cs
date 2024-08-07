@@ -53,13 +53,17 @@ namespace PotaxieSport.Data.Servicios
                                     FechaFin = reader.GetDateTime(reader.GetOrdinal("fecha_fin"))
                                 };
 
-                                List<Equipos> equipos = EquiposPorTorneo(torneoId);
+                                List<Equipo> equipos = ObtenerEquipos();
+                                List<Equipo> equiposTorneo = equipos.Where(e => e.TorneoActualId == torneoId).ToList();
+                                List<Equipo> equiposNoInscritos = equipos.Where(e => e.TorneoActualId == 0 && e.CategoriaId == reader.GetInt32(reader.GetOrdinal("categoria_id")) && e.Genero == reader.GetString(reader.GetOrdinal("genero"))).ToList();
+
                                 List<Partido> partidos = ObtenerPartidos().Where(p => p.TorneoId == torneoId).ToList();
 
                                 torneoDetalles = new DetallesTorneo
                                 {
                                     torneo = torneoObtenido,
-                                    equipos = equipos,
+                                    equipos = equiposTorneo,
+                                    equiposNoInscritos = equiposNoInscritos,
                                     partidos = partidos
                                 };
                             }
@@ -183,6 +187,53 @@ namespace PotaxieSport.Data.Servicios
             {
                 string mensaje = ex.Message;
                 return null;
+            }
+        }
+
+
+        public List<Equipo> ObtenerEquipos()
+        {
+            List<Equipo> equipos = new List<Equipo>();
+            try
+            {
+                using (var connection = new NpgsqlConnection(_contexto.Conexion))
+                {
+                    connection.Open();
+                    // Cambia el comando para llamar a la función
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM ObtenerEquipos()", connection))
+                    {
+                        cmd.CommandType = CommandType.Text; // Cambiar a CommandType.Text
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var equipo = new Equipo
+                                {
+                                    EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
+                                    EquipoNombre = reader.IsDBNull(reader.GetOrdinal("nombre_equipo")) ? null : reader.GetString(reader.GetOrdinal("nombre_equipo")),
+                                    Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
+                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : "/Formatos/Imagenes/Equipo/" + reader.GetString(reader.GetOrdinal("logo")),
+                                    CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
+                                    Categoria = reader.IsDBNull(reader.GetOrdinal("categoria_nombre")) ? null : reader.GetString(reader.GetOrdinal("categoria_nombre")),
+                                    UsuarioCoachId = reader.GetInt32(reader.GetOrdinal("usuario_coach")),
+                                    Coach = reader.IsDBNull(reader.GetOrdinal("nombre_coach")) ? null : reader.GetString(reader.GetOrdinal("nombre_coach")),
+                                    TorneoActualId = reader.IsDBNull(reader.GetOrdinal("torneo_actual")) ? 0 : reader.GetInt32(reader.GetOrdinal("torneo_actual")),
+                                    TorneoActual = reader.IsDBNull(reader.GetOrdinal("torneo")) ? "No hay torneo asignado" : reader.GetString(reader.GetOrdinal("torneo")),
+                                };
+
+                                equipos.Add(equipo);
+                            }
+                        }
+                    }
+                }
+
+                return equipos;
+            }
+            catch (Exception error)
+            {
+                string mensaje = error.Message;
+                return equipos;
             }
         }
 

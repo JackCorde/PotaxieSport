@@ -268,7 +268,8 @@ namespace PotaxieSport.Controllers
                 var infoJugador = ObtenerJugadorDatos(data.username);
                 if (infoJugador != null)
                 {
-                    if (infoJugador.Clave == data.password)
+                    bool passwordMatch = BCrypt.Net.BCrypt.Verify( data.password, infoJugador.Clave);
+                    if (passwordMatch)
                     {
                         var registrosSalud = ObtenerDatosSalud(infoJugador.JugadorId);
                         var torneoActual = ObtenerTorneo(infoJugador.EquipoId);
