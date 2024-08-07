@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${jugador.apPaterno}</td>
                 <td>${jugador.apMaterno}</td>
                 <td>${jugador.edad}</td>
-                <td><img src="${jugador.fotografia}" width="50" /></td>
+            <td><img src="/Formatos/Imagenes/Equipo/${jugador.fotografia}" width="50" alt="Foto de ${jugador.jugadorNombre}" /></td>
                 <td>${jugador.posicion}</td>
                 <td>${jugador.numJugador}</td>
                 <td>${jugador.username}</td>

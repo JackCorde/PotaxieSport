@@ -6,5 +6,7 @@
         public List<Jugador> Jugadores { get; set; }
         public Categoria Categoria { get; set; }
         public Usuario Coach { get; set; }
+        public Jugador NuevoJugador { get; set; } = new Jugador();
+
     }
 }
