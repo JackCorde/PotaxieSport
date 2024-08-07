@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PotaxieSport.Data;
 using PotaxieSport.Data.Servicios;
 using PotaxieSport.Models;
@@ -367,7 +368,9 @@ namespace PotaxieSport.Controllers
             var equipo = _generalServicio.ObtenerEquipoPorId(id);
             var jugadores = _generalServicio.ObtenerJugadoresPorEquipoId(id);
             var categoria = _generalServicio.ObtenerCategoriaPorId(equipo.CategoriaId);
+
             var coach = _generalServicio.ObtenerUsuarioPorId(equipo.UsuarioCoachId);
+            var torneo = _generalServicio.ObtenerTorneos;
 
             var viewModel = new DetallesEquipoViewModel
             {
@@ -379,6 +382,26 @@ namespace PotaxieSport.Controllers
 
 
             return View(viewModel);
+        }
+        [HttpPost]
+        public IActionResult DetallesEquipo(Jugador jugador)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _generalServicio.CrearJugador(jugador);
+                    return View("DetallesEquipo", new { id = jugador.EquipoId });
+                }
+                catch (Exception ex)
+                {
+                    // Manejar el error, por ejemplo, mostrar un mensaje en la vista
+                    ModelState.AddModelError(string.Empty, "Error al crear el jugador: " + ex.Message);
+                }
+            }
+
+            // Si hay algún error, retorna la misma vista con el modelo actual
+            return View(jugador);
         }
     }
 }
