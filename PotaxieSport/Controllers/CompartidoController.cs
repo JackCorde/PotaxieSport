@@ -74,7 +74,29 @@ namespace PotaxieSport.Controllers
 
         public IActionResult Informacion(int torneoId)
         {
+
+            var claims = User.Claims;
+            var roleClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+
             var model = _torneoServicio.ObtenerTorneo(torneoId);
+
+            switch (roleClaim)
+            {
+                case "administrador":
+                    ViewBag.NumeroPestana = 1;
+                    break;
+                case "doctor":
+                    ViewBag.NumeroPestana = 6;
+                    break;
+                case "contador":
+                    ViewBag.NumeroPestana = 5;
+                    break;
+                // Puedes agregar más casos para otros roles aquí
+                default:
+                    return RedirectToAction("CerrarSesion", "Home");
+            }
+            
+                ViewBag.NumeroPestana = 1;
             return View(model);
         }
 
