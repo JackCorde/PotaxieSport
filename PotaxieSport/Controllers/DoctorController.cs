@@ -11,18 +11,21 @@ namespace PotaxieSport.Controllers
     {
         private readonly Contexto _contexto;
         private readonly GeneralServicio _generalServicio;
-        private readonly ILogger<HomeController> _logger;
+        private readonly TorneoServicio _torneoServicio;
 
-        public DoctorController(ILogger<HomeController> logger, Contexto contexto)
+        public DoctorController(Contexto contexto)
         {
             _contexto = contexto;
             _generalServicio = new GeneralServicio(contexto);
-            _logger = logger;
+            _torneoServicio = new TorneoServicio(contexto);
         }
 
-        [Authorize(Roles = "doctor")]
-        public IActionResult Index()
+        [Authorize]
+        public IActionResult Index(int equipoId, int torneoId)
         {
+            var jugadores = _torneoServicio.JugadoresPorEquipo(equipoId);
+            ViewBag.TorneoId = torneoId;
+            ViewBag.Jugadores = jugadores;
             return View();
         }
 

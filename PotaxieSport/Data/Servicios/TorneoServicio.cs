@@ -151,57 +151,57 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
-        private List<Equipos> EquiposPorTorneo(int torneoId)
-        {
-            try
-            {
-                List<Equipos> listaEquipos = new();
-                using (var connection = new NpgsqlConnection(_contexto.Conexion))
-                {
-                    connection.Open();
-                    // Cambia el comando para llamar a la función
-                    using (var cmd = new NpgsqlCommand("SELECT * FROM EquiposDeTorneo(@p_torneo_id)", connection))
-                    {
-                        cmd.CommandType = CommandType.Text; // Cambiar a CommandType.Text
-                        cmd.Parameters.AddWithValue("@p_torneo_id", torneoId);
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                var jugadoresEquipo = JugadoresPorEquipo(reader.GetInt32(reader.GetOrdinal("equipo_id")));
-                                var equipo = new Equipo
-                                {
-                                    EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
-                                    EquipoNombre = reader.IsDBNull(reader.GetOrdinal("nombre_equipo")) ? null : reader.GetString(reader.GetOrdinal("nombre_equipo")),
-                                    Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
-                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
-                                    CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
-                                    Categoria = reader.IsDBNull(reader.GetOrdinal("categoria_nombre")) ? null : reader.GetString(reader.GetOrdinal("categoria_nombre")),
-                                    UsuarioCoachId = reader.GetInt32(reader.GetOrdinal("usuario_coach")),
-                                    Coach = reader.IsDBNull(reader.GetOrdinal("nombre_coach")) ? null : reader.GetString(reader.GetOrdinal("nombre_coach"))
-                                };
+        //private List<Equipos> EquiposPorTorneo(int torneoId)
+        //{
+        //    try
+        //    {
+        //        List<Equipos> listaEquipos = new();
+        //        using (var connection = new NpgsqlConnection(_contexto.Conexion))
+        //        {
+        //            connection.Open();
+        //            // Cambia el comando para llamar a la función
+        //            using (var cmd = new NpgsqlCommand("SELECT * FROM EquiposDeTorneo(@p_torneo_id)", connection))
+        //            {
+        //                cmd.CommandType = CommandType.Text; // Cambiar a CommandType.Text
+        //                cmd.Parameters.AddWithValue("@p_torneo_id", torneoId);
+        //                using (var reader = cmd.ExecuteReader())
+        //                {
+        //                    while (reader.Read())
+        //                    {
+        //                        var jugadoresEquipo = JugadoresPorEquipo(reader.GetInt32(reader.GetOrdinal("equipo_id")));
+        //                        var equipo = new Equipo
+        //                        {
+        //                            EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
+        //                            EquipoNombre = reader.IsDBNull(reader.GetOrdinal("nombre_equipo")) ? null : reader.GetString(reader.GetOrdinal("nombre_equipo")),
+        //                            Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
+        //                            Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
+        //                            CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
+        //                            Categoria = reader.IsDBNull(reader.GetOrdinal("categoria_nombre")) ? null : reader.GetString(reader.GetOrdinal("categoria_nombre")),
+        //                            UsuarioCoachId = reader.GetInt32(reader.GetOrdinal("usuario_coach")),
+        //                            Coach = reader.IsDBNull(reader.GetOrdinal("nombre_coach")) ? null : reader.GetString(reader.GetOrdinal("nombre_coach"))
+        //                        };
 
-                                Equipos elemento = new Equipos
-                                {
-                                    equipo = equipo,
-                                    jugadores = jugadoresEquipo
-                                };
+        //                        Equipos elemento = new Equipos
+        //                        {
+        //                            equipo = equipo,
+        //                            jugadores = jugadoresEquipo
+        //                        };
 
-                                listaEquipos.Add(elemento);
-                            }
-                        }
-                    }
-                }
+        //                        listaEquipos.Add(elemento);
+        //                    }
+        //                }
+        //            }
+        //        }
 
-                return listaEquipos;
+        //        return listaEquipos;
 
-            }
-            catch (Exception ex)
-            {
-                string mensaje = ex.Message;
-                return null;
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string mensaje = ex.Message;
+        //        return null;
+        //    }
+        //}
 
 
         public List<Equipo> ObtenerEquipos()
@@ -251,11 +251,11 @@ namespace PotaxieSport.Data.Servicios
         }
 
 
-        private List<Jugadores> JugadoresPorEquipo(int equipoId)
+        public List<Jugador> JugadoresPorEquipo(int equipoId)
         {
             try
             {
-                List<Jugadores> listaJugadores = new();
+                List<Jugador> listaJugadores = new();
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
                 {
                     connection.Open();
@@ -269,7 +269,7 @@ namespace PotaxieSport.Data.Servicios
                         {
                             while (reader.Read())
                             {
-                                var listaRegistroSalud = ObtenerDatosSalud(reader.GetInt32(reader.GetOrdinal("jugador_id")));
+                                
                                 var jugador = new Jugador
                                 {
                                     JugadorId = reader.GetInt32(reader.GetOrdinal("jugador_id")),
@@ -284,13 +284,8 @@ namespace PotaxieSport.Data.Servicios
                                     NumJugador = reader.GetInt32(reader.GetOrdinal("num_jugador"))
                                 };
 
-                                Jugadores elemento = new Jugadores()
-                                {
-                                    jugador = jugador,
-                                    registros = listaRegistroSalud
-                                };
-
-                                listaJugadores.Add(elemento);
+                               
+                                listaJugadores.Add(jugador);
                             }
                         }
                     }
@@ -305,7 +300,7 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
-        private List<RegistroSalud> ObtenerDatosSalud(int id)
+        public List<RegistroSalud> ObtenerDatosSalud(int id)
         {
             List<RegistroSalud> registrosSalud = new List<RegistroSalud>();
 

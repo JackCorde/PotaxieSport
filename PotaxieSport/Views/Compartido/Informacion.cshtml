@@ -601,9 +601,9 @@
                                                                     <td>@equipo.Coach</td>
 
                                                                     <td>
-                                                                        <button data-id="@equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                        <a href="@Url.Action("Index", "Doctor", new { equipoId = equipo.EquipoId, torneoId = Model.torneo.TorneoId })" class="btnEliminarPartner titulosDanger" style="text-decoration:none;">
                                                                             Ver Jugadores
-                                                                        </button>
+                                                                        </a>
                                                                     </td>
                                                                 </tr>
                                                             }
