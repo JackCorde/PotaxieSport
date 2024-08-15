@@ -5,7 +5,7 @@
 </head>
 
 @{
-    ViewData["Title"] = "Arbitros";
+    ViewData["Title"] = "Coachs";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
 }
@@ -26,7 +26,7 @@
                     <input type="text" id="searchInput" placeholder="Buscar por nombre..." class="form-control">
                 </div>
                 <div class="col-lg-6 text-lg-end mt-3 mt-lg-0">
-                    <button onclick="location.href='@Url.Action("AgregarUsuario", "Administrador", new { url = "Coach" })'" type="button" class="btn btn-primary ms-3">
+                    <button onclick="location.href='@Url.Action("AgregarUsuario", "Administrador", new { url = "Coachs" })'" type="button" class="btn btn-primary ms-3">
                         Agregar Usuario
                     </button>
                 </div>
@@ -53,6 +53,7 @@
             </div>
         </div>
     </div>
+</div>
 
 @section Scripts {
     <script id="usuarios-data" type="application/json">

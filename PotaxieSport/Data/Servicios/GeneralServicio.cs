@@ -1,6 +1,10 @@
 ﻿using Npgsql;
 using PotaxieSport.Models;
 using System.Data;
+using System.Data.Common;
+using Dapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 namespace PotaxieSport.Data.Servicios
 {
@@ -390,7 +394,7 @@ namespace PotaxieSport.Data.Servicios
                     using (var cmd = new NpgsqlCommand("SELECT crearUsuario(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_username, @p_email, @p_rol_id, @p_error_autentificacion, @p_password)", connection))
                     {
                         cmd.CommandType = CommandType.Text;
-#pragma warning disable CS8604 // Posible argumento de referencia nulo
+                    #pragma warning disable CS8604 // Posible argumento de referencia nulo
                         cmd.Parameters.AddWithValue("p_nombre", nombre);
                         cmd.Parameters.AddWithValue("p_ap_paterno", apPaterno);
                         cmd.Parameters.AddWithValue("p_ap_materno", apMaterno);
@@ -630,45 +634,158 @@ namespace PotaxieSport.Data.Servicios
 
             return jugadores;
         }
-
-        public void CrearJugador(Jugador jugador)
+        public async Task CrearJugadorAsync(string nombre, string apPaterno, string apMaterno, int edad, string fotografia, int equipoId, string posicion, int numJugador, string username, string clave)
         {
-            // Hashear la contraseña (si es necesario)
-            string hashedContrasena = BCrypt.Net.BCrypt.HashPassword(jugador.Clave);
+            try
+            {
+                using (var connection = new NpgsqlConnection(_contexto.Conexion))
+                {
+                    await connection.OpenAsync();
+
+                    using (var command = new NpgsqlCommand("SELECT crear_jugador(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_edad, @p_fotografia, @p_equipo_id, @p_posicion, @p_num_jugador, @p_username, @p_contrasena)", connection))
+                    {
+                        command.Parameters.AddWithValue("p_nombre", nombre);
+                        command.Parameters.AddWithValue("p_ap_paterno", apPaterno);
+                        command.Parameters.AddWithValue("p_ap_materno", apMaterno);
+                        command.Parameters.AddWithValue("p_edad", edad);
+                        command.Parameters.AddWithValue("p_fotografia", fotografia);
+                        command.Parameters.AddWithValue("p_equipo_id", equipoId);
+                        command.Parameters.AddWithValue("p_posicion", posicion);
+                        command.Parameters.AddWithValue("p_num_jugador", numJugador);
+                        command.Parameters.AddWithValue("p_username", username);
+                        command.Parameters.AddWithValue("p_contrasena", clave);
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (NpgsqlException npgsqlEx)
+            {
+                // Captura y maneja excepciones específicas de Npgsql
+                Console.WriteLine($"Error de Npgsql: {npgsqlEx.Message}");
+                throw; // Relanza la excepción para que pueda ser manejada por el controlador
+            }
+            catch (Exception ex)
+            {
+                // Captura cualquier otra excepción
+                Console.WriteLine($"Error al crear el jugador: {ex.Message}");
+                throw; // Relanza la excepción para que pueda ser manejada por el controlador
+            }
+        }
+
+
+        //Obtener tordeos po id de coach
+        public List<Torneo> ObtenerTorneosPorCoach(int coachId)
+        {
+            List<Torneo> torneos = new List<Torneo>();
+
+            using (var conn = new NpgsqlConnection(_contexto.Conexion))
+            {
+                conn.Open();
+                using (var cmd = new NpgsqlCommand("SELECT * FROM obtener_torneos_por_coach(@coachId)", conn))
+                {
+                    cmd.Parameters.AddWithValue("coachId", coachId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var torneo = new Torneo
+                            {
+                                TorneoId = reader.GetInt32(0),
+                                NombreTorneo = reader.GetString(1),
+                                CategoriaId = reader.GetInt32(2),
+                                Genero = reader.GetString(3),
+                                Logo = reader.IsDBNull(4) ? null : reader.GetString(4),
+                                AdministradorId = reader.GetInt32(5),
+                                ContadorId = reader.IsDBNull(6) ? 0 : reader.GetInt32(6), // ContadorId puede ser null
+                                DoctorId = reader.IsDBNull(7) ? 0 : reader.GetInt32(7),   // DoctorId puede ser null
+                                FechaInicio = reader.GetDateTime(8),
+                                FechaFin = reader.IsDBNull(9) ? DateTime.MinValue : reader.GetDateTime(9)
+                            };
+
+                            torneos.Add(torneo);
+                        }
+                    }
+                }
+            }
+
+            return torneos;
+        }
+
+        public Equipo GetEquipoByCoachAndTorneo(int torneoId, int userId)
+        {
+            Equipo equipo = null;
 
             using (var connection = new NpgsqlConnection(_contexto.Conexion))
             {
                 connection.Open();
-                try
-                {
-                    using (var cmd = new NpgsqlCommand("SELECT public.crear_jugador(@p_nombre, @p_ap_paterno, @p_ap_materno, @p_edad, @p_fotografia, @p_equipo_id, @p_posicion, @p_num_jugador, @p_username, @p_contrasena)", connection))
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("p_nombre", jugador.JugadorNombre);
-                        cmd.Parameters.AddWithValue("p_ap_paterno", jugador.ApPaterno);
-                        cmd.Parameters.AddWithValue("p_ap_materno", jugador.ApMaterno);
-                        cmd.Parameters.AddWithValue("p_edad", jugador.Edad);
-                        cmd.Parameters.AddWithValue("p_fotografia", jugador.Fotografia);
-                        cmd.Parameters.AddWithValue("p_equipo_id", jugador.EquipoId);
-                        cmd.Parameters.AddWithValue("p_posicion", jugador.Posicion);
-                        cmd.Parameters.AddWithValue("p_num_jugador", jugador.NumJugador);
-                        cmd.Parameters.AddWithValue("p_username", jugador.Username);
-                        cmd.Parameters.AddWithValue("p_contrasena", hashedContrasena);
 
-                        cmd.ExecuteNonQuery();
+                using (var command = new NpgsqlCommand("SELECT * FROM get_equipo_by_coach_and_torneo(@p_usuario_coach, @p_torneo_actual)", connection))
+                {
+                    command.Parameters.AddWithValue("p_usuario_coach", userId);
+                    command.Parameters.AddWithValue("p_torneo_actual", torneoId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            equipo = new Equipo
+                            {
+                                EquipoId = reader.GetInt32(0),
+                                EquipoNombre = reader.GetString(1),
+                                Genero = reader.GetString(2),
+                                Logo = reader.GetString(3),
+                                CategoriaId = reader.GetInt32(4),
+                                UsuarioCoachId = reader.GetInt32(5),
+                                TorneoActualId = reader.IsDBNull(6) ? (int?)null : reader.GetInt32(6)
+                            };
+                        }
                     }
                 }
-                catch (PostgresException ex) when (ex.SqlState == "23505")
-                {
-                    throw new Exception("Error al insertar el jugador: posible violación de restricción única.");
-                }
-                finally
-                {
-                    connection.Close();
-                }
             }
+
+            return equipo;
         }
 
+        public List<DetallePartido> ObtenerDetallesPartido(int equipoId)
+        {
+            var detallesPartido = new List<DetallePartido>();
+
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+
+                using (var command = new NpgsqlCommand("SELECT * FROM detalles_partido(@p_equipo_id)", connection))
+                {
+                    command.Parameters.AddWithValue("p_equipo_id", equipoId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var detalle = new DetallePartido
+                            {
+                                PartidoId = reader.GetInt32(reader.GetOrdinal("partido_id")),
+                                Fecha = reader.GetDateTime(reader.GetOrdinal("fecha")),
+                                Hora = reader.GetTimeSpan(reader.GetOrdinal("hora")),
+                                Lugar = reader.GetString(reader.GetOrdinal("lugar")),
+                                Costo = reader.GetDecimal(reader.GetOrdinal("costo")),
+                                TipoEquipo = reader.GetString(reader.GetOrdinal("tipo_equipo")),
+                                NombreEquipoRetador = reader.GetString(reader.GetOrdinal("nombre_equipo_retador")),
+                                NombreEquipoDefensor = reader.GetString(reader.GetOrdinal("nombre_equipo_defensor")),
+                                NombreEquipoGanador = reader.GetString(reader.GetOrdinal("nombre_equipo_ganador")),
+                                IdEquipoGanador = reader.GetInt32(reader.GetOrdinal("id_equipo_ganador")),
+                                NombreArbitro = reader.GetString(reader.GetOrdinal("nombre_arbitro"))
+                            };
+                            detallesPartido.Add(detalle);
+                        }
+                    }
+                }
+            }
+
+            return detallesPartido;
+        }
 
 
     }
