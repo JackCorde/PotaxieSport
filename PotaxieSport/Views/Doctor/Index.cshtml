@@ -1,1 +1,175 @@
 ﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>PotaxieSport - Jugadores</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="~/img_plantilla/apple-icon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="~/img_plantilla/favicon.ico">
+
+    <link rel="stylesheet" href="~/css_plantilla/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css_plantilla/templatemo.css">
+    <link rel="stylesheet" href="~/css_plantilla/custom.css">
+
+    <!-- Load fonts style after rendering the layout styles -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
+    <link rel="stylesheet" href="~/css_plantilla/fontawesome.min.css">
+    <!--
+
+    TemplateMo 559 Zay Shop
+
+    https://templatemo.com/tm-559-zay-shop
+
+    -->
+</head>
+
+
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+
+            <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
+                Potaxie
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between" id="templatemo_main_nav">
+                <div class="flex-fill">
+                    <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Torneos" asp-controller="Compartido">Torneos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Index" asp-controller="Administrador">Recursos</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="navbar align-self-center d-flex">
+                    <a class="nav-icon position-relative text-decoration-none" asp-action="CerrarSesion" asp-controller="Home">
+                        <i class="fa fa-fw fa-sign-out-alt text-dark mr-3"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+
+    <!-- Start Content -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="col-md-1">
+                    <a class="btn btn-success text-white mt-2" asp-action="Informacion" asp-controller="Compartido" asp-route-torneoId=@ViewBag.TorneoId>
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="row text-center py-3">
+                        <div class="col-lg-6 m-auto">
+                            <h1 class="h1">Jugadores</h1>
+                            <p>
+                                Jugadores.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @if (ViewBag.Jugadores.Count == 0)
+                        {
+                            <div class="col-md-12">
+                                <div class="row py-lg-4">
+                                    <div class="col-lg-6 col-md-8 mx-auto text-center">
+                                        <h1 class="fw-light titulos">
+                                            <i class="fa-regular fa-face-frown"></i>
+                                        </h1>
+                                        <p class="p-0">
+                                            No hay jugadores actualmente
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @foreach (var item in ViewBag.Jugadores)
+                        {
+                            <div class="col-md-4">
+                                <div class="card mb-2 product-wap rounded-0">
+                                    <div class="card rounded-0 square-container">
+                                        <img class="card-img rounded-0 img-fluid" src="@Url.Content(item.Fotografia)">
+                                        <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
+                                            <ul class="list-unstyled">
+                                                <li>
+                                                    <a class="btn btn-success text-white mt-2" href="javascript:void(0);" onclick="mostrarRegistrosSalud(@item.JugadorId)">
+                                                        <i class="far fa-eye"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <a href="javascript:void(0);" onclick="mostrarRegistrosSalud(@item.JugadorId)" class="h4 text-decoration-none text-center">@item.JugadorNombre @item.ApPaterno</a>
+                                        <p>@item.Equipo</p>
+                                        <ul class="w-100 list-unstyled  justify-content-between mb-0">
+                                            <li>Posición:@item.Posicion</li>
+                                            <li>Numero:@item.NumJugador</li>
+                                        </ul>
+                                        <p class="text-center mb-0">@item.Edad años</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="row text-center py-3">
+                    <div class="col-lg-6 m-auto">
+                        <h1 class="h4">Registros de Salud</h1>
+                        
+                    </div>
+                </div>
+                <div class="row" id="contenedor_registros">
+                        
+                </div>
+            </div>
+            <br>
+            
+            
+
+        </div>
+    </div>
+
+    <!-- End Footer -->
+    <!-- Start Script -->
+    <script src="~/js_plantilla/jquery-1.11.0.min.js"></script>
+    <script src="~/js_plantilla/jquery-migrate-1.2.1.min.js"></script>
+    <script src="~/js_plantilla/bootstrap.bundle.min.js"></script>
+    <script src="~/js_plantilla/templatemo.js"></script>
+    <script src="~/js_plantilla/custom.js"></script>  
+    <script src="~/js/consultar_registros.js"></script>
+    <!-- End Script -->
+</body>
+
+</html>
+

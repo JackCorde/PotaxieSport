@@ -24,7 +24,6 @@
     <Folder Include="wwwroot\Formatos\Comprobantes\PagoPartido\" />
     <Folder Include="wwwroot\Formatos\Imagenes\Jugadores\" />
     <Folder Include="wwwroot\Formatos\Cedulas\" />
-    <Folder Include="wwwroot\Formatos\Imagenes\Equipo\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -45,13 +45,13 @@ namespace PotaxieSport.Controllers
                     switch (role)
                     {
                         case "administrador":
-                            return RedirectToAction("Index", "Administrador");
+                            return RedirectToAction("Torneos", "Compartido");
                         case "doctor":
-                            return RedirectToAction("Index", "Doctor");
+                            return RedirectToAction("Torneos", "Compartido");
                         case "arbitro":
                             return RedirectToAction("Index", "Arbitro");
                         case "contador":
-                            return RedirectToAction("Index", "Contador");
+                            return RedirectToAction("Torneos", "Compartido");
                         case "coach":
                             return RedirectToAction("Index", "Coach");
                         default:

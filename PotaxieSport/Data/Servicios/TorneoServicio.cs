@@ -53,14 +53,19 @@ namespace PotaxieSport.Data.Servicios
                                     FechaFin = reader.GetDateTime(reader.GetOrdinal("fecha_fin"))
                                 };
 
-                                List<Equipos> equipos = EquiposPorTorneo(torneoId);
-                                List<Partido> partidos = ObtenerPartidos().Where(p => p.TorneoId == torneoId).ToList();
+                                List<Equipo> equipos = ObtenerEquipos();
+                                List<Equipo> equiposTorneo = equipos.Where(e => e.TorneoActualId == torneoId).ToList();
+                                List<Equipo> equiposNoInscritos = equipos.Where(e => e.TorneoActualId == 0 && e.CategoriaId == reader.GetInt32(reader.GetOrdinal("categoria_id")) && e.Genero == reader.GetString(reader.GetOrdinal("genero"))).ToList();
+                                List<MovimientoEconomico> movimientos = ObtenerMovimientos().Where(m => m.TorneoId == torneoId).ToList();
+                                List<Partidos> partidos = ObtenerPartidos(torneoId);
 
                                 torneoDetalles = new DetallesTorneo
                                 {
                                     torneo = torneoObtenido,
-                                    equipos = equipos,
-                                    partidos = partidos
+                                    equipos = equiposTorneo,
+                                    equiposNoInscritos = equiposNoInscritos,
+                                    partidos = partidos,
+                                    movimientos = movimientos
                                 };
                             }
                             else
@@ -82,9 +87,9 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
-        private List<Partido> ObtenerPartidos()
+        private List<Partidos> ObtenerPartidos(int torneoId)
         {
-            List<Partido> partidos = new List<Partido>();
+            List<Partidos> partidos = new List<Partidos>();
             try
             {
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
@@ -99,27 +104,39 @@ namespace PotaxieSport.Data.Servicios
                         {
                             while (reader.Read())
                             {
-                                var partido = new Partido
-                                {
-                                    PartidoId = reader.GetInt32(reader.GetOrdinal("partido_id")),
-                                    TorneoId = reader.GetInt32(reader.GetOrdinal("torneo_id")),
-                                    Torneo = reader.IsDBNull(reader.GetOrdinal("torneo")) ? null : reader.GetString(reader.GetOrdinal("torneo")),
-                                    EquipoRetadorId = reader.GetInt32(reader.GetOrdinal("equipo_retador")),
-                                    EquipoRetador = reader.IsDBNull(reader.GetOrdinal("retador")) ? null : reader.GetString(reader.GetOrdinal("retador")),
-                                    EquipoDefensorId = reader.GetInt32(reader.GetOrdinal("equipo_defensor")),
-                                    EquipoDefensor = reader.IsDBNull(reader.GetOrdinal("defensor")) ? null : reader.GetString(reader.GetOrdinal("defensor")),
-                                    EquipoGanadorId = reader.GetInt32(reader.GetOrdinal("equipo_ganador")),
-                                    EquipoGanador = reader.IsDBNull(reader.GetOrdinal("ganador")) ? "Aun no hay Ganador" : reader.GetString(reader.GetOrdinal("ganador")),
-                                    UsuarioArbitro = reader.GetInt32(reader.GetOrdinal("usuario_arbitro")),
-                                    Arbitro = reader.IsDBNull(reader.GetOrdinal("arbitro")) ? null : reader.GetString(reader.GetOrdinal("arbitro")),
-                                    Cedula = reader.IsDBNull(reader.GetOrdinal("cedula")) ? "Aun no hay cedula" : reader.GetString(reader.GetOrdinal("cedula")),
-                                    Fecha = reader.GetDateTime(reader.GetOrdinal("fecha")),
-                                    Hora = reader.GetTimeSpan(reader.GetOrdinal("hora")),
-                                    Lugar = reader.IsDBNull(reader.GetOrdinal("lugar")) ? null : reader.GetString(reader.GetOrdinal("lugar")),
-                                    Costo = reader.GetDecimal(reader.GetOrdinal("costo")),
-                                };
 
-                                partidos.Add(partido);
+                                if(reader.GetInt32(reader.GetOrdinal("torneo_id")) == torneoId)
+                                {
+                                    var partido = new Partido
+                                    {
+                                        PartidoId = reader.GetInt32(reader.GetOrdinal("partido_id")),
+                                        TorneoId = reader.GetInt32(reader.GetOrdinal("torneo_id")),
+                                        Torneo = reader.IsDBNull(reader.GetOrdinal("torneo")) ? null : reader.GetString(reader.GetOrdinal("torneo")),
+                                        EquipoRetadorId = reader.GetInt32(reader.GetOrdinal("equipo_retador")),
+                                        EquipoRetador = reader.IsDBNull(reader.GetOrdinal("retador")) ? null : reader.GetString(reader.GetOrdinal("retador")),
+                                        EquipoDefensorId = reader.GetInt32(reader.GetOrdinal("equipo_defensor")),
+                                        EquipoDefensor = reader.IsDBNull(reader.GetOrdinal("defensor")) ? null : reader.GetString(reader.GetOrdinal("defensor")),
+                                        EquipoGanadorId = reader.GetInt32(reader.GetOrdinal("equipo_ganador")),
+                                        EquipoGanador = reader.IsDBNull(reader.GetOrdinal("ganador")) ? "Aun no hay Ganador" : reader.GetString(reader.GetOrdinal("ganador")),
+                                        UsuarioArbitro = reader.GetInt32(reader.GetOrdinal("usuario_arbitro")),
+                                        Arbitro = reader.IsDBNull(reader.GetOrdinal("arbitro")) ? null : reader.GetString(reader.GetOrdinal("arbitro")),
+                                        Cedula = reader.IsDBNull(reader.GetOrdinal("cedula")) ? null : reader.GetString(reader.GetOrdinal("cedula")),
+                                        Fecha = reader.GetDateTime(reader.GetOrdinal("fecha")),
+                                        Hora = reader.GetTimeSpan(reader.GetOrdinal("hora")),
+                                        Lugar = reader.IsDBNull(reader.GetOrdinal("lugar")) ? null : reader.GetString(reader.GetOrdinal("lugar")),
+                                        Costo = reader.GetDecimal(reader.GetOrdinal("costo")),
+                                    };
+
+                                    var pagos = ObtenerPagos().Where(pp => pp.PartidoId == reader.GetInt32(reader.GetOrdinal("partido_id"))).ToList();
+                                    var elemento = new Partidos
+                                    {
+                                        partido = partido,
+                                        pagos = pagos
+                                    };
+
+                                    partidos.Add(elemento);
+                                }
+                                
                             }
                         }
                     }
@@ -134,64 +151,111 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
-        private List<Equipos> EquiposPorTorneo(int torneoId)
+        //private List<Equipos> EquiposPorTorneo(int torneoId)
+        //{
+        //    try
+        //    {
+        //        List<Equipos> listaEquipos = new();
+        //        using (var connection = new NpgsqlConnection(_contexto.Conexion))
+        //        {
+        //            connection.Open();
+        //            // Cambia el comando para llamar a la función
+        //            using (var cmd = new NpgsqlCommand("SELECT * FROM EquiposDeTorneo(@p_torneo_id)", connection))
+        //            {
+        //                cmd.CommandType = CommandType.Text; // Cambiar a CommandType.Text
+        //                cmd.Parameters.AddWithValue("@p_torneo_id", torneoId);
+        //                using (var reader = cmd.ExecuteReader())
+        //                {
+        //                    while (reader.Read())
+        //                    {
+        //                        var jugadoresEquipo = JugadoresPorEquipo(reader.GetInt32(reader.GetOrdinal("equipo_id")));
+        //                        var equipo = new Equipo
+        //                        {
+        //                            EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
+        //                            EquipoNombre = reader.IsDBNull(reader.GetOrdinal("nombre_equipo")) ? null : reader.GetString(reader.GetOrdinal("nombre_equipo")),
+        //                            Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
+        //                            Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
+        //                            CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
+        //                            Categoria = reader.IsDBNull(reader.GetOrdinal("categoria_nombre")) ? null : reader.GetString(reader.GetOrdinal("categoria_nombre")),
+        //                            UsuarioCoachId = reader.GetInt32(reader.GetOrdinal("usuario_coach")),
+        //                            Coach = reader.IsDBNull(reader.GetOrdinal("nombre_coach")) ? null : reader.GetString(reader.GetOrdinal("nombre_coach"))
+        //                        };
+
+        //                        Equipos elemento = new Equipos
+        //                        {
+        //                            equipo = equipo,
+        //                            jugadores = jugadoresEquipo
+        //                        };
+
+        //                        listaEquipos.Add(elemento);
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        return listaEquipos;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string mensaje = ex.Message;
+        //        return null;
+        //    }
+        //}
+
+
+        public List<Equipo> ObtenerEquipos()
         {
+            List<Equipo> equipos = new List<Equipo>();
             try
             {
-                List<Equipos> listaEquipos = new();
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
                 {
                     connection.Open();
                     // Cambia el comando para llamar a la función
-                    using (var cmd = new NpgsqlCommand("SELECT * FROM EquiposDeTorneo(@p_torneo_id)", connection))
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM ObtenerEquipos()", connection))
                     {
                         cmd.CommandType = CommandType.Text; // Cambiar a CommandType.Text
-                        cmd.Parameters.AddWithValue("@p_torneo_id", torneoId);
+
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                var jugadoresEquipo = JugadoresPorEquipo(reader.GetInt32(reader.GetOrdinal("equipo_id")));
                                 var equipo = new Equipo
                                 {
                                     EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
                                     EquipoNombre = reader.IsDBNull(reader.GetOrdinal("nombre_equipo")) ? null : reader.GetString(reader.GetOrdinal("nombre_equipo")),
                                     Genero = reader.IsDBNull(reader.GetOrdinal("genero")) ? null : reader.GetString(reader.GetOrdinal("genero")),
-                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : reader.GetString(reader.GetOrdinal("logo")),
+                                    Logo = reader.IsDBNull(reader.GetOrdinal("logo")) ? null : "/Formatos/Imagenes/Equipo/" + reader.GetString(reader.GetOrdinal("logo")),
                                     CategoriaId = reader.GetInt32(reader.GetOrdinal("categoria_id")),
                                     Categoria = reader.IsDBNull(reader.GetOrdinal("categoria_nombre")) ? null : reader.GetString(reader.GetOrdinal("categoria_nombre")),
                                     UsuarioCoachId = reader.GetInt32(reader.GetOrdinal("usuario_coach")),
-                                    Coach = reader.IsDBNull(reader.GetOrdinal("nombre_coach")) ? null : reader.GetString(reader.GetOrdinal("nombre_coach"))
+                                    Coach = reader.IsDBNull(reader.GetOrdinal("nombre_coach")) ? null : reader.GetString(reader.GetOrdinal("nombre_coach")),
+                                    TorneoActualId = reader.IsDBNull(reader.GetOrdinal("torneo_actual")) ? 0 : reader.GetInt32(reader.GetOrdinal("torneo_actual")),
+                                    TorneoActual = reader.IsDBNull(reader.GetOrdinal("torneo")) ? "No hay torneo asignado" : reader.GetString(reader.GetOrdinal("torneo")),
                                 };
 
-                                Equipos elemento = new Equipos
-                                {
-                                    equipo = equipo,
-                                    jugadores = jugadoresEquipo
-                                };
-
-                                listaEquipos.Add(elemento);
+                                equipos.Add(equipo);
                             }
                         }
                     }
                 }
 
-                return listaEquipos;
-
+                return equipos;
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                string mensaje = ex.Message;
-                return null;
+                string mensaje = error.Message;
+                return equipos;
             }
         }
 
 
-        private List<Jugadores> JugadoresPorEquipo(int equipoId)
+        public List<Jugador> JugadoresPorEquipo(int equipoId)
         {
             try
             {
-                List<Jugadores> listaJugadores = new();
+                List<Jugador> listaJugadores = new();
                 using (var connection = new NpgsqlConnection(_contexto.Conexion))
                 {
                     connection.Open();
@@ -205,7 +269,7 @@ namespace PotaxieSport.Data.Servicios
                         {
                             while (reader.Read())
                             {
-                                var listaRegistroSalud = ObtenerDatosSalud(reader.GetInt32(reader.GetOrdinal("jugador_id")));
+                                
                                 var jugador = new Jugador
                                 {
                                     JugadorId = reader.GetInt32(reader.GetOrdinal("jugador_id")),
@@ -220,13 +284,8 @@ namespace PotaxieSport.Data.Servicios
                                     NumJugador = reader.GetInt32(reader.GetOrdinal("num_jugador"))
                                 };
 
-                                Jugadores elemento = new Jugadores()
-                                {
-                                    jugador = jugador,
-                                    registros = listaRegistroSalud
-                                };
-
-                                listaJugadores.Add(elemento);
+                               
+                                listaJugadores.Add(jugador);
                             }
                         }
                     }
@@ -241,7 +300,7 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
-        private List<RegistroSalud> ObtenerDatosSalud(int id)
+        public List<RegistroSalud> ObtenerDatosSalud(int id)
         {
             List<RegistroSalud> registrosSalud = new List<RegistroSalud>();
 
@@ -285,13 +344,91 @@ namespace PotaxieSport.Data.Servicios
         }
 
 
-        private List<MovimientoEconomico> ObtenerMovimientosPorTorneo(int torneoId)
+        private List<MovimientoEconomico> ObtenerMovimientos()
         {
             List<MovimientoEconomico> movimientos = new();
+            try
+            {
 
-            return movimientos;
+                using (var connection = new NpgsqlConnection(_contexto.Conexion))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand("Select * from obtener_movimientos_economicos()", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var movimiento = new MovimientoEconomico
+                                {
+                                    MovimientoId = reader.GetInt32(reader.GetOrdinal("movimiento_id")),
+                                    Fecha = reader.GetDateTime(reader.GetOrdinal("fecha")),
+                                    ContadorId = reader.GetInt32(reader.GetOrdinal("contador_id")),
+                                    Tipo = reader.IsDBNull(reader.GetOrdinal("tipo")) ? null : reader.GetString(reader.GetOrdinal("tipo")),
+                                    Cantidad = reader.IsDBNull(reader.GetOrdinal("cantidad")) ? 0 : reader.GetDecimal(reader.GetOrdinal("cantidad")),
+                                    TorneoId = reader.GetInt32(reader.GetOrdinal("torneo_id")),
+                                    Comprobante = reader.IsDBNull(reader.GetOrdinal("comprobante")) ? null : reader.GetString(reader.GetOrdinal("comprobante")), // Cambiado a "comprobante"
+                                    Contador = reader.IsDBNull(reader.GetOrdinal("contador_nombre")) ? null : reader.GetString(reader.GetOrdinal("contador_nombre")), // Cambiado a "comprobante"
+                                };
+
+                                movimientos.Add(movimiento);
+                            }
+                        }
+                    }
+                }
+
+                return movimientos;
+            }
+            catch
+            {
+                return movimientos;
+            }
         }
 
+        private List<PagoPartido> ObtenerPagos()
+        {
+            List<PagoPartido> pagos = new();
+            try
+            {
+
+                using (var connection = new NpgsqlConnection(_contexto.Conexion))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand("Select * from obtener_pago_partido()", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var pago = new PagoPartido
+                                {
+                                    PagoPartidoId = reader.GetInt32(reader.GetOrdinal("pago_partido_id")),
+                                    FechaPago = reader.GetDateTime(reader.GetOrdinal("fecha_pago")),
+                                    EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
+                                    PartidoId = reader.GetInt32(reader.GetOrdinal("partido_id")),
+                                    Completado = reader.GetBoolean(reader.GetOrdinal("completado")),
+                                    Comprobante = reader.IsDBNull(reader.GetOrdinal("comprobante")) ? null : reader.GetString(reader.GetOrdinal("comprobante")), // Cambiado a "comprobante"
+                                    Equipo = reader.IsDBNull(reader.GetOrdinal("nombre_equipo")) ? null : reader.GetString(reader.GetOrdinal("nombre_equipo")), 
+                                    Partido = reader.IsDBNull(reader.GetOrdinal("nombre_partido")) ? null : reader.GetString(reader.GetOrdinal("nombre_partido")), // Cambiado a "comprobante"
+                                };
+
+                                pagos.Add(pago);
+                            }
+                        }
+                    }
+                }
+
+                return pagos;
+            }
+            catch(Exception ex) {
+                string mensaje = ex.Message;
+                return pagos;
+            }
+        }
 
     }
 }

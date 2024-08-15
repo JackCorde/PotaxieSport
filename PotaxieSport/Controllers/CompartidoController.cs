@@ -153,8 +153,11 @@ namespace PotaxieSport.Controllers
                     ModelState.AddModelError("", ex.Message);
                 }
             }
+            return View(torneo);
 
-        
+        }
+
+
 
 
     }

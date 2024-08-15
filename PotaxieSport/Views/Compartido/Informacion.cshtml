@@ -191,14 +191,14 @@
                                             <div class="row g-2">
 
                                                 @*Crear nuevo cliente*@
-                                                <form asp-action="ClientesCreate" asp-controller="Catalogos" class="needs-validation" id="formCliente">
+                                                <form asp-action="AgregarEquipo" asp-controller="Compartido" class="needs-validation" id="formCliente">
                                                     <div class="row g-3 mt-2  mb-2">
-                                                        
+                                                        <input type="hidden" id="torneo" name="torneo" value="@Model.torneo.TorneoId" />
                                                         <p class="fw-bold m-0 ms-1">Agregar equipo:</p>
 
                                                         <div class="col-md-4 text-center">
-                                                            <label for="partner" class="form-label fw-bold visually-hidden">Selecciona Equipo</label>
-                                                            <select class="form-select" id="partner" name="partner" asp-items="@ViewBag.Partners" required></select>
+                                                            <label for="equipo" class="form-label fw-bold visually-hidden">Selecciona Equipo</label>
+                                                            <select class="form-select" id="equipo" name="equipo" asp-items="@ViewBag.EquiposNoInscritos" required></select>
                                                             <div class="invalid-feedback"></div>
                                                         </div>
 
@@ -229,17 +229,19 @@
                                                             foreach (var equipo in Model.equipos)
                                                             {
                                                                 <tr>
-                                                                    <td>@equipo.equipo.EquipoId</td>
-                                                                    <td>@equipo.equipo.EquipoNombre</td>
-                                                                    <td>@equipo.equipo.Genero</td>
-                                                                    <td><img src="~/Formatos/Imagenes/Equipo/@equipo.equipo.Logo" style="width:30px;" /></td>
-                                                                    <td>@equipo.equipo.Categoria</td>
-                                                                    <td>@equipo.equipo.Coach</td>
+                                                                    <td>@equipo.EquipoId</td>
+                                                                    <td>@equipo.EquipoNombre</td>
+                                                                    <td>@equipo.Genero</td>
+                                                                    <td><img src="@Url.Content(equipo.Logo)" style="width:30px;" /></td>
+                                                                    <td>@equipo.Categoria</td>
+                                                                    <td>@equipo.Coach</td>
                                                                    
                                                                     <td>
-                                                                        <button data-id="@equipo.equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
-                                                                            Eliminar
-                                                                        </button>
+                                                                        <form action="@Url.Action("EliminarEquipo", "Compartido", new { equipo = equipo.EquipoId, torneo = Model.torneo.TorneoId })" method="post">
+                                                                            <button type="submit" style="border:none; background-color:transparent;" class="titulosDanger">
+                                                                                Eliminar
+                                                                            </button>
+                                                                        </form>
                                                                     </td>
                                                                 </tr>
                                                             }
@@ -308,17 +310,17 @@
                                                                 foreach (var partido in Model.partidos)
                                                                 {
                                                                     <tr>
-                                                                        <td>@partido.EquipoRetador</td>
-                                                                        <td>@partido.EquipoDefensor</td>
-                                                                        <td>@partido.Arbitro</td>
-                                                                        <td>@partido.Fecha</td>
-                                                                        <td>@partido.Hora</td>
-                                                                        <td>@partido.Lugar</td>
+                                                                        <td>@partido.partido.EquipoRetador</td>
+                                                                        <td>@partido.partido.EquipoDefensor</td>
+                                                                        <td>@partido.partido.Arbitro</td>
+                                                                        <td>@partido.partido.Fecha</td>
+                                                                        <td>@partido.partido.Hora</td>
+                                                                        <td>@partido.partido.Lugar</td>
 
-                                                                        @if(partido.Fecha > DateTime.Today)
+                                                                        @if(partido.partido.Fecha > DateTime.Today)
                                                                         {
                                                                             <td>
-                                                                                <button data-id="@partido.PartidoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                                <button data-id="@partido.partido.PartidoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
                                                                                     Eliminar
                                                                                 </button>
                                                                             </td>
@@ -386,24 +388,30 @@
                                                             foreach (var partido in Model.partidos)
                                                             {
                                                                 <tr>
-                                                                    <td>@partido.EquipoRetador</td>
-                                                                    <td>@partido.EquipoDefensor</td>
-                                                                    <td>@partido.Arbitro</td>
-                                                                    <td>@partido.Fecha</td>
-                                                                    <td>@partido.Hora</td>
-                                                                    <td>@partido.Lugar</td>
+                                                                    <td>@partido.partido.EquipoRetador</td>
+                                                                    <td>@partido.partido.EquipoDefensor</td>
+                                                                    <td>@partido.partido.Arbitro</td>
+                                                                    <td>@partido.partido.Fecha</td>
+                                                                    <td>@partido.partido.Hora</td>
+                                                                    <td>@partido.partido.Lugar</td>
 
-                                                                    @if (partido.Cedula != null)
+                                                                    @if (partido.partido.Cedula != null)
                                                                     {
-                                                                        <td>
-                                                                            <button data-id="@partido.PartidoId" style="border:none; background-color:transparent;" class="btn" data-url="@Url.Action("Agregar Cedula", "Árbitros")">
-                                                                                Agregar Cédula
-                                                                            </button>
-                                                                        </td>
+                                                                        <td>@partido.partido.Cedula</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <td>@partido.Cedula</td>
+                                                                        <td>
+                                                                            <form enctype="multipart/form-data" asp-action="AgregarCedula" asp-controller="Arbitro">
+                                                                                <input type="hidden" name="torneo" value="@Model.torneo.TorneoId" />
+                                                                                <input type="hidden" name="partido" value="@partido.partido.PartidoId" />
+                                                                                <input type="file" name="archivoCedula" accept=".pdf,.doc,.docx" required />
+                                                                                <button type="submit" style="border:none; background-color:transparent;" class="btn titulosDanger">
+                                                                                    Agregar Cédula
+                                                                                </button>
+                                                                            </form>
+                                                                        </td>
+                                                                        
                                                                     }
 
                                                                 </tr>
@@ -432,9 +440,8 @@
                                 <br>
                                 <div class="container w-auto mb-3">
                                     <div class="row ">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-10 fondoGeneric p-4 rounded-4 shadow-sm">
-                                            <h3 class="p-1 titulos mb-3"><i class="fa-solid fa-sitemap"></i>Información Contable</h3>
+                                        <div class="col-md-12 p-4 rounded-4 shadow-sm">
+                                            <h3 class="p-1 titulos mb-3">Información Contable</h3>
                                             <div class="row g-2">
 
                                                 <form asp-action="DepartamentosCreate" asp-controller="Catalogos" class="needs-validation" id="formDepartamentos">
@@ -459,20 +466,104 @@
                                                 <table class="table table-striped text-center align-middle table-hover">
                                                     <thead>
                                                         <tr>
-                                                            <th>Num.</th>
-                                                            <th scope="col">Nombre</th>
-                                                            <th></th>
+                                                            <th scope="col">Fecha</th>
+                                                            <th scope="col">Tipo</th>
+                                                            <th scope="col">Cantidad</th>
+                                                            <th scope="col">Contador</th>
+                                                            <th scope="col">Comprobante</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
 
-                                                        
+                                                        @if (Model.movimientos != null && Model.movimientos.Count > 0)
+                                                        {
+                                                            foreach (var movimiento in Model.movimientos)
+                                                            {
+                                                                <tr>
+                                                                    <td>@movimiento.Fecha</td>
+                                                                    <td>@movimiento.Tipo</td>
+                                                                    <td>@movimiento.Cantidad</td>
+                                                                    <td>@movimiento.Contador</td>
+                                                                    <td><a>@movimiento.Comprobante</a></td>
+
+                                                                    <td>
+                                                                        <button data-id="@movimiento.MovimientoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                            Eliminar
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td colspan="7">No hay movimientos declarados</td>
+                                                            </tr>
+                                                        }
+
+
                                                     </tbody>
+
                                                 </table>
                                             </div>
+
+                                            <br><br>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-striped text-center align-middle table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Partido</th>
+                                                            <th scope="col">Equipo</th>
+                                                            <th scope="col">Pagado</th>
+                                                            <th scope="col">Comprobante</th>
+                                                            <th scope="col">Fecha Pago</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @if (Model.partidos != null && Model.partidos.Count > 0)
+                                                        {
+                                                            foreach (var partido in Model.partidos)
+                                                            {
+                                                                foreach (var pago in partido.pagos)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@pago.Partido</td>
+                                                                        <td>@pago.Equipo</td>
+                                                                        @if (pago.Completado)
+                                                                        {
+                                                                            <td>Completado</td>
+                                                                            <td>@pago.Comprobante</td>
+                                                                            <td>@pago.FechaPago</td>
+                                                                        }else{
+                                                                            <td>Pendiente</td>
+                                                                            <td>
+                                                                                <button data-id="@pago.PagoPartidoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                                    Subir Comprobante
+                                                                                </button>
+                                                                            </td>
+                                                                            <td></td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td colspan="7">No hay partidos declarados</td>
+                                                            </tr>
+                                                        }
+
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
                                             
                                         </div>
-                                        <div class="col-md-1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -510,17 +601,17 @@
                                                             foreach (var equipo in Model.equipos)
                                                             {
                                                                 <tr>
-                                                                    <td>@equipo.equipo.EquipoId</td>
-                                                                    <td>@equipo.equipo.EquipoNombre</td>
-                                                                    <td>@equipo.equipo.Genero</td>
-                                                                    <td><img src="~/Formatos/Imagenes/Equipo/@equipo.equipo.Logo" style="width:30px;" /></td>
-                                                                    <td>@equipo.equipo.Categoria</td>
-                                                                    <td>@equipo.equipo.Coach</td>
+                                                                    <td>@equipo.EquipoId</td>
+                                                                    <td>@equipo.EquipoNombre</td>
+                                                                    <td>@equipo.Genero</td>
+                                                                    <td><img src="@Url.Content(equipo.Logo)" style="width:30px;" /></td>
+                                                                    <td>@equipo.Categoria</td>
+                                                                    <td>@equipo.Coach</td>
 
                                                                     <td>
-                                                                        <button data-id="@equipo.equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
+                                                                        <a href="@Url.Action("Index", "Doctor", new { equipoId = equipo.EquipoId, torneoId = Model.torneo.TorneoId })" class="btnEliminarPartner titulosDanger" style="text-decoration:none;">
                                                                             Ver Jugadores
-                                                                        </button>
+                                                                        </a>
                                                                     </td>
                                                                 </tr>
                                                             }
