@@ -75,7 +75,37 @@ namespace PotaxieSport.Controllers
 
         public IActionResult Informacion(int torneoId)
         {
+
+            var claims = User.Claims;
+            var roleClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+
             var model = _torneoServicio.ObtenerTorneo(torneoId);
+            if (model.equiposNoInscritos != null)
+            {
+                List<SelectListItem> equiposNoInscritos = model.equiposNoInscritos.Select(r => new SelectListItem
+                {
+                    Value = r.EquipoId.ToString(),
+                    Text = r.EquipoNombre
+                }).ToList();
+                ViewBag.EquiposNoInscritos = equiposNoInscritos;
+            }
+            switch (roleClaim)
+            {
+                case "administrador":
+                    ViewBag.NumeroPestana = 1;
+                    break;
+                case "doctor":
+                    ViewBag.NumeroPestana = 6;
+                    break;
+                case "contador":
+                    ViewBag.NumeroPestana = 5;
+                    break;
+                // Puedes agregar más casos para otros roles aquí
+                default:
+                    return RedirectToAction("CerrarSesion", "Home");
+            }
+            
+                ViewBag.NumeroPestana = 1;
             return View(model);
         }
         [HttpGet]
@@ -124,21 +154,7 @@ namespace PotaxieSport.Controllers
                 }
             }
 
-            // En caso de error, vuelve a cargar las listas necesarias
-            var categorias = _generalServicio.ObtenerCategorias();
-            var coaches = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 5).OrderByDescending(u => u.UsuarioId).ToList();
-            var administradores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 2).OrderByDescending(u => u.UsuarioId).ToList();
-            var contadores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 3).OrderByDescending(u => u.UsuarioId).ToList();
-            var doctores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 1).OrderByDescending(u => u.UsuarioId).ToList();
-
-            ViewBag.Categorias = new SelectList(categorias, "CategoriaId", "CategoriaNombre");
-            ViewBag.Coaches = new SelectList(coaches, "UsuarioId", "NombreCompleto");
-            ViewBag.Administradores = new SelectList(administradores, "UsuarioId", "NombreCompleto");
-            ViewBag.Contadores = new SelectList(contadores, "UsuarioId", "NombreCompleto");
-            ViewBag.Doctores = new SelectList(doctores, "UsuarioId", "NombreCompleto");
-
-            return View(torneo);
-        }
+        
 
 
     }
