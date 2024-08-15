@@ -191,14 +191,14 @@
                                             <div class="row g-2">
 
                                                 @*Crear nuevo cliente*@
-                                                <form asp-action="ClientesCreate" asp-controller="Catalogos" class="needs-validation" id="formCliente">
+                                                <form asp-action="AgregarEquipo" asp-controller="Compartido" class="needs-validation" id="formCliente">
                                                     <div class="row g-3 mt-2  mb-2">
-                                                        
+                                                        <input type="hidden" id="torneo" name="torneo" value="@Model.torneo.TorneoId" />
                                                         <p class="fw-bold m-0 ms-1">Agregar equipo:</p>
 
                                                         <div class="col-md-4 text-center">
-                                                            <label for="partner" class="form-label fw-bold visually-hidden">Selecciona Equipo</label>
-                                                            <select class="form-select" id="partner" name="partner" asp-items="@ViewBag.Partners" required></select>
+                                                            <label for="equipo" class="form-label fw-bold visually-hidden">Selecciona Equipo</label>
+                                                            <select class="form-select" id="equipo" name="equipo" asp-items="@ViewBag.EquiposNoInscritos" required></select>
                                                             <div class="invalid-feedback"></div>
                                                         </div>
 
@@ -237,9 +237,11 @@
                                                                     <td>@equipo.Coach</td>
                                                                    
                                                                     <td>
-                                                                        <button data-id="@equipo.EquipoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
-                                                                            Eliminar
-                                                                        </button>
+                                                                        <form action="@Url.Action("EliminarEquipo", "Compartido", new { equipo = equipo.EquipoId, torneo = Model.torneo.TorneoId })" method="post">
+                                                                            <button type="submit" style="border:none; background-color:transparent;" class="titulosDanger">
+                                                                                Eliminar
+                                                                            </button>
+                                                                        </form>
                                                                     </td>
                                                                 </tr>
                                                             }
@@ -395,15 +397,21 @@
 
                                                                     @if (partido.partido.Cedula != null)
                                                                     {
-                                                                        <td>
-                                                                            <button data-id="@partido.partido.PartidoId" style="border:none; background-color:transparent;" class="btn" data-url="@Url.Action("Agregar Cedula", "Árbitros")">
-                                                                                Agregar Cédula
-                                                                            </button>
-                                                                        </td>
+                                                                        <td>@partido.partido.Cedula</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <td>@partido.partido.Cedula</td>
+                                                                        <td>
+                                                                            <form enctype="multipart/form-data" asp-action="AgregarCedula" asp-controller="Arbitro">
+                                                                                <input type="hidden" name="torneo" value="@Model.torneo.TorneoId" />
+                                                                                <input type="hidden" name="partido" value="@partido.partido.PartidoId" />
+                                                                                <input type="file" name="archivoCedula" accept=".pdf,.doc,.docx" required />
+                                                                                <button type="submit" style="border:none; background-color:transparent;" class="btn titulosDanger">
+                                                                                    Agregar Cédula
+                                                                                </button>
+                                                                            </form>
+                                                                        </td>
+                                                                        
                                                                     }
 
                                                                 </tr>

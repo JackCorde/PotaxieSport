@@ -120,7 +120,7 @@ namespace PotaxieSport.Data.Servicios
                                         EquipoGanador = reader.IsDBNull(reader.GetOrdinal("ganador")) ? "Aun no hay Ganador" : reader.GetString(reader.GetOrdinal("ganador")),
                                         UsuarioArbitro = reader.GetInt32(reader.GetOrdinal("usuario_arbitro")),
                                         Arbitro = reader.IsDBNull(reader.GetOrdinal("arbitro")) ? null : reader.GetString(reader.GetOrdinal("arbitro")),
-                                        Cedula = reader.IsDBNull(reader.GetOrdinal("cedula")) ? "Aun no hay cedula" : reader.GetString(reader.GetOrdinal("cedula")),
+                                        Cedula = reader.IsDBNull(reader.GetOrdinal("cedula")) ? null : reader.GetString(reader.GetOrdinal("cedula")),
                                         Fecha = reader.GetDateTime(reader.GetOrdinal("fecha")),
                                         Hora = reader.GetTimeSpan(reader.GetOrdinal("hora")),
                                         Lugar = reader.IsDBNull(reader.GetOrdinal("lugar")) ? null : reader.GetString(reader.GetOrdinal("lugar")),
