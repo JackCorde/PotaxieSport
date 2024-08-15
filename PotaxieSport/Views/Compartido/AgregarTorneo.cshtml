@@ -1,0 +1,78 @@
+﻿@model PotaxieSport.Models.Torneo
+
+@{
+    ViewData["Title"] = "Agregar Torneo";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="AgregarTorneo" asp-asp-controller="Compartido" method="post">
+    <div class="form-group">
+        <label asp-for="NombreTorneo" class="control-label"></label>
+        <input asp-for="NombreTorneo" class="form-control" />
+        <span asp-validation-for="NombreTorneo" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Genero" class="control-label"></label>
+        <select asp-for="Genero" class="form-control">
+            <option value="">Seleccione un género</option>
+            <option value="Varonil">Varonil</option>
+            <option value="Femenil">Femenil</option>
+        </select>
+        <span asp-validation-for="Genero" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoriaId" class="control-label"></label>
+        <select asp-for="CategoriaId" class="form-control" asp-items="ViewBag.Categorias"></select>
+        <span asp-validation-for="CategoriaId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AdministradorId" class="control-label">Administrador</label>
+        <select asp-for="AdministradorId" asp-items="ViewBag.Administradores" class="form-control">
+            <option value="">Seleccione un administrador</option>
+        </select>
+        <span asp-validation-for="AdministradorId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ContadorId" class="control-label">Contador</label>
+        <select asp-for="ContadorId" asp-items="ViewBag.Contadores" class="form-control">
+            <option value="">Seleccione un contador</option>
+        </select>
+        <span asp-validation-for="ContadorId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DoctorId" class="control-label">Doctor</label>
+        <select asp-for="DoctorId" asp-items="ViewBag.Doctores" class="form-control">
+            <option value="">Seleccione un doctor</option>
+        </select>
+        <span asp-validation-for="DoctorId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Logo" class="control-label"></label>
+        <input asp-for="Logo" class="form-control" />
+        <span asp-validation-for="Logo" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FechaInicio" class="control-label"></label>
+        <input asp-for="FechaInicio" type="date" class="form-control" />
+        <span asp-validation-for="FechaInicio" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FechaFin" class="control-label"></label>
+        <input asp-for="FechaFin" type="date" class="form-control" />
+        <span asp-validation-for="FechaFin" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Agregar Torneo" class="btn btn-primary" />
+    </div>
+</form>

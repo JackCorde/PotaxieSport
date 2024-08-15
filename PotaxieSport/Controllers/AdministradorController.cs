@@ -383,25 +383,49 @@ namespace PotaxieSport.Controllers
 
             return View(viewModel);
         }
+
+        // Acción para mostrar la vista de agregar jugadores
+        [HttpGet]
+        public IActionResult AgregarJugadores(int equipoId)
+        {
+            var jugadores = new List<JugadorViewModel>();
+            ViewBag.EquipoId = equipoId; // Pasar el equipoId a la vista
+            return View(jugadores);
+        }
+
         [HttpPost]
-        public IActionResult DetallesEquipo(Jugador jugador)
+        public async Task<IActionResult> AgregarJugadores(List<JugadorViewModel> jugadores, int equipoId)
         {
             if (ModelState.IsValid)
             {
+                // Convertir la lista de modelos a JSONB
+                var jugadoresConEquipoId = jugadores.Select(j =>
+                {
+                    j.EquipoId = equipoId; // Asigna el equipoId a cada jugador
+                    return j;
+                }).ToList();
+
+                var jugadoresJson = System.Text.Json.JsonSerializer.Serialize(jugadoresConEquipoId);
+
                 try
                 {
-                    _generalServicio.CrearJugador(jugador);
-                    return View("DetallesEquipo", new { id = jugador.EquipoId });
+                    // Llamar al servicio para agregar jugadores
+                    await _generalServicio.AgregarJugadoresAsync(jugadoresJson);
+
+                    // Redirige a una vista de confirmación o al índice
+                    return RedirectToAction("Index"); // Asegúrate de tener una acción Index para redirigir
                 }
                 catch (Exception ex)
                 {
-                    // Manejar el error, por ejemplo, mostrar un mensaje en la vista
-                    ModelState.AddModelError(string.Empty, "Error al crear el jugador: " + ex.Message);
+                    // Manejar excepciones y mostrar un mensaje de error
+                    ModelState.AddModelError(string.Empty, "Ocurrió un error al guardar los jugadores: " + ex.Message);
                 }
             }
 
-            // Si hay algún error, retorna la misma vista con el modelo actual
-            return View(jugador);
+            // Si el modelo no es válido, regresar a la vista con errores
+            ViewBag.EquipoId = equipoId; // Pasar el equipoId a la vista
+            return View(jugadores);
         }
+
     }
 }

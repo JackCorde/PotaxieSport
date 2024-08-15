@@ -787,6 +787,58 @@ namespace PotaxieSport.Data.Servicios
             return detallesPartido;
         }
 
+        public async Task AgregarJugadoresAsync(string jugadoresJson)
+        {
+            await using var connection = new NpgsqlConnection(_contexto.Conexion);
+            await connection.OpenAsync();
+
+            using var command = new NpgsqlCommand("SELECT agregar_jugadores(@jugadores)", connection)
+            {
+                CommandType = System.Data.CommandType.Text
+            };
+
+            command.Parameters.AddWithValue("jugadores", NpgsqlTypes.NpgsqlDbType.Jsonb, jugadoresJson);
+            await command.ExecuteNonQueryAsync();
+        }
+
+
+        public void CrearTorneo(string nombreTorneo, int categoriaId, string genero, string logo, int usuarioAdmin, int usuarioContador, int usuarioDoctor, DateTime fechaInicio, DateTime fechaFin)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                try
+                {
+                    using (var cmd = new NpgsqlCommand("SELECT insertar_torneo(@p_nombre_torneo, @p_categoria_id, @p_genero, @p_logo, @p_usuario_admin, @p_usuario_contador, @p_usuario_doctor, @p_fecha_inicio, @p_fecha_fin)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.Parameters.AddWithValue("p_nombre_torneo", nombreTorneo);
+                        cmd.Parameters.AddWithValue("p_categoria_id", categoriaId);
+                        cmd.Parameters.AddWithValue("p_genero", genero);
+                        cmd.Parameters.AddWithValue("p_logo", logo);
+                        cmd.Parameters.AddWithValue("p_usuario_admin", usuarioAdmin);
+                        cmd.Parameters.AddWithValue("p_usuario_contador", usuarioContador);
+                        cmd.Parameters.AddWithValue("p_usuario_doctor", usuarioDoctor);
+                        cmd.Parameters.AddWithValue("p_fecha_inicio", fechaInicio);
+                        cmd.Parameters.AddWithValue("p_fecha_fin", fechaFin);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (PostgresException ex)
+                {
+                    // Manejo de excepciones en caso de error
+                    throw new Exception("Error al insertar el torneo: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+
 
     }
 }

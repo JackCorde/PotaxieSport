@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Npgsql;
 using PotaxieSport.Data;
 using PotaxieSport.Data.Servicios;
@@ -77,9 +78,68 @@ namespace PotaxieSport.Controllers
             var model = _torneoServicio.ObtenerTorneo(torneoId);
             return View(model);
         }
+        [HttpGet]
+        public IActionResult AgregarTorneo()
+        {
+            var categorias = _generalServicio.ObtenerCategorias();
+            var administradores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 2).OrderByDescending(u => u.UsuarioId).ToList();
+            var contadores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 3).OrderByDescending(u => u.UsuarioId).ToList();
+            var doctores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 1).OrderByDescending(u => u.UsuarioId).ToList();
 
-        
+            ViewBag.Categorias = new SelectList(categorias, "CategoriaId", "CategoriaNombre");
+            ViewBag.Administradores = new SelectList(administradores, "UsuarioId", "NombreCompleto");
+            ViewBag.Contadores = new SelectList(contadores, "UsuarioId", "NombreCompleto");
+            ViewBag.Doctores = new SelectList(doctores, "UsuarioId", "NombreCompleto");
 
-        
+            var viewModel = new Torneo();
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult AgregarTorneo(Torneo torneo)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Llamada correcta al método CrearTorneo
+                    _generalServicio.CrearTorneo(
+                        torneo.NombreTorneo,
+                        torneo.CategoriaId,
+                        torneo.Genero,
+                        torneo.Logo,
+                        torneo.AdministradorId,
+                        torneo.ContadorId,
+                        torneo.DoctorId,
+                        torneo.FechaInicio,
+                        torneo.FechaFin
+                    );
+
+                    return RedirectToAction("Index"); // Cambia la redirección según sea necesario
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+            }
+
+            // En caso de error, vuelve a cargar las listas necesarias
+            var categorias = _generalServicio.ObtenerCategorias();
+            var coaches = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 5).OrderByDescending(u => u.UsuarioId).ToList();
+            var administradores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 2).OrderByDescending(u => u.UsuarioId).ToList();
+            var contadores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 3).OrderByDescending(u => u.UsuarioId).ToList();
+            var doctores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 1).OrderByDescending(u => u.UsuarioId).ToList();
+
+            ViewBag.Categorias = new SelectList(categorias, "CategoriaId", "CategoriaNombre");
+            ViewBag.Coaches = new SelectList(coaches, "UsuarioId", "NombreCompleto");
+            ViewBag.Administradores = new SelectList(administradores, "UsuarioId", "NombreCompleto");
+            ViewBag.Contadores = new SelectList(contadores, "UsuarioId", "NombreCompleto");
+            ViewBag.Doctores = new SelectList(doctores, "UsuarioId", "NombreCompleto");
+
+            return View(torneo);
+        }
+
+
     }
 }
