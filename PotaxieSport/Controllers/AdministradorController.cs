@@ -409,11 +409,9 @@ namespace PotaxieSport.Controllers
 
                 try
                 {
-                    // Llamar al servicio para agregar jugadores
                     await _generalServicio.AgregarJugadoresAsync(jugadoresJson);
 
-                    // Redirige a una vista de confirmación o al índice
-                    return RedirectToAction("Index"); // Asegúrate de tener una acción Index para redirigir
+                    return RedirectToAction("Index"); 
                 }
                 catch (Exception ex)
                 {

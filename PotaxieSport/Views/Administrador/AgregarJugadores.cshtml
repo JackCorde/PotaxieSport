@@ -1,63 +1,70 @@
 ﻿@model List<JugadorViewModel>
 
 @{
-    ViewBag.Title = "Agregar Jugadores";
+    ViewData["Title"] = "Contadores";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var equipoId = ViewBag.EquipoId;
+
 }
 
-<h2>@ViewBag.Title</h2>
+<div class="container">
 
-<form method="post" action="@Url.Action("AgregarJugadores")">
-    <input type="hidden" name="equipoId" value="@equipoId" />
+    <div class="row">
+        <form method="post" action="@Url.Action("AgregarJugadores")">
+            <input type="hidden" name="equipoId" value="@equipoId" />
 
-    <div id="jugadoresContainer">
-        @for (int i = 0; i < Model.Count; i++)
-        {
-            <div class="jugador-form">
-                <h4>Jugador @i</h4>
-                <div class="form-group">
-                    <label asp-for="@Model[i].Nombre">Nombre</label>
-                    <input asp-for="@Model[i].Nombre" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model[i].ApPaterno">Apellido Paterno</label>
-                    <input asp-for="@Model[i].ApPaterno" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model[i].ApMaterno">Apellido Materno</label>
-                    <input asp-for="@Model[i].ApMaterno" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model[i].Edad">Edad</label>
-                    <input asp-for="@Model[i].Edad" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model[i].Fotografia">Fotografía</label>
-                    <input asp-for="@Model[i].Fotografia" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model[i].Posicion">Posición</label>
-                    <input asp-for="@Model[i].Posicion" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model[i].NumJugador">Número de Jugador</label>
-                    <input asp-for="@Model[i].NumJugador" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model[i].Username">Username</label>
-                    <input asp-for="@Model[i].Username" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model[i].Contrasena">Contraseña</label>
-                    <input asp-for="@Model[i].Contrasena" class="form-control" />
-                </div>
+            <div id="jugadoresContainer">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <div class="jugador-form">
+                        <h4>Jugador @i</h4>
+                        <div class="form-group">
+                            <label asp-for="@Model[i].Nombre">Nombre</label>
+                            <input asp-for="@Model[i].Nombre" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model[i].ApPaterno">Apellido Paterno</label>
+                            <input asp-for="@Model[i].ApPaterno" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model[i].ApMaterno">Apellido Materno</label>
+                            <input asp-for="@Model[i].ApMaterno" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model[i].Edad">Edad</label>
+                            <input asp-for="@Model[i].Edad" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model[i].Fotografia">Fotografía</label>
+                            <input asp-for="@Model[i].Fotografia" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model[i].Posicion">Posición</label>
+                            <input asp-for="@Model[i].Posicion" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model[i].NumJugador">Número de Jugador</label>
+                            <input asp-for="@Model[i].NumJugador" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model[i].Username">Username</label>
+                            <input asp-for="@Model[i].Username" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model[i].Contrasena">Contraseña</label>
+                            <input asp-for="@Model[i].Contrasena" class="form-control" />
+                        </div>
+                    </div>
+                }
             </div>
-        }
-    </div>
 
-    <button type="button" onclick="agregarJugador()">Agregar Jugador</button>
-    <input type="submit" value="Guardar Jugadores" />
-</form>
+            <button type="button" onclick="agregarJugador()">Agregar Jugador</button>
+            <input type="submit" value="Guardar Jugadores" />
+        </form>
+
+    </div>
+</div>
+
 
 <script>
     function agregarJugador() {
