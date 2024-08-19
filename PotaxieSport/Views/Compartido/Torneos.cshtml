@@ -67,6 +67,9 @@
 
     <!-- Start Content -->
     <div class="container py-5">
+        <div class="col-lg-6 text-right">
+            <a class="btn btn-primary" asp-action="AgregarTorneo" asp-controller="Compartido">Agregar Torneo</a>
+        </div>
         <div class="row">
 
             <div class="col-lg-12">
@@ -77,6 +80,7 @@
                             Torneos Asignados.
                         </p>
                     </div>
+
                 </div>
                 <div class="row">
                     @if (ViewBag.Torneos.Count == 0)
@@ -97,7 +101,10 @@
 
                     @foreach (var item in ViewBag.Torneos)
                     {
+
                         <div class="col-md-4">
+
+
                             <div class="card mb-4 product-wap rounded-0">
                                 <div class="card rounded-0 square-container">
                                     <img class="card-img rounded-0 img-fluid" src="@Url.Content(item.Logo)">

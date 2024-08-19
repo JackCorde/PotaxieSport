@@ -108,71 +108,55 @@ namespace PotaxieSport.Controllers
                 ViewBag.NumeroPestana = 1;
             return View(model);
         }
-
-
-        public IActionResult AgregarEquipo(int equipo, int torneo)
+        [HttpGet]
+        public IActionResult AgregarTorneo()
         {
-            try
-            {
-                using (var connection = new NpgsqlConnection(_contexto.Conexion))
-                {
-                    connection.Open();
+            var categorias = _generalServicio.ObtenerCategorias();
+            var administradores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 2).OrderByDescending(u => u.UsuarioId).ToList();
+            var contadores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 3).OrderByDescending(u => u.UsuarioId).ToList();
+            var doctores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 1).OrderByDescending(u => u.UsuarioId).ToList();
 
-                    using (var cmd = new NpgsqlCommand("SELECT * FROM AgregarParticipacion(@equipoId, @torneoId)", connection))
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("@equipoId", equipo);
-                        cmd.Parameters.AddWithValue("@torneoId", torneo);
+            ViewBag.Categorias = new SelectList(categorias, "CategoriaId", "CategoriaNombre");
+            ViewBag.Administradores = new SelectList(administradores, "UsuarioId", "NombreCompleto");
+            ViewBag.Contadores = new SelectList(contadores, "UsuarioId", "NombreCompleto");
+            ViewBag.Doctores = new SelectList(doctores, "UsuarioId", "NombreCompleto");
 
-                        cmd.ExecuteReader();  // Ejecuta la consulta
-                    }
-                }
-                return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
-            }
-            catch (Exception ex)
-            {
-                // Loggear el error (opcional)
-                // _logger.LogError(ex, "Error al agregar equipo al torneo");
+            var viewModel = new Torneo();
 
-                // Si deseas mostrar un mensaje de error en la vista
-                // TempData["ErrorMessage"] = "Hubo un error al agregar el equipo al torneo.";
-                string mensaje = ex.Message;
-
-                return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
-            }
+            return View(viewModel);
         }
 
-        public IActionResult EliminarEquipo(int equipo, int torneo)
+        [HttpPost]
+        public IActionResult AgregarTorneo(Torneo torneo)
         {
-            try
+            if (ModelState.IsValid)
             {
-                using (var connection = new NpgsqlConnection(_contexto.Conexion))
+                try
                 {
-                    connection.Open();
+                    // Llamada correcta al método CrearTorneo
+                    _generalServicio.CrearTorneo(
+                        torneo.NombreTorneo,
+                        torneo.CategoriaId,
+                        torneo.Genero,
+                        torneo.Logo,
+                        torneo.AdministradorId,
+                        torneo.ContadorId,
+                        torneo.DoctorId,
+                        torneo.FechaInicio,
+                        torneo.FechaFin
+                    );
 
-                    using (var cmd = new NpgsqlCommand("SELECT * FROM EliminarParticipacion(@equipoId, @torneoId)", connection))
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("@equipoId", equipo);
-                        cmd.Parameters.AddWithValue("@torneoId", torneo);
-
-                        cmd.ExecuteReader();  // Ejecuta la consulta
-                    }
+                    return RedirectToAction("Index"); // Cambia la redirección según sea necesario
                 }
-                return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                // Loggear el error (opcional)
-                // _logger.LogError(ex, "Error al agregar equipo al torneo");
+            return View(torneo);
 
-                // Si deseas mostrar un mensaje de error en la vista
-                // TempData["ErrorMessage"] = "Hubo un error al agregar el equipo al torneo.";
-                string mensaje = ex.Message;
-
-                return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
-            }
         }
+
 
 
 

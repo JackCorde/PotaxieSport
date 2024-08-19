@@ -4,6 +4,12 @@ using PotaxieSport.Data;
 using PotaxieSport.Data.Servicios;
 using PotaxieSport.Models;
 using System.Diagnostics;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Npgsql;
+using PotaxieSport.Models.ViewModels;
+using System.Data;
 
 namespace PotaxieSport.Controllers
 {
@@ -22,7 +28,11 @@ namespace PotaxieSport.Controllers
         [Authorize(Roles = "coach")]
         public IActionResult Index()
         {
+            return View();
+        }
 
+        public IActionResult Privacy()
+        {
             return View();
         }
 
