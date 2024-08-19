@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.Internal;
+using Newtonsoft.Json;
 using Npgsql;
 using PotaxieSport.Data;
 using PotaxieSport.Data.Servicios;
@@ -11,6 +15,7 @@ using PotaxieSport.Models.ViewModels;
 using System.Data;
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Xml.Linq;
 
 namespace PotaxieSport.Controllers
 {
@@ -20,12 +25,14 @@ namespace PotaxieSport.Controllers
         private readonly Contexto _contexto;
         private readonly GeneralServicio _generalServicio;
         private readonly TorneoServicio _torneoServicio;
+        private readonly ArchivosServicio _archivosServicio;
 
-        public CompartidoController(Contexto contexto)
+        public CompartidoController(Contexto contexto, IWebHostEnvironment hostingEnvironment)
         {
             _contexto = contexto;
             _generalServicio = new GeneralServicio(contexto);
             _torneoServicio = new TorneoServicio(contexto);
+            _archivosServicio = new ArchivosServicio(contexto, hostingEnvironment);
         }
 
 
@@ -89,6 +96,15 @@ namespace PotaxieSport.Controllers
                 }).ToList();
                 ViewBag.EquiposNoInscritos = equiposNoInscritos;
             }
+            if(model.equipos != null)
+            {
+                List<SelectListItem> equipos = model.equipos.Select(r => new SelectListItem
+                {
+                    Value = r.EquipoId.ToString(),
+                    Text = r.EquipoNombre
+                }).ToList();
+                ViewBag.Equipos = equipos;
+            }
             switch (roleClaim)
             {
                 case "administrador":
@@ -104,8 +120,6 @@ namespace PotaxieSport.Controllers
                 default:
                     return RedirectToAction("CerrarSesion", "Home");
             }
-            
-                ViewBag.NumeroPestana = 1;
             return View(model);
         }
         [HttpGet]
@@ -157,8 +171,242 @@ namespace PotaxieSport.Controllers
 
         }
 
+        public IActionResult ConsultarEquipos(int torneoId)
+        {
+            var model = _torneoServicio.ObtenerEquipos().Where(e => e.TorneoActualId == torneoId).ToList();
+            
+            return Json(model);
+        }
 
 
+        /*----------------------------- Agregar Equipos --------------------------------------*/
+
+        public IActionResult AgregarEquipo(int torneo, int equipo)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                try
+                {
+                    using (var cmd = new NpgsqlCommand("SELECT  AgregarParticipacion(@equipoId, @torneoId)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.Parameters.AddWithValue("equipoId", equipo);
+                        cmd.Parameters.AddWithValue("@torneoId", torneo);
+
+                        cmd.ExecuteNonQuery();
+
+                        // Redirigir después de completar la operación
+                        return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
+                    }
+                }
+                catch (PostgresException ex)
+                {
+                    // Manejo de excepciones en caso de error
+                    TempData["ErrorMessage"] = "Error al insertar el partido: " + ex.Message;
+                    return RedirectToAction("Error", "Compartido", new { torneoId = torneo });
+                }
+            }
+        }
+
+        public IActionResult EliminarEquipo(int torneo, int equipo)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                try
+                {
+                    using (var cmd = new NpgsqlCommand("SELECT  EliminarParticipacion(@equipoId, @torneoId)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.Parameters.AddWithValue("equipoId", equipo);
+                        cmd.Parameters.AddWithValue("@torneoId", torneo);
+
+                        cmd.ExecuteNonQuery();
+
+                        // Redirigir después de completar la operación
+                        return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
+                    }
+                }
+                catch (PostgresException ex)
+                {
+                    // Manejo de excepciones en caso de error
+                    TempData["ErrorMessage"] = "Error al insertar el partido: " + ex.Message;
+                    return RedirectToAction("Error", "Compartido", new { torneoId = torneo });
+                }
+            }
+        }
+
+
+        /*----------------------------- Formulario Partidos --------------------------------------*/
+
+        [Authorize]
+        public IActionResult ObtenerSubSubEquipos(int torneoId, int equipoId)
+        {
+            // Realiza la consulta a la base de datos para obtener las subcategorías según la categoría seleccionada
+            var subsubcategorias = _torneoServicio.ObtenerEquipos().Where(e => e.TorneoActualId == torneoId && e.EquipoId != equipoId).ToList();
+
+            // Transforma el objeto en JSON
+            var jsonResult = JsonConvert.SerializeObject(subsubcategorias);
+
+            // Devuelve el resultado como una respuesta JSON
+            return Content(jsonResult, "application/json");
+        }
+
+        [Authorize]
+        public IActionResult ObtenerSubArbitros(DateTime fecha, TimeSpan hora)
+        {
+
+            // Obtenemos el día de la semana
+            DayOfWeek diaSemana = fecha.DayOfWeek;
+
+            // Convertimos el día a un string en español
+            string nombreDia = ObtenerNombreDia(diaSemana);
+
+            // Realiza la consulta a la base de datos para obtener las subcategorías según la categoría seleccionada
+            var subsubcategorias = _torneoServicio.ObtenerArbitros(nombreDia, hora);
+
+            // Transforma el objeto en JSON
+            var jsonResult = JsonConvert.SerializeObject(subsubcategorias);
+
+            // Devuelve el resultado como una respuesta JSON
+            return Content(jsonResult, "application/json");
+        }
+
+        // Método para convertir el DayOfWeek a un string en español
+        public static string ObtenerNombreDia(DayOfWeek dia)
+        {
+            switch (dia)
+            {
+                case DayOfWeek.Monday:
+                    return "Lunes";
+                case DayOfWeek.Tuesday:
+                    return "Martes";
+                case DayOfWeek.Wednesday:
+                    return "Miércoles";
+                case DayOfWeek.Thursday:
+                    return "Jueves";
+                case DayOfWeek.Friday:
+                    return "Viernes";
+                case DayOfWeek.Saturday:
+                    return "Sábado";
+                case DayOfWeek.Sunday:
+                    return "Domingo";
+                default:
+                    return "Día desconocido";
+            }
+        }
+
+
+        /*------------------------------------ Crear Partidos  ---------------------------------*/
+        public IActionResult PartidosCreate(int torneoId, int equipoVisitante, int equipoDefensor, string lugar, DateTime fecha, TimeSpan hora, int arbitro, decimal costo)
+        {
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+                try
+                {
+                    using (var cmd = new NpgsqlCommand("SELECT insertar_partido(@p_torneo, @p_equipoV, @p_equipoD, @p_lugar, @p_fecha, @p_hora, @p_arbitro, @p_costo)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.Parameters.AddWithValue("p_torneo", torneoId);
+                        cmd.Parameters.AddWithValue("p_equipoV", equipoVisitante);
+                        cmd.Parameters.AddWithValue("p_equipoD", equipoDefensor);
+                        cmd.Parameters.AddWithValue("p_lugar", lugar);
+                        cmd.Parameters.AddWithValue("p_fecha", fecha);
+                        cmd.Parameters.AddWithValue("p_hora", hora);
+                        cmd.Parameters.AddWithValue("p_arbitro", arbitro);
+                        cmd.Parameters.AddWithValue("p_costo", costo);
+
+                        cmd.ExecuteNonQuery();
+
+                        // Redirigir después de completar la operación
+                        return RedirectToAction("Informacion", "Compartido", new { torneoId = torneoId });
+                    }
+                }
+                catch (PostgresException ex)
+                {
+                    // Manejo de excepciones en caso de error
+                    TempData["ErrorMessage"] = "Error al insertar el partido: " + ex.Message;
+                    return RedirectToAction("Error", "Compartido", new { torneoId = torneoId });
+                }
+            }
+        }
+
+
+        /*----------------------- Movimientos Económicos ----------------------------------*/
+        public IActionResult TransaccionCreate(int torneo, int usuario, string tipoM, decimal cantidad, IFormFile comprobante)
+        {
+            DateTime fechaActual = DateTime.Now.Date;
+            if (comprobante != null && comprobante.Length > 0)
+            {
+                //Asigna nombre al archivo con la estructura tipo_id_nombre.dominio  (El remplace quita los espacios)
+                string nombre = comprobante.FileName.Replace(" ", "");
+
+                //Llamar a la función que sube el archivo a las carpetas de ASP.NET
+                string respuesta = _archivosServicio.SubirArchivo(comprobante, nombre, "Comprobante");
+
+
+                // Aquí puedes llamar a un procedimiento almacenado para registrar la información en la base de datos
+                using (var connection = new NpgsqlConnection(_contexto.Conexion))
+                {
+                    connection.Open();
+                    try
+                    {
+                        using (var cmd = new NpgsqlCommand("SELECT insertar_transaccion(@p_torneo, @p_usuario, @p_tipo, @p_cantidad, @p_fecha, @p_comprobante)", connection))
+                        {
+                            cmd.CommandType = CommandType.Text;
+
+                            cmd.Parameters.AddWithValue("p_torneo", torneo);
+                            cmd.Parameters.AddWithValue("p_usuario", usuario);
+                            cmd.Parameters.AddWithValue("p_tipo", tipoM);
+                            cmd.Parameters.AddWithValue("p_cantidad", cantidad);
+                            cmd.Parameters.AddWithValue("p_fecha", fechaActual);
+                            cmd.Parameters.AddWithValue("p_comprobante", nombre);
+
+                            cmd.ExecuteNonQuery();
+
+                            // Redirigir después de completar la operación
+                            return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
+                        }
+                    }
+                    catch (PostgresException ex)
+                    {
+                        // Manejo de excepciones en caso de error
+                        TempData["ErrorMessage"] = "Error al insertar el partido: " + ex.Message;
+                        return RedirectToAction("Error", "Compartido", new { torneoId = torneo });
+                    }
+                }
+            }
+
+            // Si no se sube ningún archivo, puedes manejar el error aquí
+            return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
+            
+        }
+
+
+        public IActionResult SubirComprobantePago(int torneo, int pago, IFormFile archivoPago)
+        {
+            DateTime fechaActual = DateTime.Now.Date;
+            if (archivoPago != null && archivoPago.Length > 0)
+            {
+                //Asigna nombre al archivo con la estructura tipo_id_nombre.dominio  (El remplace quita los espacios)
+                string nombre = archivoPago.FileName.Replace(" ", "");
+
+                //Llamar a la función que sube el archivo a las carpetas de ASP.NET
+                string respuesta = _archivosServicio.SubirArchivo(archivoPago, nombre, "Pago");
+
+                _archivosServicio.GuardarArchivoFotoEnBD(nombre, pago, "Pago");
+            }
+
+            // Si no se sube ningún archivo, puedes manejar el error aquí
+            return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
+
+        }
+        
 
     }
 }
