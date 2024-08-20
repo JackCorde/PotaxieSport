@@ -284,10 +284,115 @@
                                             <div class="row g-2">
 
                                                 <div class="col-md-12 text-start">
-                                                    <button type="button" class="btnGeneric btnConexiones" data-bs-toggle="modal" data-bs-target="#agregarUsuario">
-                                                        Nuevo Partido
+                                                    <button type="button" class="btnGeneric btnConexiones" data-bs-toggle="modal" data-bs-target="#agregarPartido">
+                                                        Agregar Partido
                                                     </button>
                                                 </div>
+
+                                                @using (Html.BeginForm("PartidosCreate", "Compartido", FormMethod.Post, new { id = "formCrearUsuario" }))
+                                                {
+
+                                                    <div class="modal fade" id="agregarPartido" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+
+                                                                <div class="modal-header fondoEdit">
+                                                                    <h1 class="modal-title text-light fs-5" id="exampleModalLabel">
+                                                                        <i class="fa-solid fa-user-plus"></i>
+                                                                        Crear Partido
+                                                                    </h1>
+                                                                </div>
+
+                                                                <div class="modal-body p-4">
+                                                                    <div class="row g-3">
+
+                                                                        <div class="col-md-2"></div>
+                                                                       <input type="hidden" name="torneoId" id="torneoId" value="@Model.torneo.TorneoId" />
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label class="form-label fw-bold">Equipo Retador <b class="text-danger">*</b></label>
+                                                                                <select name="equipoVisitante" id="equipoV" class="form-select" asp-items="ViewBag.Equipos" required>
+                                                                                    <option value='' selected> Seleccionar Equipo</option>
+                                                                                </select>
+
+                                                                                <div class="invalid-feedback"></div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label class="form-label fw-bold">Equipo Defensor <b class="text-danger">*</b></label>
+                                                                                <select name="equipoDefensor" class="form-select" id="equipoD" required>
+                                                                                </select>
+
+                                                                                <div class="invalid-feedback"></div>
+
+                                                                                
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-2"></div>
+
+
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label for="lugar" class="control-label form-label fw-bold">Lugar<b class="text-danger">*</b></label>
+                                                                                <input id="lugar" name="lugar" class="form-control" required maxlength="50" />
+                                                                                <div class="invalid-feedback">Por favor, escribe un lugar</div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label for="fecha" class="control-label form-label fw-bold">Fecha<b class="text-danger">*</b></label>
+                                                                                <input id="fecha" name="fecha" type="date" class="form-control" required />
+                                                                                <div class="invalid-feedback">Por favor, selecciona una fecha</div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label for="hora" class="control-label form-label fw-bold">Hora<b class="text-danger">*</b></label>
+                                                                                <input id="hora" name="hora" class="form-control" type="time" required />
+                                                                                <div class="invalid-feedback">Por favor, selecciona una hora</div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label class="form-label fw-bold">Árbitro <b class="text-danger">*</b></label>
+                                                                                <select name="arbitro" class="form-select" id="arbitro" required>
+                                                                                </select>
+
+                                                                                <div class="invalid-feedback"></div>
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label for="costo" class="control-label form-label fw-bold">Costo Por Equipo<b class="text-danger">*</b></label>
+                                                                                <input id="costo" name="costo" type="number" class="form-control" required />
+                                                                                <div class="invalid-feedback">Por favor, ingresa un costo</div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer fondoGeneric">
+                                                                    <button type="button" class="btnGeneric btnCancelar" data-bs-dismiss="modal">Cancelar</button>
+                                                                    <button type="submit" id="addUsuario" class="btnGeneric btnActivo">Crear</button>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <div class="col-md-4"></div>
+
 
                                                 <div class="col-md-4"></div>
 
@@ -444,14 +549,27 @@
                                             <h3 class="p-1 titulos mb-3">Información Contable</h3>
                                             <div class="row g-2">
 
-                                                <form asp-action="DepartamentosCreate" asp-controller="Catalogos" class="needs-validation" id="formDepartamentos">
+                                                <form asp-action="TransaccionCreate" asp-controller="Compartido" enctype="multipart/form-data" class="needs-validation" id="formDepartamentos">
                                                     <div class="row g-3 mt-2  mb-2">
 
                                                         <p class="fw-bold m-0 ms-1">Agregar Nueva Transacción</p>
-
-                                                        <div class="col-md-6 text-center">
-                                                            <label  class="visually-hidden">Nombre</label>
-                                                            <input type="text" class="form-control" id="nombreDep" name="nombreDep" placeholder="Nombre" required maxlength="40">
+                                                        <input type="hidden" name="torneo" value="@Model.torneo.TorneoId" />
+                                                        <input name="usuario" value="@User.FindFirstValue(ClaimTypes.SerialNumber)" type="hidden" required>
+                                                        <div class="col-md-4 text-center">
+                                                            <label  class="visually-hidden">Tipo de transacción</label>
+                                                            <select name="tipoM" class="form-select" id="tipoM" required>
+                                                                <option value="abono">Abono</option>
+                                                                <option value="abono">Retiro</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-4 text-center">
+                                                            <label  class="visually-hidden">Cantidad</label>
+                                                            <input type="number" class="form-control" id="cantidad" name="cantidad" required>
+                                                            <div class="invalid-feedback">Por favor, ingresa una cantidad</div>
+                                                        </div>
+                                                        <div class="col-md-4 text-center">
+                                                            <label class="visually-hidden">Comprobante</label>
+                                                            <input type="file" name="comprobante" accept=".pdf,.doc,.docx" required>
                                                             <div class="invalid-feedback">Por favor, escribe un nombre</div>
                                                         </div>
                                                         <div class="col-md-3 text-start">
@@ -485,12 +603,6 @@
                                                                     <td>@movimiento.Cantidad</td>
                                                                     <td>@movimiento.Contador</td>
                                                                     <td><a>@movimiento.Comprobante</a></td>
-
-                                                                    <td>
-                                                                        <button data-id="@movimiento.MovimientoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
-                                                                            Eliminar
-                                                                        </button>
-                                                                    </td>
                                                                 </tr>
                                                             }
                                                         }
@@ -538,12 +650,17 @@
                                                                             <td>@pago.FechaPago</td>
                                                                         }else{
                                                                             <td>Pendiente</td>
+
                                                                             <td>
-                                                                                <button data-id="@pago.PagoPartidoId" style="border:none; background-color:transparent;" class="btnEliminarPartner titulosDanger" data-url="@Url.Action("PartnersDelete", "Catalogos")">
-                                                                                    Subir Comprobante
-                                                                                </button>
+                                                                                <form enctype="multipart/form-data" asp-action="SubirComprobantePago" asp-controller="Compartido">
+                                                                                    <input type="hidden" name="torneo" value="@Model.torneo.TorneoId" />
+                                                                                    <input type="hidden" name="pago" value="@pago.PagoPartidoId" />
+                                                                                    <input type="file" name="archivoPago" accept=".pdf,.doc,.docx" required />
+                                                                                    <button type="submit" style="border:none;" class="btn">
+                                                                                        Subir Comprobante
+                                                                                    </button>
+                                                                                </form>
                                                                             </td>
-                                                                            <td></td>
                                                                         }
                                                                     </tr>
                                                                 }
@@ -669,6 +786,7 @@
     <script src="~/js_plantilla/bootstrap.bundle.min.js"></script>
     <script src="~/js_plantilla/templatemo.js"></script>
     <script src="~/js_plantilla/custom.js"></script>
+    <script src="~/js/lista.js"></script>
     <!-- End Script -->
 </body>
 

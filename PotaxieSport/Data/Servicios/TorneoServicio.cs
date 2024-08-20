@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Npgsql;
 using PotaxieSport.Models;
 using PotaxieSport.Models.ViewModels;
@@ -116,7 +117,7 @@ namespace PotaxieSport.Data.Servicios
                                         EquipoRetador = reader.IsDBNull(reader.GetOrdinal("retador")) ? null : reader.GetString(reader.GetOrdinal("retador")),
                                         EquipoDefensorId = reader.GetInt32(reader.GetOrdinal("equipo_defensor")),
                                         EquipoDefensor = reader.IsDBNull(reader.GetOrdinal("defensor")) ? null : reader.GetString(reader.GetOrdinal("defensor")),
-                                        EquipoGanadorId = reader.GetInt32(reader.GetOrdinal("equipo_ganador")),
+                                        EquipoGanadorId = reader.IsDBNull(reader.GetOrdinal("ganador")) ? 0 : reader.GetInt32(reader.GetOrdinal("equipo_ganador")),
                                         EquipoGanador = reader.IsDBNull(reader.GetOrdinal("ganador")) ? "Aun no hay Ganador" : reader.GetString(reader.GetOrdinal("ganador")),
                                         UsuarioArbitro = reader.GetInt32(reader.GetOrdinal("usuario_arbitro")),
                                         Arbitro = reader.IsDBNull(reader.GetOrdinal("arbitro")) ? null : reader.GetString(reader.GetOrdinal("arbitro")),
@@ -407,7 +408,7 @@ namespace PotaxieSport.Data.Servicios
                                 var pago = new PagoPartido
                                 {
                                     PagoPartidoId = reader.GetInt32(reader.GetOrdinal("pago_partido_id")),
-                                    FechaPago = reader.GetDateTime(reader.GetOrdinal("fecha_pago")),
+                                    FechaPago = reader.IsDBNull(reader.GetOrdinal("fecha_pago")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("fecha_pago")),
                                     EquipoId = reader.GetInt32(reader.GetOrdinal("equipo_id")),
                                     PartidoId = reader.GetInt32(reader.GetOrdinal("partido_id")),
                                     Completado = reader.GetBoolean(reader.GetOrdinal("completado")),
@@ -430,5 +431,42 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
+
+        public List<Usuario> ObtenerArbitros(string dia, TimeSpan hora)
+        {
+            var arbitros = new List<Usuario>();
+
+            using (var connection = new NpgsqlConnection(_contexto.Conexion))
+            {
+                connection.Open();
+
+                using (var cmd = new NpgsqlCommand("SELECT * FROM obtenerArbitrosDisponibles(@dia, @hora);", connection))
+                {
+                    cmd.Parameters.AddWithValue("dia", dia);
+                    cmd.Parameters.AddWithValue("hora", hora);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var arbitro = new Usuario
+                            {
+                                UsuarioId = reader.GetInt32(reader.GetOrdinal("usuario_id")),
+                                Nombre = reader.GetString(reader.GetOrdinal("nombre")),
+                                ApPaterno = reader.GetString(reader.GetOrdinal("ap_paterno")),
+                                ApMaterno = reader.GetString(reader.GetOrdinal("ap_materno")),
+                                RolId = reader.GetInt32(reader.GetOrdinal("rol_id"))
+                            };
+
+                            arbitros.Add(arbitro);
+                        }
+                    }
+                }
+            }
+
+            return arbitros;
+        }
+
     }
 }
+
