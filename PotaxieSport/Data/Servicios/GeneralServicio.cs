@@ -787,19 +787,6 @@ namespace PotaxieSport.Data.Servicios
             return detallesPartido;
         }
 
-        public async Task AgregarJugadoresAsync(string jugadoresJson)
-        {
-            await using var connection = new NpgsqlConnection(_contexto.Conexion);
-            await connection.OpenAsync();
-
-            using var command = new NpgsqlCommand("SELECT agregar_jugadores(@jugadores)", connection)
-            {
-                CommandType = System.Data.CommandType.Text
-            };
-
-            command.Parameters.AddWithValue("jugadores", NpgsqlTypes.NpgsqlDbType.Jsonb, jugadoresJson);
-            await command.ExecuteNonQueryAsync();
-        }
 
 
         public void CrearTorneo(string nombreTorneo, int categoriaId, string genero, string logo, int usuarioAdmin, int usuarioContador, int usuarioDoctor, DateTime fechaInicio, DateTime fechaFin)

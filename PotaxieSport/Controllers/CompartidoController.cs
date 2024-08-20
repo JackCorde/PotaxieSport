@@ -146,7 +146,7 @@ namespace PotaxieSport.Controllers
                         torneo.FechaFin
                     );
 
-                    return RedirectToAction("Index"); // Cambia la redirección según sea necesario
+                    return RedirectToAction("Index"); 
                 }
                 catch (Exception ex)
                 {

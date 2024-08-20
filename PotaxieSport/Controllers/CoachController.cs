@@ -1,12 +1,13 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using PotaxieSport.Data;
 using PotaxieSport.Data.Servicios;
 using PotaxieSport.Models;
 using System.Diagnostics;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Npgsql;
 using PotaxieSport.Models.ViewModels;
 using System.Data;
@@ -28,9 +29,24 @@ namespace PotaxieSport.Controllers
         [Authorize(Roles = "coach")]
         public IActionResult Index()
         {
-            return View();
-        }
+            var claims = User.Claims;
 
+            var roleClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+
+            // Buscar idUsuario
+            var idUserClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value ?? string.Empty;
+            int idUser;
+            if (!int.TryParse(idUserClaim, out idUser))
+            {
+                idUser = -1; // Valor predeterminado si la conversión falla
+            }
+            ViewBag.Id = idUserClaim;
+            _generalServicio.ObtenerTorneosPorCoach(idUser);
+
+            return View();
+
+        }
+        
         public IActionResult Privacy()
         {
             return View();
