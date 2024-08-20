@@ -104,7 +104,15 @@
                                     <img class="card-img rounded-0 img-fluid" src="@Url.Content("~/Formatos/Imagenes/Torneo/"+item.Logo)">
                                     <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                         <ul class="list-unstyled">
-                                            <li><a class="btn btn-success text-white mt-2" asp-action="Informacion" asp-controller="Compartido" asp-route-torneoId=@item.TorneoId><i class="far fa-eye"></i></a></li>
+                                            <li>
+                                                <a class="btn btn-success text-white mt-2"
+                                                   asp-action="Informacion"
+                                                   asp-controller="Coach"
+                                                   asp-route-torneoId="@item.TorneoId"
+                                                   asp-route-idUser="@ViewBag.idUser">
+                                                    <i class="far fa-eye"></i>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>

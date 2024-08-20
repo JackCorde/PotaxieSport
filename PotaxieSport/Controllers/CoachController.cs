@@ -46,13 +46,22 @@ namespace PotaxieSport.Controllers
 
              torneos = _generalServicio.ObtenerTorneosPorCoach(idUser);
 
-
+            ViewBag.idUser = idUser;
             ViewBag.Torneos = torneos;
 
             return View();
 
         }
-        
+
+
+        public IActionResult informacion(int torneoId, int idUser)
+        {
+            var equipo = _generalServicio.GetEquipoByCoachAndTorneo(torneoId, idUser);
+            var detallesPartido = _generalServicio.ObtenerDetallesPartido(equipo.EquipoId);
+
+            return View(detallesPartido); // Aquí pasas los detalles a la vista
+        }
+
         public IActionResult Privacy()
         {
             return View();
