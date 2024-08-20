@@ -2,6 +2,10 @@
 @{
     Layout = null;
 }
+
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc;
+@using System.Data;
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,11 +45,9 @@
                 <div class="flex-fill">
                     <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
                         <li class="nav-item">
-                            <a class="nav-link" asp-action="Torneos" asp-controller="Compartido">Torneos</a>
+                            <a class="nav-link" asp-action="Index" asp-controller="Coach">Torneos</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-action="Index" asp-controller="Administrador">Recursos</a>
-                        </li>
+                       
                     </ul>
                 </div>
                 <div class="navbar align-self-center d-flex">
@@ -69,8 +71,8 @@
 
             <!-- Titulos -->
             <div class="text-center">
-                <h2 class="fw-light  titulos">Detalles Torneo</h2>
-                <p class="lead"> Toda la información relevante de tu torneo.</p><br />
+                <h2 class="fw-light  titulos">Partidos</h2>
+                <p class="lead"> Partidos de tu equipo @ViewBag.equipo.</p><br />
 
             </div>
 

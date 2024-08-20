@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Subir logo";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>PotaxieSport - Subir Logo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="~/img_plantilla/apple-icon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="~/img_plantilla/favicon.ico">
+
+    <link rel="stylesheet" href="~/css_plantilla/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css_plantilla/templatemo.css">
+    <link rel="stylesheet" href="~/css_plantilla/custom.css">
+
+    <!-- Load fonts style after rendering the layout styles -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
+    <link rel="stylesheet" href="~/css_plantilla/fontawesome.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
+                Potaxie
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between" id="templatemo_main_nav">
+                <div class="flex-fill">
+                    
+                </div>
+                <div class="navbar align-self-center d-flex">
+                    
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Start Content -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="text-center py-3 mb-4">
+                    <h1 class="h3">Subir Logo</h1>
+                </div>
+
+                <form asp-action="SubirLogo" asp-controller="Compartido" method="post" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm">
+                    <div class="form-group mb-3">
+                        <input type="file" name="file" class="form-control" required />
+                    </div>
+                    <input type="hidden" name="id" value="@ViewBag.Id" />
+                    <input type="hidden" name="tipo" value="Torneo" />
+                    <button type="submit" class="btn btn-primary">Subir Imagen</button>
+                </form>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="text-danger text-center mt-3">@ViewBag.Error</div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Script -->
+    <script src="~/js_plantilla/jquery-1.11.0.min.js"></script>
+    <script src="~/js_plantilla/jquery-migrate-1.2.1.min.js"></script>
+    <script src="~/js_plantilla/bootstrap.bundle.min.js"></script>
+    <script src="~/js_plantilla/templatemo.js"></script>
+    <script src="~/js_plantilla/custom.js"></script>
+    <!-- End Script -->
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+﻿@model PotaxieSport.Models.Torneo
+
+@{
+    ViewBag.Title = "Crear Torneo";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>PotaxieSport - Crear Torneo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="~/img_plantilla/apple-icon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="~/img_plantilla/favicon.ico">
+
+    <link rel="stylesheet" href="~/css_plantilla/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css_plantilla/templatemo.css">
+    <link rel="stylesheet" href="~/css_plantilla/custom.css">
+
+    <!-- Load fonts style after rendering the layout styles -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
+    <link rel="stylesheet" href="~/css_plantilla/fontawesome.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
+                Potaxie
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between" id="templatemo_main_nav">
+                <div class="flex-fill">
+                    <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Torneos" asp-controller="Compartido">Torneos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Index" asp-controller="Administrador">Recursos</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="navbar align-self-center d-flex">
+                    <a class="nav-icon position-relative text-decoration-none" asp-action="CerrarSesion" asp-controller="Home">
+                        <i class="fa fa-fw fa-sign-out-alt text-dark mr-3"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Start Content -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="row text-center py-3">
+                    <div class="col-lg-6 m-auto">
+                        <h1 class="h1">Crear Torneo</h1>
+                       
+                    </div>
+
+                </div>               
+                <form asp-action="Crear" method="post">
+                    <div class="form-group">
+                        <label asp-for="NombreTorneo" class="control-label">Nombre del Torneo</label>
+                        <input asp-for="NombreTorneo" class="form-control" required />
+                        <span asp-validation-for="NombreTorneo" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CategoriaId" class="control-label">Categoría</label>
+                        <select asp-for="CategoriaId" class="form-control" asp-items="ViewBag.Categorias" required></select>
+                        <span asp-validation-for="CategoriaId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Genero" class="control-label">Género</label>
+                        <select asp-for="Genero" class="form-control" required>
+                            <option value="">Seleccione</option>
+                            <option value="Varonil">Varonil</option>
+                            <option value="Femenil">Femenil</option>
+                        </select>
+                        <span asp-validation-for="Genero" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="AdministradorId" class="control-label">Administrador</label>
+                        <select asp-for="AdministradorId" class="form-control" asp-items="ViewBag.Administradores" required>
+                            <option value="">Seleccione</option>
+
+                        </select>
+                        <span asp-validation-for="AdministradorId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ContadorId" class="control-label">Contador</label>
+                        <select asp-for="ContadorId" class="form-control" asp-items="ViewBag.Contadores" required>
+                            <option value="">Seleccione</option>
+
+                        </select>
+                        <span asp-validation-for="ContadorId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="DoctorId" class="control-label">Doctor</label>
+                        <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.Doctores" required>
+                            <option value="">Seleccione</option>
+                        </select>
+                        <span asp-validation-for="DoctorId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="FechaInicio" class="control-label">Fecha de Inicio</label>
+                        <input asp-for="FechaInicio" class="form-control" type="date" required />
+                        <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="FechaFin" class="control-label">Fecha de Fin</label>
+                        <input asp-for="FechaFin" class="form-control" type="date" required />
+                        <span asp-validation-for="FechaFin" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Crear Torneo" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- End Footer -->
+    <!-- Start Script -->
+    <script src="~/js_plantilla/jquery-1.11.0.min.js"></script>
+    <script src="~/js_plantilla/jquery-migrate-1.2.1.min.js"></script>
+    <script src="~/js_plantilla/bootstrap.bundle.min.js"></script>
+    <script src="~/js_plantilla/templatemo.js"></script>
+    <script src="~/js_plantilla/custom.js"></script>
+    <!-- End Script -->
+</body>
+
+</html>

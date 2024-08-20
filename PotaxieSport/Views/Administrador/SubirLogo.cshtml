@@ -15,15 +15,13 @@
     </div>
 }
 
-<p>ID del Equipo: @ViewBag.equipoId</p>
-<p>ID de la Categoría: @ViewBag.categorias</p>
 
 <div class="container">
     <form asp-action="SubirLogo" asp-controller="Administrador" method="post" enctype="multipart/form-data">
         <input type="file" required name="file" />
         <input type="hidden" name="id" value="@ViewBag.equipoId" />
         <input type="hidden" name="tipo" value="Equipo" />
-        <input type="hidden" name="CategoriaId" value="@ViewBag.categorias" />
+        <input type="" name="CategoriaId" value="@ViewBag.categorias" />
         <input type="submit" value="Subir Imagen" />
     </form>
     <br>

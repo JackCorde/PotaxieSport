@@ -140,8 +140,8 @@ namespace PotaxieSport.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
-        public IActionResult AgregarTorneo(Torneo torneo)
+        //[HttpPost]
+        /*public IActionResult AgregarTorneo(Torneo torneo)
         {
             if (ModelState.IsValid)
             {
@@ -169,7 +169,7 @@ namespace PotaxieSport.Controllers
             }
             return View(torneo);
 
-        }
+        }*/
 
         public IActionResult ConsultarEquipos(int torneoId)
         {
@@ -406,7 +406,83 @@ namespace PotaxieSport.Controllers
             return RedirectToAction("Informacion", "Compartido", new { torneoId = torneo });
 
         }
-        
+        public IActionResult Crear()
+        {
+            var categorias = _generalServicio.ObtenerCategorias();
+            var administradores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 2).OrderByDescending(u => u.UsuarioId).ToList();
+            var contadores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 3).OrderByDescending(u => u.UsuarioId).ToList();
+            var doctores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 1).OrderByDescending(u => u.UsuarioId).ToList();
 
+            ViewBag.Categorias = new SelectList(categorias, "CategoriaId", "CategoriaNombre");
+            ViewBag.Administradores = new SelectList(administradores, "UsuarioId", "NombreCompleto");
+            ViewBag.Contadores = new SelectList(contadores, "UsuarioId", "NombreCompleto");
+            ViewBag.Doctores = new SelectList(doctores, "UsuarioId", "NombreCompleto");
+
+            return View();
+        }
+
+
+
+        [HttpPost]
+        public IActionResult Crear(Torneo torneo)
+        {
+            if (ModelState.IsValid)
+            {
+                int torneoId = _generalServicio.CrearTorneo(torneo);
+                return RedirectToAction("SubirLogo", new { id = torneoId }); // Redirige a una acción para mostrar los detalles del torneo
+            }
+
+            // Si el modelo no es válido, volver a cargar los datos y mostrar la vista con errores
+            var categorias = _generalServicio.ObtenerCategorias();
+            var administradores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 2).OrderByDescending(u => u.UsuarioId).ToList();
+            var contadores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 3).OrderByDescending(u => u.UsuarioId).ToList();
+            var doctores = _generalServicio.ObtenerUsuarios().Where(u => u.RolId == 1).OrderByDescending(u => u.UsuarioId).ToList();
+
+            ViewBag.Categorias = new SelectList(categorias, "CategoriaId", "CategoriaNombre");
+            ViewBag.Administradores = new SelectList(administradores, "UsuarioId", "NombreCompleto");
+            ViewBag.Contadores = new SelectList(contadores, "UsuarioId", "NombreCompleto");
+            ViewBag.Doctores = new SelectList(doctores, "UsuarioId", "NombreCompleto");
+
+            return View(torneo); // Reenviar el modelo con errores a la vista
+        }
+
+
+        public IActionResult SubirLogo(int id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult SubirLogo(string? archivoError, int id, IFormFile file, string tipo)
+        {
+            if (file != null && file.Length > 0)
+            {
+                if (tipo != null)
+                {
+                    //Asigna nombre al archivo con la estructura tipo_id_nombre.dominio  (El remplace quita los espacios)
+                    string nombre = tipo + "_" + id + "_" + file.FileName.Replace(" ", "");
+
+                    //Llamar a la función que sube el archivo a las carpetas de ASP.NET
+                    string respuesta = _archivosServicio.SubirArchivo(file, nombre, tipo);
+
+                    //Subir el archivo a la base de datos.
+                    _archivosServicio.GuardarArchivoFotoEnBD(nombre, id, tipo);
+
+
+                    return RedirectToAction("Torneos", "Compartido", new { archivoError = respuesta }); //{ archivoError = "Archivo subido con éxito" });
+                }
+                else
+                {
+                    return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un tipo de archivo válido." });
+                }
+
+
+            }
+            else
+            {
+                return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un archivo válido." });
+            }
+
+        }
     }
 }

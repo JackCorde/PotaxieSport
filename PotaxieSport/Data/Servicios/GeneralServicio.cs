@@ -789,43 +789,53 @@ namespace PotaxieSport.Data.Servicios
 
 
 
-        public void CrearTorneo(string nombreTorneo, int categoriaId, string genero, string logo, int usuarioAdmin, int usuarioContador, int usuarioDoctor, DateTime fechaInicio, DateTime fechaFin)
+        public int CrearTorneo(Torneo torneo)
         {
             using (var connection = new NpgsqlConnection(_contexto.Conexion))
             {
                 connection.Open();
-                try
-                {
-                    using (var cmd = new NpgsqlCommand("SELECT insertar_torneo(@p_nombre_torneo, @p_categoria_id, @p_genero, @p_logo, @p_usuario_admin, @p_usuario_contador, @p_usuario_doctor, @p_fecha_inicio, @p_fecha_fin)", connection))
-                    {
-                        cmd.CommandType = CommandType.Text;
 
-                        cmd.Parameters.AddWithValue("p_nombre_torneo", nombreTorneo);
-                        cmd.Parameters.AddWithValue("p_categoria_id", categoriaId);
-                        cmd.Parameters.AddWithValue("p_genero", genero);
-                        cmd.Parameters.AddWithValue("p_logo", logo);
-                        cmd.Parameters.AddWithValue("p_usuario_admin", usuarioAdmin);
-                        cmd.Parameters.AddWithValue("p_usuario_contador", usuarioContador);
-                        cmd.Parameters.AddWithValue("p_usuario_doctor", usuarioDoctor);
-                        cmd.Parameters.AddWithValue("p_fecha_inicio", fechaInicio);
-                        cmd.Parameters.AddWithValue("p_fecha_fin", fechaFin);
+                // Comando SQL para insertar un nuevo torneo y obtener el ID generado
+                var query = @"
+        INSERT INTO public.torneo (
+            nombre_torneo,
+            categoria_id,
+            genero,
+            usuario_admin,
+            usuario_contador,
+            usuario_doctor,
+            fecha_inicio,
+            fecha_fin
+        )
+        VALUES (
+            @NombreTorneo,
+            @CategoriaId,
+            @Genero,
+            @AdministradorId,
+            @ContadorId,
+            @DoctorId,
+            @FechaInicio,
+            @FechaFin
+        )
+        RETURNING torneo_id;"; // Devolver el ID del torneo recién insertado
 
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                catch (PostgresException ex)
+                using (var command = new NpgsqlCommand(query, connection))
                 {
-                    // Manejo de excepciones en caso de error
-                    throw new Exception("Error al insertar el torneo: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
+                    command.Parameters.AddWithValue("@NombreTorneo", torneo.NombreTorneo);
+                    command.Parameters.AddWithValue("@CategoriaId", torneo.CategoriaId);
+                    command.Parameters.AddWithValue("@Genero", torneo.Genero);
+                    command.Parameters.AddWithValue("@AdministradorId", torneo.AdministradorId);
+                    command.Parameters.AddWithValue("@ContadorId", torneo.ContadorId);
+                    command.Parameters.AddWithValue("@DoctorId", torneo.DoctorId);
+                    command.Parameters.AddWithValue("@FechaInicio", torneo.FechaInicio);
+                    command.Parameters.AddWithValue("@FechaFin", torneo.FechaFin);
+
+                    // Ejecutar el comando y obtener el ID del torneo recién insertado
+                    var torneoId = (int)command.ExecuteScalar();
+                    return torneoId;
                 }
             }
         }
-
-
 
     }
 }

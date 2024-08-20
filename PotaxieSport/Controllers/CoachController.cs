@@ -58,6 +58,7 @@ namespace PotaxieSport.Controllers
         {
             var equipo = _generalServicio.GetEquipoByCoachAndTorneo(torneoId, idUser);
             var detallesPartido = _generalServicio.ObtenerDetallesPartido(equipo.EquipoId);
+            ViewBag.equipo = equipo.EquipoNombre;
 
             return View(detallesPartido); // Aquí pasas los detalles a la vista
         }
