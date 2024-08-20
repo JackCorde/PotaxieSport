@@ -837,5 +837,32 @@ namespace PotaxieSport.Data.Servicios
             }
         }
 
+
+
+
+        public int InsertarJugador(Jugador jugador)
+        {
+            using var connection = new NpgsqlConnection(_contexto.Conexion);
+            connection.Open();
+
+            using var command = new NpgsqlCommand(@"
+            INSERT INTO public.jugador (nombre, ap_paterno, ap_materno, edad, fotografia, equipo_id, posicion, num_jugador, username, contrasena)
+            VALUES (@nombre, @apPaterno, @apMaterno, @edad, @fotografia, @equipoId, @posicion, @numJugador, @username, @clave)
+            RETURNING jugador_id", connection);
+
+            command.Parameters.AddWithValue("@nombre", jugador.JugadorNombre ?? string.Empty);
+            command.Parameters.AddWithValue("@apPaterno", jugador.ApPaterno ?? string.Empty);
+            command.Parameters.AddWithValue("@apMaterno", jugador.ApMaterno ?? string.Empty);
+            command.Parameters.AddWithValue("@edad", jugador.Edad);
+            command.Parameters.AddWithValue("@fotografia", string.IsNullOrEmpty(jugador.Fotografia) ? string.Empty : jugador.Fotografia);
+            command.Parameters.AddWithValue("@equipoId", jugador.EquipoId);
+            command.Parameters.AddWithValue("@posicion", jugador.Posicion ?? string.Empty);
+            command.Parameters.AddWithValue("@numJugador", jugador.NumJugador);
+            command.Parameters.AddWithValue("@username", jugador.Username ?? string.Empty);
+            command.Parameters.AddWithValue("@clave", jugador.Clave ?? string.Empty);
+
+            return (int)command.ExecuteScalar(); // Devuelve el ID del jugador insertado
+        }
+
     }
 }

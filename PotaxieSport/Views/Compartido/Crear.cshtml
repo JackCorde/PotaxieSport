@@ -92,7 +92,7 @@
                     <div class="form-group">
                         <label asp-for="AdministradorId" class="control-label">Administrador</label>
                         <select asp-for="AdministradorId" class="form-control" asp-items="ViewBag.Administradores" required>
-                            <option value="">Seleccione</option>
+                            <option value="" disabled>Seleccione</option>
 
                         </select>
                         <span asp-validation-for="AdministradorId" class="text-danger"></span>
@@ -101,7 +101,7 @@
                     <div class="form-group">
                         <label asp-for="ContadorId" class="control-label">Contador</label>
                         <select asp-for="ContadorId" class="form-control" asp-items="ViewBag.Contadores" required>
-                            <option value="">Seleccione</option>
+                            <option value="" disabled>Seleccione</option>
 
                         </select>
                         <span asp-validation-for="ContadorId" class="text-danger"></span>
@@ -110,7 +110,7 @@
                     <div class="form-group">
                         <label asp-for="DoctorId" class="control-label">Doctor</label>
                         <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.Doctores" required>
-                            <option value="">Seleccione</option>
+                            <option value="" disabled>Seleccione</option>
                         </select>
                         <span asp-validation-for="DoctorId" class="text-danger"></span>
                     </div>

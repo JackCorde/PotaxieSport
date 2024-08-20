@@ -1,12 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Administrador";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
 }
 <head runat="server">
     <link rel="stylesheet" href="~/css/administrador.css" />
 </head>
-
 
 <div class="container">
     @if (TempData["SuccessMessage"] != null)
@@ -15,12 +13,39 @@
             @TempData["SuccessMessage"]
         </div>
     }
-
-    <!-- Aquí va el resto del contenido de tu vista -->
 </div>
 
-<div class="container ">
+<div class="container mt-4">
     <div class="row">
-        
+        <!-- Primera tarjeta (izquierda) -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                
+                <div class="card-body">
+                    <h5 class="card-title">Bienvenido</h5>
+                    <p class="card-text"></p>
+                    <a href="@Url.Action("Torneos", "Compartido")" class="btn btn-primary">Torneos</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segunda tarjeta (derecha) -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text"></p>
+
+                    <!-- Botón para cerrar sesión -->
+                    <form method="post" asp-action="CerrarSesion" asp-controller="Home" class="mt-2">
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="lni lni-exit"></i>
+                            <span>Cerrar Sesión</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>

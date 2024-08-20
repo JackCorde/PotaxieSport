@@ -7,7 +7,7 @@ using PotaxieSport.Data.Servicios;
 using PotaxieSport.Models;
 using PotaxieSport.Models.ViewModels;
 using System.Data;
-
+using System.Threading.Tasks;
 
 namespace PotaxieSport.Controllers
 {
@@ -176,11 +176,11 @@ namespace PotaxieSport.Controllers
 
                     //Llamar a la función que sube el archivo a las carpetas de ASP.NET
                     string respuesta = _archivosServicio.SubirArchivo(file, nombre, tipo);
-                    
+
                     //Subir el archivo a la base de datos.
                     _archivosServicio.GuardarArchivoFotoEnBD(nombre, id, tipo);
 
-                    
+
                     return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = respuesta }); //{ archivoError = "Archivo subido con éxito" });
                 }
                 else
@@ -384,45 +384,63 @@ namespace PotaxieSport.Controllers
             return View(viewModel);
         }
 
-        // Acción para mostrar la vista de agregar jugadores
-        [HttpGet]
+
+
         public IActionResult AgregarJugadores(int equipoId)
         {
-            var jugadores = new List<JugadorViewModel>();
-            ViewBag.EquipoId = equipoId; // Pasar el equipoId a la vista
-            return View(jugadores);
+            ViewBag.EquipoId = equipoId;
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> AgregarJugadores(List<JugadorViewModel> jugadores, int equipoId)
+        [ValidateAntiForgeryToken]
+        public IActionResult AgregarJugadores(Jugador jugador)
         {
             if (ModelState.IsValid)
             {
-                // Convertir la lista de modelos a JSONB
-                var jugadoresConEquipoId = jugadores.Select(j =>
-                {
-                    j.EquipoId = equipoId; // Asigna el equipoId a cada jugador
-                    return j;
-                }).ToList();
-
-                var jugadoresJson = System.Text.Json.JsonSerializer.Serialize(jugadoresConEquipoId);
-
-                try
-                {
-
-                    return RedirectToAction("Index"); 
-                }
-                catch (Exception ex)
-                {
-                    // Manejar excepciones y mostrar un mensaje de error
-                    ModelState.AddModelError(string.Empty, "Ocurrió un error al guardar los jugadores: " + ex.Message);
-                }
+                int jugadorId = _generalServicio.InsertarJugador(jugador);
+                return RedirectToAction("Fotografia", "Administrador", new { id = jugador.EquipoId, jugadorId = jugadorId });
             }
-
-            // Si el modelo no es válido, regresar a la vista con errores
-            ViewBag.EquipoId = equipoId; // Pasar el equipoId a la vista
-            return View(jugadores);
+            return View(jugador);
         }
 
+        public IActionResult Fotografia(int id, int jugadorId)
+        {
+            ViewBag.IdEquipo = id;
+
+            ViewBag.Id = jugadorId;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Fotografia(string? archivoError, int id, IFormFile file, string tipo, int EquipoId)
+        {
+            if (file != null && file.Length > 0)
+            {
+                if (tipo != null)
+                {
+                    //Asigna nombre al archivo con la estructura tipo_id_nombre.dominio  (El remplace quita los espacios)
+                    string nombre = tipo + "_" + id + "_" + file.FileName.Replace(" ", "");
+
+                    //Llamar a la función que sube el archivo a las carpetas de ASP.NET
+                    string respuesta = _archivosServicio.SubirArchivo(file, nombre, tipo);
+
+                    //Subir el archivo a la base de datos.
+                    _archivosServicio.GuardarArchivoFotoEnBD(nombre, id, tipo);
+
+
+                    return RedirectToAction("DetallesEquipo", "Administrador", new { id = EquipoId, archivoError = respuesta });
+                }
+                else
+                {
+                    return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un tipo de archivo válido." });
+                }
+
+
+            }
+            else
+            {
+                return RedirectToAction("SubirImagenes", "Administrador", new { archivoError = "Por favor, selecciona un archivo válido." });
+            }
+        }
     }
 }
