@@ -409,7 +409,6 @@ namespace PotaxieSport.Controllers
 
                 try
                 {
-                    await _generalServicio.AgregarJugadoresAsync(jugadoresJson);
 
                     return RedirectToAction("Index"); 
                 }

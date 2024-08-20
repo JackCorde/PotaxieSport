@@ -40,8 +40,14 @@ namespace PotaxieSport.Controllers
             {
                 idUser = -1; // Valor predeterminado si la conversión falla
             }
-            ViewBag.Id = idUserClaim;
-            _generalServicio.ObtenerTorneosPorCoach(idUser);
+
+            List<Torneo> torneos = new();
+
+
+             torneos = _generalServicio.ObtenerTorneosPorCoach(idUser);
+
+
+            ViewBag.Torneos = torneos;
 
             return View();
 
