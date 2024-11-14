@@ -12,6 +12,7 @@
     <title>PotaxieSport - Torneos</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="~/manifest.json">
 
     <link rel="apple-touch-icon" href="~/img_plantilla/apple-icon.png">
     <link rel="shortcut icon" type="image/x-icon" href="~/img_plantilla/favicon.ico">
@@ -402,6 +403,63 @@
     </footer>
     <!-- End Footer -->
     <!-- Start Script -->
+
+    <script>
+        // Crear un array de objetos JavaScript con los datos de los torneos
+        const torneos = [
+        @foreach (var item in ViewBag.Torneos)
+        {
+            <text>
+                {
+                    nombre: "@item.NombreTorneo",
+                    logo: "@Url.Content(item.Logo)",
+                    genero: "@item.Genero",
+                    fechaInicio: "@item.FechaInicio",
+                    fechaFin: "@item.FechaFin",
+                    categoria: "@item.Categoria"
+                },
+            </text>
+        }
+            ];
+
+        console.log(torneos); // Verifica que los datos se transfirieron correctamente a JavaScript
+    </script>
+
+    <script>
+        function storeTorneosInIndexedDB(torneos) {
+            const request = indexedDB.open("MiBaseDeDatos", 1);
+
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                db.createObjectStore("torneos", { keyPath: "nombre" });
+            };
+
+            request.onsuccess = (event) => {
+                const db = event.target.result;
+                const transaction = db.transaction("torneos", "readwrite");
+                const store = transaction.objectStore("torneos");
+
+                // Agregar cada torneo a IndexedDB
+                torneos.forEach(torneo => {
+                    store.put(torneo);
+                });
+
+                transaction.oncomplete = () => {
+                    console.log("Datos de torneos almacenados en IndexedDB");
+                };
+            };
+
+            request.onerror = (event) => {
+                console.error("Error al abrir IndexedDB", event);
+            };
+        }
+
+        // Llama a la función para almacenar los torneos en IndexedDB
+        storeTorneosInIndexedDB(torneos);
+    </script>
+
+
+
     <script src="~/js_plantilla/jquery-1.11.0.min.js"></script>
     <script src="~/js_plantilla/jquery-migrate-1.2.1.min.js"></script>
     <script src="~/js_plantilla/bootstrap.bundle.min.js"></script>

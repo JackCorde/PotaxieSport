@@ -13,6 +13,7 @@ builder.Services.AddControllers();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+
 #pragma warning disable CS8604 // Posible argumento de referencia nulo
 // Registrar el contexto como un singleton si necesitas acceder a él en otros servicios
 builder.Services.AddSingleton(new Contexto(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -40,8 +41,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

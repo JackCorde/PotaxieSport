@@ -70,6 +70,9 @@ namespace PotaxieSport.Controllers
             ViewBag.Torneos = torneos;
             return View();
         }
+      
+
+
 
         public IActionResult Equipos()
         {

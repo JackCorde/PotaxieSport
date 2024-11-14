@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Prueba\" />
     <Folder Include="wwwroot\Formatos\Comprobantes\PagoPartido\" />
     <Folder Include="wwwroot\Formatos\Imagenes\Jugadores\" />
     <Folder Include="wwwroot\Formatos\Cedulas\" />
@@ -47,6 +48,7 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\AgregarUsuario.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\equipos.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\tablas.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\manifest.json" />
   </ItemGroup>
 
   <ItemGroup>

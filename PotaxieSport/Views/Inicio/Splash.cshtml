@@ -1,0 +1,64 @@
+﻿@{
+    Layout = null;  // Sin layout para esta vista (pantalla independiente)
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PotaxieSport - Splash</title>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #212832;
+        }
+        .splash-container {
+            text-align: center;
+            color: white;
+        }
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #28a745; /* Color verde de ejemplo */
+        }
+        .message {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+        /* Animación de desvanecimiento */
+        keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .splash-container {
+            animation: fadeIn 2s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="splash-container">
+        <h1 class="logo">Potaxie Sport</h1>
+        <p class="message">Bienvenido a nuestra aplicación.</p>
+    </div>
+
+    <script>
+        // Redirigir a la pantalla Home después de 3 segundos
+        setTimeout(function () {
+            window.location.href = '@Url.Action("Index", "Home")'; // Redirige a la página principal
+        }, 3000); // 3000ms = 3 segundos
+    </script>
+
+</body>
+</html>

@@ -429,7 +429,10 @@ namespace PotaxieSport.Controllers
             if (ModelState.IsValid)
             {
                 int torneoId = _generalServicio.CrearTorneo(torneo);
+                TempData["NombreTorneo"] = torneo.NombreTorneo;
+
                 return RedirectToAction("SubirLogo", new { id = torneoId }); // Redirige a una acción para mostrar los detalles del torneo
+
             }
 
             // Si el modelo no es válido, volver a cargar los datos y mostrar la vista con errores

@@ -20,6 +20,8 @@
     <!-- Load fonts style after rendering the layout styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
     <link rel="stylesheet" href="~/css_plantilla/fontawesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.js"></script>
+
 </head>
 
 <body>
@@ -69,11 +71,34 @@
     </div>
 
     <!-- Start Script -->
+
+
+
     <script src="~/js_plantilla/jquery-1.11.0.min.js"></script>
     <script src="~/js_plantilla/jquery-migrate-1.2.1.min.js"></script>
     <script src="~/js_plantilla/bootstrap.bundle.min.js"></script>
     <script src="~/js_plantilla/templatemo.js"></script>
     <script src="~/js_plantilla/custom.js"></script>
+
+    <script>
+        // Revisa si hay una notificación para mostrar
+        @if (TempData["NombreTorneo"] != null)
+        {
+            <text>
+                console.log('Ejecutando notificación para el torneo: @TempData["NombreTorneo"]');
+            Push.Permission.request();
+            Push.create('Nuevo Torneo', {
+                body: 'Se ha creado el torneo @TempData["NombreTorneo"] exitosamente!',
+                icon: '/img/icon_32.png', timeout: 1500000,
+                vibrate: [100, 100, 100],
+                onClick: function () {
+                    window.location = "https://localhost:7056/Home/Torneos"; // 
+                    console.log('Notificación clickeada');
+                }
+            });
+            </text>
+        }
+    </script>
     <!-- End Script -->
 </body>
 

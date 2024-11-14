@@ -862,6 +862,8 @@ namespace PotaxieSport.Data.Servicios
             command.Parameters.AddWithValue("@clave", jugador.Clave ?? string.Empty);
 
             return (int)command.ExecuteScalar(); // Devuelve el ID del jugador insertado
+
+
         }
 
     }
